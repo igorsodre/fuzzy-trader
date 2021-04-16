@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyTrader.Server", "FuzzyTrader.Server\FuzzyTrader.Server.csproj", "{1F1165AD-DFAA-4D6D-AB2E-735D95E906EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyTrader.Contracts", "FuzzyTrader.Contracts\FuzzyTrader.Contracts.csproj", "{8306B522-3332-405E-ABAC-A6ECC28248CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F1165AD-DFAA-4D6D-AB2E-735D95E906EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F1165AD-DFAA-4D6D-AB2E-735D95E906EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F1165AD-DFAA-4D6D-AB2E-735D95E906EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F1165AD-DFAA-4D6D-AB2E-735D95E906EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8306B522-3332-405E-ABAC-A6ECC28248CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8306B522-3332-405E-ABAC-A6ECC28248CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8306B522-3332-405E-ABAC-A6ECC28248CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8306B522-3332-405E-ABAC-A6ECC28248CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
