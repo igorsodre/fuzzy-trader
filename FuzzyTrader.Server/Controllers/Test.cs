@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using FuzzyTrader.Server.Data;
 using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.Server.Extensions;
 using FuzzyTrader.Server.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -27,13 +28,13 @@ namespace FuzzyTrader.Server.Controllers
         [HttpGet("/test")]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _dataContext.Users.ToListAsync());
+            return Ok(HttpContext.GetUserId());
         }
 
         [HttpGet("/test2")]
         public async Task<IActionResult> Get2()
         {
-            return Ok(_tokenService.CreateAccessToken(await _userManager.Users.FirstAsync()));
+            return Ok(HttpContext.GetUserId());
         }
     }
 }

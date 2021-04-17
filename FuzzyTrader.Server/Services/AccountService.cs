@@ -2,7 +2,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace FuzzyTrader.Server.Services
 {
@@ -52,8 +54,59 @@ namespace FuzzyTrader.Server.Services
             return new AuthenticationResult
             {
                 Succsess = true,
-                Token = token
+                Token = token,
+                User = user
             };
+        }
+
+        public async Task<AuthenticationResult> LoginAsync(string email, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null)
+            {
+                return new AuthenticationResult
+                {
+                    ErrorMessages = new[] {"Invalid Email/Password"}
+                };
+            }
+
+            var verifiedPassword = await _userManager.CheckPasswordAsync(user, password);
+
+            if (!verifiedPassword)
+            {
+                return new AuthenticationResult
+                {
+                    ErrorMessages = new[] {"Invalid Email/Password"}
+                };
+            }
+
+            var token = _tokenService.CreateAccessToken(user);
+
+            return new AuthenticationResult
+            {
+                Succsess = true,
+                Token = token,
+                User = user
+            };
+        }
+
+        public void AddRefreshTokenForUserOnResponse(AppUser appUser, HttpResponse httpResponse)
+        {
+            var token = _tokenService.CreateRefreshToken(appUser);
+            _tokenService.SetHttpCookieForRefreshToken(token, httpResponse);
+        }
+
+        public async Task RevokeAllRefreshTokensForUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                return;
+            }
+
+            user.TokenVersion += 1;
+            await _userManager.UpdateAsync(user);
         }
     }
 }

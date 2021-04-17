@@ -18,13 +18,27 @@ namespace FuzzyTrader.Server.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login()
+        public async Task<ActionResult<Response<LoginResponse>>> Login(LoginRequest request)
         {
-            return Ok();
+            var authResponse = await _accountService.LoginAsync(request.Email, request.Password);
+            if (!authResponse.Succsess)
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Errors = authResponse.ErrorMessages
+                });
+            }
+
+            _accountService.AddRefreshTokenForUserOnResponse(authResponse.User, HttpContext.Response);
+
+            return Ok(new Response<LoginResponse>(new LoginResponse
+            {
+                Token = authResponse.Token
+            }));
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> Signup(SignupRequest request)
+        public async Task<ActionResult> Signup(SignupRequest request)
         {
             var authResponse = await _accountService.RegisterAsync(request.Email, request.Password);
             if (!authResponse.Succsess)
@@ -35,10 +49,33 @@ namespace FuzzyTrader.Server.Controllers
                 });
             }
 
+            _accountService.AddRefreshTokenForUserOnResponse(authResponse.User, HttpContext.Response);
+
             return Ok(new Response<SignupResponse>(new SignupResponse
             {
                 Token = authResponse.Token
             }));
         }
+        
+        [HttpPost("refresh")]
+        public async Task<ActionResult> Refresh(SignupRequest request)
+        {
+            var authResponse = await _accountService.RegisterAsync(request.Email, request.Password);
+            if (!authResponse.Succsess)
+            {
+                return BadRequest(new ErrorResponse
+                {
+                    Errors = authResponse.ErrorMessages
+                });
+            }
+
+            _accountService.AddRefreshTokenForUserOnResponse(authResponse.User, HttpContext.Response);
+
+            return Ok(new Response<SignupResponse>(new SignupResponse
+            {
+                Token = authResponse.Token
+            }));
+        }
+        
     }
 }

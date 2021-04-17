@@ -4,6 +4,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.Server.Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,8 +15,7 @@ namespace FuzzyTrader.Server.Services
     {
         private readonly SymmetricSecurityKey _accesskey;
         private readonly SymmetricSecurityKey _refreshKey;
-        private const string TokenVersion = "TokenVersion";
-        private const string Id = "Id";
+
 
         public TokenService(IConfiguration configuration)
         {
@@ -31,7 +32,7 @@ namespace FuzzyTrader.Server.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(Id, user.Id),
+                new Claim(CustomTokenClaims.Id, user.Id),
             };
 
             var credentials = new SigningCredentials(_accesskey, SecurityAlgorithms.HmacSha512Signature);
@@ -55,8 +56,8 @@ namespace FuzzyTrader.Server.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
-                new Claim(TokenVersion, user.TokenVersion.ToString())
+                new Claim(CustomTokenClaims.Id, user.Id),
+                new Claim(CustomTokenClaims.TokenVersion, user.TokenVersion.ToString())
             };
 
             var credentials = new SigningCredentials(_refreshKey, SecurityAlgorithms.HmacSha512Signature);
@@ -73,6 +74,17 @@ namespace FuzzyTrader.Server.Services
             var token = tokenHandler.CreateToken(tokenDescriptior);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        public void SetHttpCookieForRefreshToken(string token, HttpResponse httpResponse)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Path = "/refresh",
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
+            httpResponse.Cookies.Append("RefreshToken", token, cookieOptions);
         }
     }
 }
