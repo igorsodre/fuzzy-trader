@@ -1,4 +1,5 @@
 using FuzzyTrader.Server.Data;
+using FuzzyTrader.Server.Data.DbEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,8 @@ namespace FuzzyTrader.Server.Configurations
             services.AddDbContext<DataContext>(options => {
                 options.UseNpgsql(configuration.GetConnectionString("DatabaseUrl"));
             });
+            services.AddDefaultIdentity<AppUser>()
+                .AddEntityFrameworkStores<DataContext>();
         }
     }
 }
