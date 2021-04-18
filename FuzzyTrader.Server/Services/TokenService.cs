@@ -48,7 +48,7 @@ namespace FuzzyTrader.Server.Services
             var tokenDescriptior = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddSeconds(30),
+                Expires = DateTime.UtcNow.AddMinutes(7),
                 SigningCredentials = credentials
             };
 

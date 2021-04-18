@@ -5,11 +5,13 @@ using FuzzyTrader.Contracts.Responses.Account;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Extensions;
 using FuzzyTrader.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FuzzyTrader.Server.Controllers
 {
     [ApiController]
+    [Route("api/account")]
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
@@ -25,7 +27,7 @@ namespace FuzzyTrader.Server.Controllers
             var authResponse = await _accountService.RegisterAsync(request.Email, request.Password);
             if (!authResponse.Succsess)
             {
-                return BadRequest(new ErrorResponse
+                return BadRequest(new BusinessErrorResponse
                 {
                     Errors = authResponse.ErrorMessages
                 });
@@ -33,19 +35,19 @@ namespace FuzzyTrader.Server.Controllers
 
             _accountService.AddRefreshTokenForUserOnResponse(authResponse.User, HttpContext.Response);
 
-            return Ok(new Response<SignupResponse>(new SignupResponse
+            return Ok(new SuccessResponse<SignupResponse>(new SignupResponse
             {
                 Token = authResponse.Token
             }));
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<Response<LoginResponse>>> Login(LoginRequest request)
+        public async Task<ActionResult<SuccessResponse<LoginResponse>>> Login(LoginRequest request)
         {
             var authResponse = await _accountService.LoginAsync(request.Email, request.Password);
             if (!authResponse.Succsess)
             {
-                return BadRequest(new ErrorResponse
+                return BadRequest(new BusinessErrorResponse
                 {
                     Errors = authResponse.ErrorMessages
                 });
@@ -53,7 +55,7 @@ namespace FuzzyTrader.Server.Controllers
 
             _accountService.AddRefreshTokenForUserOnResponse(authResponse.User, HttpContext.Response);
 
-            return Ok(new Response<LoginResponse>(new LoginResponse
+            return Ok(new SuccessResponse<LoginResponse>(new LoginResponse
             {
                 Token = authResponse.Token
             }));
@@ -63,25 +65,31 @@ namespace FuzzyTrader.Server.Controllers
         public ActionResult Logout()
         {
             _accountService.Logout(HttpContext.Response);
-            return Ok(new Response<string>("OK"));
+            return Ok(new SuccessResponse<string>("OK"));
         }
 
 
-        [HttpPost("refresh")]
-        public async Task<ActionResult> Refresh()
+        [HttpPost("refresh_token")]
+        public async Task<ActionResult> RefreshToken()
         {
             var refreshToken = HttpContext.Request.Cookies[CustomCookieKeys.RefreshToken];
             var result = await _accountService.RefreshAccessTokenAsync(refreshToken);
 
             if (!result.Succsess)
             {
-                return BadRequest(new ErrorResponse
+                return BadRequest(new BusinessErrorResponse
                 {
                     Errors = result.ErrorMessages
                 });
             }
 
-            return Ok(new Response<RefreshResponse>(new RefreshResponse {AccessToken = result.Token}));
+            return Ok(new SuccessResponse<RefreshResponse>(new RefreshResponse {AccessToken = result.Token}));
         }
+
+        // [HttpPost("update"), Authorize]
+        // public async Task<ActionResult> Update()
+        // {
+        //     return Ok(new SuccessResponse<string>("test"));
+        // }
     }
 }

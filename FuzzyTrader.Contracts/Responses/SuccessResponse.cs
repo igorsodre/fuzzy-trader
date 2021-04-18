@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace FuzzyTrader.Contracts.Responses
 {
-    public class Response<T>
+    public class SuccessResponse<T>
     {
-        public Response(T response)
+        public SuccessResponse(T response)
         {
             Data = response;
         }

@@ -1,3 +1,5 @@
+using FluentValidation.AspNetCore;
+using FuzzyTrader.Server.Filters;
 using FuzzyTrader.Server.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +14,8 @@ namespace FuzzyTrader.Server.Configurations
             services.AddSingleton<ITokenService, TokenService>();
             services.AddScoped<IAccountService, AccountService>();
 
-            services.AddControllers();
+            services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); })
+                .AddFluentValidation(options => { options.RegisterValidatorsFromAssemblyContaining<Startup>(); });
 
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "FuzzyTrader.Server", Version = "v1"});
@@ -35,7 +38,7 @@ namespace FuzzyTrader.Server.Configurations
                                 Id = "Bearer"
                             }
                         },
-                        new string[] { }
+                        System.Array.Empty<string>()
                     }
                 });
             });
