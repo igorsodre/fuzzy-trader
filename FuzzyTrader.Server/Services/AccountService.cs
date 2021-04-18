@@ -91,6 +91,44 @@ namespace FuzzyTrader.Server.Services
             };
         }
 
+        public void Logout(HttpResponse httpResponse)
+        {
+            _tokenService.ClearHttpCookieForRefreshToken(httpResponse);
+        }
+
+        public async Task<AuthenticationResult> RefreshAccessTokenAsync(string refreshToken)
+        {
+            var tokenAttributes = _tokenService.VerifyRefreshToken(refreshToken);
+            if (tokenAttributes is null)
+            {
+                return new AuthenticationResult
+                {
+                    ErrorMessages = new[] {"Invalid refresh token"}
+                };
+            }
+
+            var userId = tokenAttributes[CustomTokenClaims.Id];
+            var tokenVersion = int.Parse(tokenAttributes[CustomTokenClaims.TokenVersion]);
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null || user.TokenVersion != tokenVersion)
+            {
+                return new AuthenticationResult
+                {
+                    ErrorMessages = new[] {"Invalid refresh token"}
+                };
+            }
+
+            var newAccessToken = _tokenService.CreateAccessToken(user);
+
+            return new AuthenticationResult
+            {
+                Token = newAccessToken,
+                Succsess = true
+            };
+        }
+
         public void AddRefreshTokenForUserOnResponse(AppUser appUser, HttpResponse httpResponse)
         {
             var token = _tokenService.CreateRefreshToken(appUser);

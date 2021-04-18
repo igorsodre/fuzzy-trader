@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using FuzzyTrader.Server.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,13 +24,14 @@ namespace FuzzyTrader.Server.Configurations
                     jwt.SaveToken = true;
                     jwt.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuerSigningKey =
-                            true, // this will validate the 3rd part of the jwt token using the secret that we added in the appsettings and verify we have generated the jwt token
-                        IssuerSigningKey = new SymmetricSecurityKey(key), // Add the secret key to our Jwt encryption
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = false,
                         ValidateAudience = false,
                         RequireExpirationTime = false,
-                        ValidateLifetime = true
+                        ValidateLifetime = true,
+                        ValidAlgorithms = new[] {SecurityAlgorithms.HmacSha512},
+                        ClockSkew = TimeSpan.Zero
                     };
                 });
         }

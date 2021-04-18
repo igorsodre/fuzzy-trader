@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using FuzzyTrader.Server.Data;
 using FuzzyTrader.Server.Data.DbEntities;
@@ -26,15 +27,17 @@ namespace FuzzyTrader.Server.Controllers
 
         [Authorize]
         [HttpGet("/test")]
-        public async Task<IActionResult> Get()
+        public  IActionResult Get()
         {
             return Ok(HttpContext.GetUserId());
         }
 
         [HttpGet("/test2")]
-        public async Task<IActionResult> Get2()
+        public IActionResult Get2(string param1)
         {
-            return Ok(HttpContext.GetUserId());
+            var result = _tokenService.VerifyRefreshToken(param1);
+
+            return Ok(result);
         }
     }
 }

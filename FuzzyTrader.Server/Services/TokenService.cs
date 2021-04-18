@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using FuzzyTrader.Server.Data.DbEntities;
@@ -15,6 +16,7 @@ namespace FuzzyTrader.Server.Services
     {
         private readonly SymmetricSecurityKey _accesskey;
         private readonly SymmetricSecurityKey _refreshKey;
+        private readonly CookieOptions _defaultCookieOptions;
 
 
         public TokenService(IConfiguration configuration)
@@ -25,6 +27,12 @@ namespace FuzzyTrader.Server.Services
             _refreshKey =
                 new SymmetricSecurityKey(
                     Encoding.ASCII.GetBytes(configuration.GetValue<string>("JwtRefreshTokenSecret")));
+            _defaultCookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Path = "/refresh",
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
         }
 
         public string CreateAccessToken(AppUser user)
@@ -40,7 +48,7 @@ namespace FuzzyTrader.Server.Services
             var tokenDescriptior = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(7),
+                Expires = DateTime.UtcNow.AddSeconds(30),
                 SigningCredentials = credentials
             };
 
@@ -60,7 +68,7 @@ namespace FuzzyTrader.Server.Services
                 new Claim(CustomTokenClaims.TokenVersion, user.TokenVersion.ToString())
             };
 
-            var credentials = new SigningCredentials(_refreshKey, SecurityAlgorithms.HmacSha512Signature);
+            var credentials = new SigningCredentials(_refreshKey, SecurityAlgorithms.HmacSha512);
 
             var tokenDescriptior = new SecurityTokenDescriptor
             {
@@ -78,13 +86,54 @@ namespace FuzzyTrader.Server.Services
 
         public void SetHttpCookieForRefreshToken(string token, HttpResponse httpResponse)
         {
-            var cookieOptions = new CookieOptions
+            httpResponse.Cookies.Append(CustomCookieKeys.RefreshToken, token, _defaultCookieOptions);
+        }
+
+        public void ClearHttpCookieForRefreshToken(HttpResponse httpResponse)
+        {
+            httpResponse.Cookies.Append(CustomCookieKeys.RefreshToken, "", _defaultCookieOptions);
+        }
+
+        public Dictionary<string, string> VerifyRefreshToken(string token)
+        {
+            var validationParameters = new TokenValidationParameters
             {
-                HttpOnly = true,
-                Path = "/refresh",
-                Expires = DateTime.UtcNow.AddDays(7)
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _refreshKey,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ValidAlgorithms = new[] {SecurityAlgorithms.HmacSha512},
+                ClockSkew = TimeSpan.Zero
             };
-            httpResponse.Cookies.Append("RefreshToken", token, cookieOptions);
+
+            var handler = new JwtSecurityTokenHandler();
+
+            try
+            {
+                var principal = handler.ValidateToken(token, validationParameters, out var validToken);
+                if (IsJwtTokenExpired(principal))
+                {
+                    return null;
+                }
+
+                return principal.Claims
+                    .ToDictionary(k => k.Type, v => v.Value);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static bool IsJwtTokenExpired(ClaimsPrincipal claimsPrincipal)
+        {
+            var unixExpDate =
+                long.Parse(claimsPrincipal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+
+            var expDate = DateTimeOffset.FromUnixTimeSeconds(unixExpDate).UtcDateTime;
+            return expDate <= DateTime.UtcNow;
         }
     }
 }

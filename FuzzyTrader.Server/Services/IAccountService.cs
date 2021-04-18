@@ -10,8 +10,10 @@ namespace FuzzyTrader.Server.Services
     {
         public Task<AuthenticationResult> RegisterAsync(string email, string password);
         public Task<AuthenticationResult> LoginAsync(string email, string password);
-        public void AddRefreshTokenForUserOnResponse(AppUser appUser, HttpResponse httpResponse);
 
+        public void Logout(HttpResponse httpResponse);
+        public Task<AuthenticationResult> RefreshAccessTokenAsync(string refreshToken);
+        public void AddRefreshTokenForUserOnResponse(AppUser appUser, HttpResponse httpResponse);
         public Task RevokeAllRefreshTokensForUser(string userId);
     }
 }
