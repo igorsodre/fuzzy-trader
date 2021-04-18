@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using FuzzyTrader.Server.Configurations;
+using FuzzyTrader.Server.ConfigurationInstallers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

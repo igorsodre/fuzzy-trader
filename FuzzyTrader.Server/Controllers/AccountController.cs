@@ -17,10 +17,12 @@ namespace FuzzyTrader.Server.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly IEmailClientService _emailClientService;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, IEmailClientService emailClientService)
         {
             _accountService = accountService;
+            _emailClientService = emailClientService;
         }
 
         [HttpPost("signup")]
@@ -91,5 +93,11 @@ namespace FuzzyTrader.Server.Controllers
         // {
         //     return Ok(new SuccessResponse<string>("test"));
         // }
+
+        [HttpPost("test")]
+        public async Task<IActionResult> Test(EmailMessage message)
+        {
+            return Ok(await _emailClientService.SendEmailAsync(message));
+        }
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace FuzzyTrader.Server.Configurations
+namespace FuzzyTrader.Server.ConfigurationInstallers
 {
     public class SwaggerConfiguration : IConfigurationInstaller
     {

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FuzzyTrader.Server.Configurations
+namespace FuzzyTrader.Server.ConfigurationInstallers
 {
     public interface IConfigurationInstaller
     {

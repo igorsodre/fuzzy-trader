@@ -3,9 +3,8 @@ using FuzzyTrader.Server.Filters;
 using FuzzyTrader.Server.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 
-namespace FuzzyTrader.Server.Configurations
+namespace FuzzyTrader.Server.ConfigurationInstallers
 {
     public class MvcConfiguration : IConfigurationInstaller
     {
