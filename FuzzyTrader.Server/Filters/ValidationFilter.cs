@@ -15,15 +15,11 @@ namespace FuzzyTrader.Server.Filters
                 var errors = context.ModelState.Where(x => x.Value.Errors.Count > 0)
                     .ToDictionary(k => k.Key, v => v.Value.Errors.Select(e => e.ErrorMessage));
 
-                var errorResponse = new InputErrorResponse();
 
-                foreach (var (key, errorMessages) in errors)
-                {
-                    foreach (var errorMessage in errorMessages)
-                    {
-                        errorResponse.Errors.Add(new ErrorModel {FieldName = key, Message = errorMessage});
-                    }
-                }
+                var errorsList = errors.SelectMany((x) =>
+                    x.Value.Select(xx => new ErrorModel {FieldName = x.Key, Message = xx}));
+                
+                var errorResponse = new ErrorResponse {Errors = errorsList.ToList()};
 
                 context.Result = new BadRequestObjectResult(errorResponse);
                 return;

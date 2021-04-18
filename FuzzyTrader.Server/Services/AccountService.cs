@@ -4,7 +4,6 @@ using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace FuzzyTrader.Server.Services
 {
@@ -53,7 +52,7 @@ namespace FuzzyTrader.Server.Services
 
             return new AuthenticationResult
             {
-                Succsess = true,
+                Success = true,
                 Token = token,
                 User = user
             };
@@ -85,7 +84,7 @@ namespace FuzzyTrader.Server.Services
 
             return new AuthenticationResult
             {
-                Succsess = true,
+                Success = true,
                 Token = token,
                 User = user
             };
@@ -125,7 +124,7 @@ namespace FuzzyTrader.Server.Services
             return new AuthenticationResult
             {
                 Token = newAccessToken,
-                Succsess = true
+                Success = true
             };
         }
 

@@ -9,7 +9,7 @@ namespace FuzzyTrader.Server.Domain
 
         public AppUser User { get; set; }
 
-        public bool Succsess { get; set; }
+        public bool Success { get; set; }
 
         public IEnumerable<string> ErrorMessages { get; set; }
     }
