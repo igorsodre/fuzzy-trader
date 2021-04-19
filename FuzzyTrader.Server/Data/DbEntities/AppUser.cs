@@ -6,5 +6,7 @@ namespace FuzzyTrader.Server.Data.DbEntities
     public class AppUser : IdentityUser
     {
         public UInt32 TokenVersion { get; set; }
+
+        public virtual Wallet Wallet { get; set; }
     }
 }

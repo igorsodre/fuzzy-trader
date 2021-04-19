@@ -7,5 +7,8 @@ namespace FuzzyTrader.Server.Data
     public class DataContext : IdentityDbContext<AppUser>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+
+        public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<Investment> Investments { get; set; }
     }
 }
