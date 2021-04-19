@@ -4,9 +4,7 @@ using FuzzyTrader.Contracts.Requests.Account;
 using FuzzyTrader.Contracts.Responses;
 using FuzzyTrader.Contracts.Responses.Account;
 using FuzzyTrader.Server.Domain;
-using FuzzyTrader.Server.Extensions;
 using FuzzyTrader.Server.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FuzzyTrader.Server.Controllers
@@ -17,12 +15,10 @@ namespace FuzzyTrader.Server.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private readonly IEmailClientService _emailClientService;
 
-        public AccountController(IAccountService accountService, IEmailClientService emailClientService)
+        public AccountController(IAccountService accountService)
         {
             _accountService = accountService;
-            _emailClientService = emailClientService;
         }
 
         [HttpPost("signup")]
@@ -93,11 +89,5 @@ namespace FuzzyTrader.Server.Controllers
         // {
         //     return Ok(new SuccessResponse<string>("test"));
         // }
-
-        [HttpPost("test")]
-        public async Task<IActionResult> Test(EmailMessage message)
-        {
-            return Ok(await _emailClientService.SendEmailAsync(message));
-        }
     }
 }

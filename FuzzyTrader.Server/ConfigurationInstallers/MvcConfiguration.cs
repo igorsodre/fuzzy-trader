@@ -12,10 +12,10 @@ namespace FuzzyTrader.Server.ConfigurationInstallers
         {
             services.AddSingleton<ITokenService, TokenService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); })
                 .AddFluentValidation(options => { options.RegisterValidatorsFromAssemblyContaining<Startup>(); });
-            
         }
     }
 }

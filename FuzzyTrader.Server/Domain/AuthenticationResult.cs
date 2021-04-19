@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.Server.Domain.Entities;
 
 namespace FuzzyTrader.Server.Domain
 {
@@ -7,7 +7,7 @@ namespace FuzzyTrader.Server.Domain
     {
         public string Token { get; set; }
 
-        public AppUser User { get; set; }
+        public DomainUser User { get; set; }
 
         public bool Success { get; set; }
 

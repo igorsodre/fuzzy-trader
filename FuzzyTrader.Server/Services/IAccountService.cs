@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using FuzzyTrader.Contracts.Requests.Account;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
+using FuzzyTrader.Server.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace FuzzyTrader.Server.Services
@@ -13,7 +14,7 @@ namespace FuzzyTrader.Server.Services
 
         public void Logout(HttpResponse httpResponse);
         public Task<AuthenticationResult> RefreshAccessTokenAsync(string refreshToken);
-        public void AddRefreshTokenForUserOnResponse(AppUser appUser, HttpResponse httpResponse);
+        public void AddRefreshTokenForUserOnResponse(DomainUser appUser, HttpResponse httpResponse);
         public Task RevokeAllRefreshTokensForUser(string userId);
     }
 }

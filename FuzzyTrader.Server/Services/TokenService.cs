@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
+using FuzzyTrader.Server.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -35,7 +36,7 @@ namespace FuzzyTrader.Server.Services
             };
         }
 
-        public string CreateAccessToken(AppUser user)
+        public string CreateAccessToken(DomainUser user)
         {
             var claims = new List<Claim>
             {
@@ -60,7 +61,7 @@ namespace FuzzyTrader.Server.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public string CreateRefreshToken(AppUser user)
+        public string CreateRefreshToken(DomainUser user)
         {
             var claims = new List<Claim>
             {
