@@ -29,18 +29,12 @@ namespace FuzzyTrader.Server.Controllers
             var authResponse = await _accountService.RegisterAsync(request.Email, request.Password);
             if (!authResponse.Success)
             {
-                return BadRequest(new BusinessErrorResponse
-                {
-                    Errors = authResponse.ErrorMessages
-                });
+                return BadRequest(new BusinessErrorResponse {Errors = authResponse.ErrorMessages});
             }
 
             _accountService.AddRefreshTokenForUserOnResponse(authResponse.User, HttpContext.Response);
 
-            return Ok(new SuccessResponse<SignupResponse>(new SignupResponse
-            {
-                Token = authResponse.Token
-            }));
+            return Ok(new SuccessResponse<SignupResponse>(new SignupResponse {Token = authResponse.Token}));
         }
 
         [HttpPost("login")]
