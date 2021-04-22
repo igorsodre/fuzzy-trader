@@ -1,5 +1,7 @@
+using System;
 using FuzzyTrader.Server.Data;
 using FuzzyTrader.Server.Data.DbEntities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +17,10 @@ namespace FuzzyTrader.Server.ConfigurationInstallers
             });
             services.AddDefaultIdentity<AppUser>()
                 .AddEntityFrameworkStores<DataContext>();
+            
+            services.Configure<DataProtectionTokenProviderOptions>(options => {
+                options.TokenLifespan = TimeSpan.FromMinutes(15);
+            });
         }
     }
 }

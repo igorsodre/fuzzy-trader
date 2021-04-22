@@ -3,11 +3,11 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace FuzzyTrader.Server.SwaggerExamples.Requests
 {
-    public class LoginRequestExample : IExamplesProvider<LoginRequest>
+    public class SignupRequestExample : IExamplesProvider<SignupRequest>
     {
-        public LoginRequest GetExamples()
+        public SignupRequest GetExamples()
         {
-            return new LoginRequest
+            return new SignupRequest
             {
                 Email = "dotnettest1@mailinator.com",
                 Password = "Password!1"

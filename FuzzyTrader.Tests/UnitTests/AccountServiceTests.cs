@@ -4,6 +4,7 @@ using AutoMapper;
 using FluentAssertions;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain.Entities;
+using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services;
 using Microsoft.AspNetCore.Identity;
 using Moq;
@@ -18,11 +19,14 @@ namespace FuzzyTrader.Tests.UnitTests
         private readonly Mock<UserManager<AppUser>> _userManager;
         private readonly ITokenService _tokenService = Substitute.For<ITokenService>();
         private readonly IMapper _mapper = Substitute.For<IMapper>();
+        private readonly IEmailClientService _emailClientService = Substitute.For<IEmailClientService>();
+        private readonly ServerSettings _serverSettings = new ServerSettings {BaseUrl = ""};
 
         public AccountServiceTests()
         {
             _userManager = TestHelpers.MockUserManager(new List<AppUser>());
-            _sut = new AccountService(_userManager.Object, _tokenService, _mapper);
+            _sut = new AccountService(_userManager.Object, _tokenService, _mapper, _emailClientService,
+                _serverSettings);
         }
 
 

@@ -1,11 +1,18 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 using FuzzyTrader.Contracts.Requests.Account;
 using FuzzyTrader.Contracts.Responses;
 using FuzzyTrader.Contracts.Responses.Account;
+using FuzzyTrader.Server.Data;
+using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FuzzyTrader.Server.Controllers
 {
@@ -15,14 +22,19 @@ namespace FuzzyTrader.Server.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly DataContext _dataContext;
 
-        public AccountController(IAccountService accountService)
+        public AccountController(IAccountService accountService, UserManager<AppUser> userManager,
+            DataContext dataContext)
         {
             _accountService = accountService;
+            _userManager = userManager;
+            _dataContext = dataContext;
         }
 
         [HttpPost("signup")]
-        [ProducesResponseType(typeof(SuccessResponse<SignupResponse>), 200)]
+        [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<ActionResult> Signup(SignupRequest request)
         {
@@ -32,9 +44,21 @@ namespace FuzzyTrader.Server.Controllers
                 return BadRequest(new BusinessErrorResponse {Errors = authResponse.ErrorMessages});
             }
 
-            _accountService.AddRefreshTokenForUserOnResponse(authResponse.User, HttpContext.Response);
+            return Ok(new SuccessResponse<string>("OK"));
+        }
 
-            return Ok(new SuccessResponse<SignupResponse>(new SignupResponse {Token = authResponse.Token}));
+        [HttpGet("verify_email")]
+        [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
+        public async Task<ActionResult> VerifyEmail(string token, string email)
+        {
+            var isVerified = await _accountService.VerifyEmailAsync(token, email);
+            if (!isVerified)
+            {
+                return BadRequest(new ErrorResponse(new[] {"Failed to verify email"}));
+            }
+
+            return Ok(new SuccessResponse<string>("OK"));
         }
 
         [HttpPost("login")]
@@ -78,10 +102,22 @@ namespace FuzzyTrader.Server.Controllers
             return Ok(new SuccessResponse<RefreshResponse>(new RefreshResponse {AccessToken = result.Token}));
         }
 
-        // [HttpPost("update"), Authorize]
-        // public async Task<ActionResult> Update()
-        // {
-        //     return Ok(new SuccessResponse<string>("test"));
-        // }
+        [HttpPost("remove_all_users")]
+        public async Task<ActionResult> RemoveAllUsers()
+        {
+            await using var trasaction = await _dataContext.Database.BeginTransactionAsync();
+
+            var users = await _dataContext.Users.ToListAsync();
+
+            foreach (var user in users)
+            {
+                await _userManager.DeleteAsync(user);
+            }
+
+
+            await trasaction.CommitAsync();
+
+            return Ok(new SuccessResponse<string>("test"));
+        }
     }
 }
