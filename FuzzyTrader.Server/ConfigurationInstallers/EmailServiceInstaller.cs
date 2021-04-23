@@ -1,5 +1,6 @@
 using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services;
+using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

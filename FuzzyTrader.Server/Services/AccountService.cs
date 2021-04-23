@@ -6,6 +6,7 @@ using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Options;
+using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
@@ -18,7 +19,6 @@ namespace FuzzyTrader.Server.Services
         private readonly IMapper _mapper;
         private readonly IEmailClientService _emailClientService;
         private readonly ServerSettings _serverSettings;
-        private const string ForgotPassword = "ForgotPassword";
 
         public AccountService(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper,
             IEmailClientService emailClientService, ServerSettings serverSettings)
@@ -66,7 +66,7 @@ namespace FuzzyTrader.Server.Services
             var endpoint =
                 $"{_serverSettings.BaseUrl}/api/account/verify_email?token={encodedToken}&email={encodedEmail}";
 
-            var messageText = $"<p>Click <a href='{endpoint} target='_blank'>here</a> to confirm your email.</p>" +
+            var messageText = $"<p><a href='{endpoint} target='_blank'>Click here</a> to confirm your email.</p>" +
                               $"<p>Please ignore this if you did not request it.</p>";
 
             var emailMessage = new EmailMessage
@@ -88,7 +88,7 @@ namespace FuzzyTrader.Server.Services
 
             user.EmailConfirmed = true;
             await _userManager.UpdateAsync(user);
-
+            await _userManager.UpdateSecurityStampAsync(user);
             return true;
         }
 
@@ -151,7 +151,7 @@ namespace FuzzyTrader.Server.Services
             var endpoint =
                 $"{_serverSettings.BaseUrl}/api/account/reset_password?token={encodedToken}&email={encodedEmail}";
 
-            var messageText = $"<p>Click <a href='{endpoint} target='_blank'>here</a> to reset your password.</p>" +
+            var messageText = $"<p><a href='{endpoint} target='_blank'>Click here</a> to reset your password.</p>" +
                               $"<p>Please ignore this if you did not request it.</p>";
 
             var emailMessage = new EmailMessage
@@ -160,6 +160,11 @@ namespace FuzzyTrader.Server.Services
             };
 
             return await _emailClientService.SendEmailAsync(emailMessage);
+        }
+
+        public Task<bool> ResetPasswordAsync(string email, string token, string password)
+        {
+            throw new System.NotImplementedException();
         }
 
         public async Task<AuthenticationResult> RefreshAccessTokenAsync(string refreshToken)

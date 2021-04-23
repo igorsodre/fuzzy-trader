@@ -2,6 +2,8 @@ using FluentValidation.AspNetCore;
 using FuzzyTrader.Server.Filters;
 using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services;
+using FuzzyTrader.Server.Services.Iterfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,8 +29,14 @@ namespace FuzzyTrader.Server.ConfigurationInstallers
                 });
             });
 
+            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
             services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); })
-                .AddFluentValidation(options => { options.RegisterValidatorsFromAssemblyContaining<Startup>(); });
+                .AddFluentValidation(options => {
+                    options.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                    options.ImplicitlyValidateChildProperties = true;
+                    options.RegisterValidatorsFromAssemblyContaining<Startup>();
+                });
         }
     }
 }

@@ -7,6 +7,7 @@ using System.Text;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Entities;
+using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

@@ -18,7 +18,7 @@ namespace FuzzyTrader.Server.Filters
 
                 var errorsList = errors.SelectMany((x) =>
                     x.Value.Select(xx => new ErrorModel {FieldName = x.Key, Message = xx}));
-                
+
                 var errorResponse = new ErrorResponse {Errors = errorsList.ToList()};
 
                 context.Result = new BadRequestObjectResult(errorResponse);

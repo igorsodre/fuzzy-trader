@@ -9,7 +9,9 @@ using FuzzyTrader.Contracts.Responses.Account;
 using FuzzyTrader.Server.Data;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
+using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services;
+using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,13 +26,15 @@ namespace FuzzyTrader.Server.Controllers
         private readonly IAccountService _accountService;
         private readonly UserManager<AppUser> _userManager;
         private readonly DataContext _dataContext;
+        private readonly ServerSettings _serverSettings;
 
         public AccountController(IAccountService accountService, UserManager<AppUser> userManager,
-            DataContext dataContext)
+            DataContext dataContext, ServerSettings serverSettings)
         {
             _accountService = accountService;
             _userManager = userManager;
             _dataContext = dataContext;
+            _serverSettings = serverSettings;
         }
 
         [HttpPost("signup")]
@@ -100,6 +104,28 @@ namespace FuzzyTrader.Server.Controllers
             }
 
             return Ok(new SuccessResponse<RefreshResponse>(new RefreshResponse {AccessToken = result.Token}));
+        }
+
+        [HttpPost("forgot_password")]
+        [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var sentEmail = await _accountService.ForgotPasswordAysnc(request.Email);
+
+            if (!sentEmail) return BadRequest(new ErrorResponse(new[] {"Invalid Email"}));
+
+            return Ok(new SuccessResponse<string>("OK"));
+        }
+
+        [HttpGet("reset_password_page")]
+        public IActionResult ReserPasswordPage(string token, string email)
+        {
+            var endpoint = _serverSettings.ClientUrl +
+                           _serverSettings.ResetPasswordRoute +
+                           $"?token={token}&email={email}";
+
+            return Redirect(endpoint);
         }
 
         [HttpPost("remove_all_users")]

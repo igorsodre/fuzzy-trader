@@ -4,5 +4,6 @@ namespace FuzzyTrader.Server.Options
     {
         public string BaseUrl { get; init; }
         public string ClientUrl { get; set; }
+        public string ResetPasswordRoute { get; set; }
     }
 }

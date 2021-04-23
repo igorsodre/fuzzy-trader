@@ -1,11 +1,8 @@
 using System.Collections.Generic;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace FuzzyTrader.Server.Services
+namespace FuzzyTrader.Server.Services.Iterfaces
 {
     public interface ITokenService
     {

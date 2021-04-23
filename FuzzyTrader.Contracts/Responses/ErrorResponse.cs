@@ -7,11 +7,11 @@ namespace FuzzyTrader.Contracts.Responses
     {
         public ErrorResponse() { }
 
-        public ErrorResponse(string[] errorMessages)
+        public ErrorResponse(IEnumerable<string> errorMessages)
         {
             Errors = new List<ErrorModel>(errorMessages.Select(e => new ErrorModel {Message = e}));
         }
 
-        public List<ErrorModel> Errors { get; set; } = new List<ErrorModel>();
+        public IEnumerable<ErrorModel> Errors { get; set; } = new List<ErrorModel>();
     }
 }

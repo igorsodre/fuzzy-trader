@@ -6,6 +6,7 @@ using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services;
+using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using NSubstitute;

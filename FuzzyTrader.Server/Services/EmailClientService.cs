@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Options;
+using FuzzyTrader.Server.Services.Iterfaces;
 using MailKit.Net.Smtp;
 using MimeKit;
 

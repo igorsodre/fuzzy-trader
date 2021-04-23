@@ -1,11 +1,9 @@
 using System.Threading.Tasks;
-using FuzzyTrader.Contracts.Requests.Account;
-using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
-namespace FuzzyTrader.Server.Services
+namespace FuzzyTrader.Server.Services.Iterfaces
 {
     public interface IAccountService
     {
@@ -16,6 +14,7 @@ namespace FuzzyTrader.Server.Services
         public void Logout(HttpResponse httpResponse);
         public Task<bool> ForgotPasswordAysnc(string email);
         public Task<bool> SendForgotPasswordEmailAsync(string token, DomainUser user);
+        public Task<bool> ResetPasswordAsync(string email, string token, string password);
         public Task<AuthenticationResult> RefreshAccessTokenAsync(string refreshToken);
         public void AddRefreshTokenForUserOnResponse(DomainUser appUser, HttpResponse httpResponse);
         public Task RevokeAllRefreshTokensForUser(string userId);
