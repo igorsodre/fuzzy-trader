@@ -13,9 +13,10 @@ namespace FuzzyTrader.Server.Data
         public DbSet<Investment> Investments { get; set; }
         public DbSet<CryptoCoin> CryptoCoins { get; set; }
 
-        // protected override void OnModelCreating(ModelBuilder builder)
-        // {
-        //     builder.Seed();
-        // }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Seed();
+        }
     }
 }

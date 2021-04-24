@@ -13,6 +13,7 @@
     <ItemGroup>
         <PackageReference Include="AutoMapper" Version="10.1.1" />
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+        <PackageReference Include="CoinAPI.REST.V1" Version="2.0.6" />
         <PackageReference Include="FluentValidation.AspNetCore" Version="10.0.4" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5" />
@@ -33,6 +34,10 @@
 
     <ItemGroup>
         <ProjectReference Include="..\FuzzyTrader.Contracts\FuzzyTrader.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Data\Static" />
     </ItemGroup>
 
 </Project>

@@ -1,20 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using FuzzyTrader.Contracts.Requests.Account;
 using FuzzyTrader.Contracts.Responses;
 using FuzzyTrader.Contracts.Responses.Account;
-using FuzzyTrader.Server.Data;
-using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Options;
-using FuzzyTrader.Server.Services;
 using FuzzyTrader.Server.Services.Iterfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FuzzyTrader.Server.Controllers
 {
@@ -24,16 +16,12 @@ namespace FuzzyTrader.Server.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private readonly UserManager<AppUser> _userManager;
-        private readonly DataContext _dataContext;
+
         private readonly ServerSettings _serverSettings;
 
-        public AccountController(IAccountService accountService, UserManager<AppUser> userManager,
-            DataContext dataContext, ServerSettings serverSettings)
+        public AccountController(IAccountService accountService, ServerSettings serverSettings)
         {
             _accountService = accountService;
-            _userManager = userManager;
-            _dataContext = dataContext;
             _serverSettings = serverSettings;
         }
 
@@ -126,24 +114,6 @@ namespace FuzzyTrader.Server.Controllers
                            $"?token={token}&email={email}";
 
             return Redirect(endpoint);
-        }
-
-        [HttpPost("remove_all_users")]
-        public async Task<ActionResult> RemoveAllUsers()
-        {
-            await using var trasaction = await _dataContext.Database.BeginTransactionAsync();
-
-            var users = await _dataContext.Users.ToListAsync();
-
-            foreach (var user in users)
-            {
-                await _userManager.DeleteAsync(user);
-            }
-
-
-            await trasaction.CommitAsync();
-
-            return Ok(new SuccessResponse<string>("test"));
         }
     }
 }
