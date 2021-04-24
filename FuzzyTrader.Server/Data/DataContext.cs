@@ -1,4 +1,5 @@
 using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.Server.Extensions.Database;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,5 +11,11 @@ namespace FuzzyTrader.Server.Data
 
         public DbSet<Wallet> Wallets { get; set; }
         public DbSet<Investment> Investments { get; set; }
+        public DbSet<CryptoCoin> CryptoCoins { get; set; }
+
+        // protected override void OnModelCreating(ModelBuilder builder)
+        // {
+        //     builder.Seed();
+        // }
     }
 }
