@@ -15,6 +15,7 @@ namespace FuzzyTrader.Server.Controllers
 {
     [ApiController]
     [Route("api/test")]
+    [Produces("application/json")]
     public class TestController : ControllerBase
     {
         private readonly IAccountService _accountService;
