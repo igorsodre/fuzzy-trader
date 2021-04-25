@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -73,7 +74,7 @@ namespace FuzzyTrader.Server.Scripts
             return await response.Content.ReadAsStringAsync();
         }
 
-        private IEnumerable<MarketStackData> CombineMarketResponses(string[] responses)
+        private IEnumerable<MarketStackData> CombineMarketResponses(IEnumerable<string> responses)
         {
             var marketData = new List<MarketStackData>();
             foreach (var response in responses)
@@ -81,16 +82,14 @@ namespace FuzzyTrader.Server.Scripts
                 if (string.IsNullOrEmpty(response)) continue;
                 try
                 {
-                    var marketResponse = JsonSerializer.Deserialize<MartketStackEndOfDayResponse>(response);
+                    var curatedResponse = response.Replace("[],", "");
+                    var marketResponse = JsonSerializer.Deserialize<MartketStackEndOfDayResponse>(curatedResponse);
                     if (marketResponse?.data is {Count: > 0})
                     {
                         marketData.AddRange(marketResponse.data);
                     }
                 }
-                catch
-                {
-                    // ignored
-                }
+                catch { }
             }
 
             return marketData;
