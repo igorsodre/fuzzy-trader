@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,19 +7,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FuzzyTrader.Server.Data.Seeders
 {
-    public class CryptoCoinSeeder : IDatabaseSeeder
+    public class TradeAssetSeeder : IDatabaseSeeder
     {
         public void SeedData(ModelBuilder modelBuilder)
         {
-            var path = Path.Join("Data", "Static", "CryptoCoins.json");
+            var path = Path.Join("Data", "Static", "Trades.json");
             var jsonString = File.ReadAllText(path);
-            var assets = JsonSerializer.Deserialize<List<CryptoCoin>>(jsonString);
-            assets = assets?.Where(c => c.TypeIsCrypto)
-                .ToList();
+            var assets = JsonSerializer.Deserialize<List<TradeAsset>>(jsonString);
 
             if (assets is null) return;
 
-            modelBuilder.Entity<CryptoCoin>()
+            modelBuilder.Entity<TradeAsset>()
                 .HasData(assets);
         }
     }
