@@ -9,6 +9,7 @@ namespace FuzzyTrader.Server.MappingProfiles
         public DatabaseToDomainProfile()
         {
             CreateMap<AppUser, DomainUser>();
+            CreateMap<CryptoCoin, Investment>();
         }
     }
 }

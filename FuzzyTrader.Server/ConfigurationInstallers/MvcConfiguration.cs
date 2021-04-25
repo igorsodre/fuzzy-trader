@@ -16,6 +16,7 @@ namespace FuzzyTrader.Server.ConfigurationInstallers
             var serverSettings = configuration.GetSection("ServerSettings")
                 .Get<ServerSettings>();
 
+
             services.AddSingleton(serverSettings);
             services.AddSingleton<ITokenService, TokenService>();
             services.AddScoped<IAccountService, AccountService>();
