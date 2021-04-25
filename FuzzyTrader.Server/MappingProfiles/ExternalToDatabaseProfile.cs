@@ -1,5 +1,6 @@
 using AutoMapper;
 using CoinAPI.REST.V1;
+using FuzzyTrader.Contracts.External;
 using FuzzyTrader.Server.Data.DbEntities;
 
 namespace FuzzyTrader.Server.MappingProfiles
@@ -25,6 +26,22 @@ namespace FuzzyTrader.Server.MappingProfiles
                 .ForMember(x => x.Volume1DayUsd, opt => opt.MapFrom(asset => asset.volume_1day_usd))
                 .ForMember(x => x.Volume1HrsUsd, opt => opt.MapFrom(asset => asset.volume_1hrs_usd))
                 .ForMember(x => x.Volume1MthUsd, opt => opt.MapFrom(asset => asset.volume_1mth_usd));
+
+            CreateMap<MarketStackData, TradeAsset>()
+                .ForMember(x => x.Close, opt => opt.MapFrom(asset => asset.close))
+                .ForMember(x => x.Date, opt => opt.MapFrom(asset => asset.date))
+                .ForMember(x => x.Exchange, opt => opt.MapFrom(asset => asset.exchange))
+                .ForMember(x => x.High, opt => opt.MapFrom(asset => asset.high))
+                .ForMember(x => x.Low, opt => opt.MapFrom(asset => asset.low))
+                .ForMember(x => x.Open, opt => opt.MapFrom(asset => asset.open))
+                .ForMember(x => x.Symbol, opt => opt.MapFrom(asset => asset.symbol))
+                .ForMember(x => x.Volume, opt => opt.MapFrom(asset => asset.volume))
+                .ForMember(x => x.AdjClose, opt => opt.MapFrom(asset => asset.adj_close))
+                .ForMember(x => x.AdjHigh, opt => opt.MapFrom(asset => asset.adj_high))
+                .ForMember(x => x.AdjLow, opt => opt.MapFrom(asset => asset.adj_low))
+                .ForMember(x => x.AdjOpen, opt => opt.MapFrom(asset => asset.adj_open))
+                .ForMember(x => x.AdjVolume, opt => opt.MapFrom(asset => asset.adj_volume))
+                .ForMember(x => x.SplitFactor, opt => opt.MapFrom(asset => asset.split_factor));
         }
     }
 }

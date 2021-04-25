@@ -1,11 +1,8 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using FuzzyTrader.Contracts.Responses;
 using FuzzyTrader.Server.Data;
 using FuzzyTrader.Server.Data.DbEntities;
-using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Options;
-using FuzzyTrader.Server.Scripts;
 using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -53,8 +50,6 @@ namespace FuzzyTrader.Server.Controllers
         [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
         public async Task<ActionResult> ListInvestmentOption()
         {
-            var generator = new TradeDataGenerator();
-            await generator.GetTradingData("");
             return Ok(new SuccessResponse<string>("OK"));
         }
     }

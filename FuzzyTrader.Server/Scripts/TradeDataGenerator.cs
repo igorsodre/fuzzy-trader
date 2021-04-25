@@ -74,7 +74,7 @@ namespace FuzzyTrader.Server.Scripts
             return await response.Content.ReadAsStringAsync();
         }
 
-        private IEnumerable<MarketStackData> CombineMarketResponses(IEnumerable<string> responses)
+        private IEnumerable<TradeAsset> CombineMarketResponses(IEnumerable<string> responses)
         {
             var marketData = new List<MarketStackData>();
             foreach (var response in responses)
@@ -92,7 +92,7 @@ namespace FuzzyTrader.Server.Scripts
                 catch { }
             }
 
-            return marketData;
+            return _mapper.Map<List<TradeAsset>>(marketData);
         }
     }
 }
