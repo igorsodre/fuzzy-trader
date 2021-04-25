@@ -12,7 +12,7 @@ namespace FuzzyTrader.Server.Data.Seeders
     {
         public void SeedData(ModelBuilder modelBuilder)
         {
-            var path = Path.Join("Data", "Static", "Trades.json");
+            var path = Path.Join("Data", "Static", "CryptoCoins.json");
             var jsonString = File.ReadAllText(path);
             var assets = JsonSerializer.Deserialize<List<CryptoCoin>>(jsonString);
             assets = assets?.Where(c => c.TypeIsCrypto)
