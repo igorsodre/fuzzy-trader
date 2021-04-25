@@ -47,6 +47,14 @@ namespace FuzzyTrader.Server.Scripts
             var result = await coinApiClient.Metadata_list_assetsAsync();
             var mappedResult = _mapper.Map<List<CryptoCoin>>(result);
 
+            if (mappedResult is null) return;
+
+            foreach (var crypto in mappedResult)
+            {
+                crypto.Id = Guid.NewGuid()
+                    .ToString();
+            }
+
             var filePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins.json");
             await using var stream = File.Create(filePath);
             await JsonSerializer.SerializeAsync(stream, mappedResult);
@@ -92,7 +100,50 @@ namespace FuzzyTrader.Server.Scripts
                 catch { }
             }
 
-            return _mapper.Map<List<TradeAsset>>(marketData);
+            var mappedData = _mapper.Map<List<TradeAsset>>(marketData);
+            foreach (var asset in mappedData)
+            {
+                asset.Id = Guid.NewGuid()
+                    .ToString();
+            }
+
+            return mappedData;
+        }
+
+        public async Task ConvertTradeData()
+        {
+            var filePath = Path.Join(_currentDir, "Data", "Static", "Trades.json");
+            var jsonText = await File.ReadAllTextAsync(filePath);
+            var assetList = JsonSerializer.Deserialize<List<TradeAsset>>(jsonText);
+            if (assetList is null) return;
+            foreach (var asset in assetList)
+            {
+                asset.Id = Guid.NewGuid()
+                    .ToString();
+            }
+
+            var writePath = Path.Join(_currentDir, "Data", "Static", "Trades2.json");
+            await using var stream = File.Create(writePath);
+            await JsonSerializer.SerializeAsync(stream, assetList);
+        }
+
+        public async Task ConvertCrypto()
+        {
+            var filePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins.json");
+            var jsonText = await File.ReadAllTextAsync(filePath);
+            var cryptoList = JsonSerializer.Deserialize<List<CryptoCoin>>(jsonText);
+
+            if (cryptoList is null) return;
+
+            foreach (var crypto in cryptoList)
+            {
+                crypto.Id = Guid.NewGuid()
+                    .ToString();
+            }
+
+            var writePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins2.json");
+            await using var stream = File.Create(writePath);
+            await JsonSerializer.SerializeAsync(stream, cryptoList);
         }
     }
 }
