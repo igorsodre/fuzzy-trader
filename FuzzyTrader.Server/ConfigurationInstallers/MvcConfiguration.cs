@@ -20,6 +20,7 @@ namespace FuzzyTrader.Server.ConfigurationInstallers
             services.AddSingleton(serverSettings);
             services.AddSingleton<ITokenService, TokenService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ITradingService, TradingService>();
             services.AddAutoMapper(typeof(Startup));
 
             services.AddCors(options => {

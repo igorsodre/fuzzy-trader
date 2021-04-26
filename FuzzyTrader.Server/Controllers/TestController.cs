@@ -51,9 +51,6 @@ namespace FuzzyTrader.Server.Controllers
         [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
         public async Task<ActionResult> ListInvestmentOption()
         {
-            var generator = new TradeDataGenerator();
-            await generator.ConvertTradeData();
-            await generator.ConvertCrypto();
             return Ok(new SuccessResponse<string>("OK"));
         }
     }
