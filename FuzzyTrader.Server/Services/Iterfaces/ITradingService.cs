@@ -6,6 +6,7 @@ namespace FuzzyTrader.Server.Services.Iterfaces
 {
     public interface ITradingService
     {
-        public Task<IEnumerable<InvestmentOptions>> GetBestTradingOptions(decimal value);
+        public Task<IEnumerable<InvestmentOptions>> GetBestTradingOptionsForAssets(decimal limit);
+        public Task<IEnumerable<InvestmentOptions>> GetBestTradingOptionsForCrypto(decimal limit);
     }
 }

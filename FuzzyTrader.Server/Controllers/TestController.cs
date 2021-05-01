@@ -1,5 +1,9 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using FuzzyTrader.Contracts.Requests.Investment;
 using FuzzyTrader.Contracts.Responses;
+using FuzzyTrader.Contracts.Responses.Investment;
 using FuzzyTrader.Server.Data;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Options;
@@ -16,18 +20,18 @@ namespace FuzzyTrader.Server.Controllers
     [Produces("application/json")]
     public class TestController : ControllerBase
     {
-        private readonly IAccountService _accountService;
         private readonly UserManager<AppUser> _userManager;
         private readonly DataContext _dataContext;
-        private readonly ServerSettings _serverSettings;
+        private readonly ITradingService _tradingService;
+        private readonly IMapper _mapper;
 
-        public TestController(IAccountService accountService,
-            UserManager<AppUser> userManager, DataContext dataContext, ServerSettings serverSettings)
+        public TestController(UserManager<AppUser> userManager, DataContext dataContext, ITradingService tradingService,
+            IMapper mapper)
         {
-            _accountService = accountService;
             _userManager = userManager;
             _dataContext = dataContext;
-            _serverSettings = serverSettings;
+            _tradingService = tradingService;
+            _mapper = mapper;
         }
 
         [HttpPost("remove_all_users")]
@@ -47,11 +51,13 @@ namespace FuzzyTrader.Server.Controllers
             return Ok(new SuccessResponse<string>("test"));
         }
 
-        [HttpGet("list_investment_options")]
-        [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
-        public async Task<ActionResult> ListInvestmentOption()
+        [HttpPost("list_investment_options")]
+        [ProducesResponseType(typeof(SuccessResponse<IEnumerable<GetInvestmentOptionsResponse>>), 200)]
+        public async Task<ActionResult> ListInvestmentOption(GetInvestmentOptionsRequest request)
         {
-            return Ok(new SuccessResponse<string>("OK"));
+            var result = await _tradingService.GetBestTradingOptionsForCrypto(request.Budget);
+            var mappedResutl = _mapper.Map<List<GetInvestmentOptionsResponse>>(result);
+            return Ok(new SuccessResponse<List<GetInvestmentOptionsResponse>>(mappedResutl));
         }
     }
 }
