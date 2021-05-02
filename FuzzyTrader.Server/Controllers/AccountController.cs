@@ -36,7 +36,7 @@ namespace FuzzyTrader.Server.Controllers
                 return BadRequest(new BusinessErrorResponse {Errors = authResponse.ErrorMessages});
             }
 
-            return Ok(new SuccessResponse<string>("OK"));
+            return Ok(SuccessResponse.DefaultOkResponse());
         }
 
         [HttpGet("verify_email")]
@@ -50,7 +50,7 @@ namespace FuzzyTrader.Server.Controllers
                 return BadRequest(new ErrorResponse(new[] {"Failed to verify email"}));
             }
 
-            return Ok(new SuccessResponse<string>("OK"));
+            return Ok(SuccessResponse.DefaultOkResponse());
         }
 
         [HttpPost("login")]
@@ -74,7 +74,7 @@ namespace FuzzyTrader.Server.Controllers
         public IActionResult Logout()
         {
             _accountService.Logout(HttpContext.Response);
-            return Ok(new SuccessResponse<string>("OK"));
+            return Ok(SuccessResponse.DefaultOkResponse());
         }
 
 
@@ -103,7 +103,7 @@ namespace FuzzyTrader.Server.Controllers
 
             if (!sentEmail) return BadRequest(new ErrorResponse(new[] {"Invalid Email"}));
 
-            return Ok(new SuccessResponse<string>("OK"));
+            return Ok(SuccessResponse.DefaultOkResponse());
         }
 
         [HttpGet("reset_password_page")]

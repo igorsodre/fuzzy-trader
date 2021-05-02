@@ -11,4 +11,12 @@ namespace FuzzyTrader.Contracts.Responses
 
         public T Data { get; set; }
     }
+
+    public class SuccessResponse : SuccessResponse<string>
+    {
+        public static SuccessResponse<string> DefaultOkResponse()
+        {
+            return new SuccessResponse<string>("OK");
+        }
+    }
 }
