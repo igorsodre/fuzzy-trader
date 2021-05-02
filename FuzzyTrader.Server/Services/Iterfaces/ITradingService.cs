@@ -8,5 +8,6 @@ namespace FuzzyTrader.Server.Services.Iterfaces
     {
         public Task<IEnumerable<InvestmentOptions>> GetBestTradingOptionsForAssets(decimal limit);
         public Task<IEnumerable<InvestmentOptions>> GetBestTradingOptionsForCrypto(decimal limit);
+        public Task<InvestmentOrderResult> PlaceInvestmentOrder(InvestmentOrder order);
     }
 }
