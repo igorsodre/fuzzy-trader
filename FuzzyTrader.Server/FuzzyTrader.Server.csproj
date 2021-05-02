@@ -38,6 +38,7 @@
 
     <ItemGroup>
       <Folder Include="Data\Static" />
+      <Folder Include="Validators\Investment" />
     </ItemGroup>
 
 </Project>

@@ -1,13 +1,8 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
-using FuzzyTrader.Contracts.Requests.Investment;
 using FuzzyTrader.Contracts.Responses;
-using FuzzyTrader.Contracts.Responses.Investment;
 using FuzzyTrader.Server.Data;
 using FuzzyTrader.Server.Data.DbEntities;
-using FuzzyTrader.Server.Options;
-using FuzzyTrader.Server.Scripts;
 using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -52,12 +47,10 @@ namespace FuzzyTrader.Server.Controllers
         }
 
         [HttpPost("list_investment_options")]
-        [ProducesResponseType(typeof(SuccessResponse<IEnumerable<GetInvestmentOptionsResponse>>), 200)]
-        public async Task<ActionResult> ListInvestmentOption(GetInvestmentOptionsRequest request)
+        [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
+        public async Task<ActionResult> ListInvestmentOption()
         {
-            var result = await _tradingService.GetBestTradingOptionsForCrypto(request.Budget);
-            var mappedResutl = _mapper.Map<List<GetInvestmentOptionsResponse>>(result);
-            return Ok(new SuccessResponse<List<GetInvestmentOptionsResponse>>(mappedResutl));
+            return Ok(new SuccessResponse<string>("OK"));
         }
     }
 }
