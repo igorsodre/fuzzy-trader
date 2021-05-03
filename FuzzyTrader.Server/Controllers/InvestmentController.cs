@@ -5,8 +5,6 @@ using AutoMapper;
 using FuzzyTrader.Contracts.Requests.Investment;
 using FuzzyTrader.Contracts.Responses;
 using FuzzyTrader.Contracts.Responses.Investment;
-using FuzzyTrader.Server.Domain;
-using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Domain.Investment;
 using FuzzyTrader.Server.Extensions;
 using FuzzyTrader.Server.Services.Iterfaces;
@@ -32,6 +30,7 @@ namespace FuzzyTrader.Server.Controllers
 
         [HttpGet("get_investments")]
         [ProducesResponseType(typeof(SuccessResponse<IEnumerable<GetUserInvestmentsResponse>>), 200)]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<IActionResult> GetInvestments()
         {
             var result = await _tradingService.GetUserInvestments(HttpContext.GetUserId());
