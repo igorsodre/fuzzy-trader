@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace FuzzyTrader.Server.Domain
+namespace FuzzyTrader.Server.Domain.Investment
 {
     public class InvestmentOptions
     {

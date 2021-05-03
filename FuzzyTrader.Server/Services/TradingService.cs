@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using FuzzyTrader.Server.Data;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
+using FuzzyTrader.Server.Domain.Entities;
+using FuzzyTrader.Server.Domain.Investment;
 using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,11 +18,36 @@ namespace FuzzyTrader.Server.Services
     {
         private readonly DataContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public TradingService(DataContext context, UserManager<AppUser> userManager)
+        public TradingService(DataContext context, UserManager<AppUser> userManager, IMapper mapper)
         {
             _context = context;
             _userManager = userManager;
+            _mapper = mapper;
+        }
+
+        public async Task<UserInvestmentsResult> GetUserInvestments(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                return new UserInvestmentsResult
+                {
+                    Errors = new[] {"Invalid user."}
+                };
+            }
+
+            var investments = await _context.Investments.Include(i => i.Wallet)
+                .Where(i => i.Wallet.UserId == userId)
+                .Select(i => _mapper.Map<DomainInvestment>(i))
+                .ToListAsync();
+
+            return new UserInvestmentsResult
+            {
+                Success = true,
+                Investments = investments
+            };
         }
 
         public async Task<IEnumerable<InvestmentOptions>> GetBestTradingOptionsForAssets(decimal limit)

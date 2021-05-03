@@ -1,4 +1,4 @@
-namespace FuzzyTrader.Server.Domain
+namespace FuzzyTrader.Server.Domain.Investment
 {
     public class InvestmentOrder
     {
