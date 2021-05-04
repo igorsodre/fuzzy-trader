@@ -54,9 +54,9 @@ export const useHttp = (): HttpService => {
   const [isLoadding, setIsloading] = useState(false);
   const activeHttpRequests = useRef<CancelTokenSource[]>([]);
 
-  const clearError: HttpService['clearError'] = __(() => {
+  const clearError: HttpService['clearError'] = () => {
     setErrorText('');
-  });
+  };
 
   const getCancelTokenSource = () => {
     const cancelToken = axios.CancelToken.source();
@@ -125,33 +125,25 @@ export const useHttp = (): HttpService => {
     }
   };
 
-  const get = __(
-    async <T>(endpoint: string): Promise<T> => {
-      const result = await request<T>(endpoint, 'GET');
-      return result;
-    },
-  );
+  const get = async <T>(endpoint: string): Promise<T> => {
+    const result = await request<T>(endpoint, 'GET');
+    return result;
+  };
 
-  const post = __(
-    async <T>(endpoint: string, body: unknown): Promise<T> => {
-      const result = await request<T>(endpoint, 'POST', body);
-      return result;
-    },
-  );
+  const post = async <T>(endpoint: string, body: unknown): Promise<T> => {
+    const result = await request<T>(endpoint, 'POST', body);
+    return result;
+  };
 
-  const patch: HttpService['patch'] = __(
-    async <T>(endpoint: string, body: unknown): Promise<T> => {
-      const result = await request<T>(endpoint, 'PATCH', body);
-      return result;
-    },
-  );
+  const patch: HttpService['patch'] = async <T>(endpoint: string, body: unknown): Promise<T> => {
+    const result = await request<T>(endpoint, 'PATCH', body);
+    return result;
+  };
 
-  const _delete: HttpService['_delete'] = __(
-    async <T>(endpoint: string): Promise<T> => {
-      const result = await request<T>(endpoint, 'DELETE');
-      return result;
-    },
-  );
+  const _delete: HttpService['_delete'] = async <T>(endpoint: string): Promise<T> => {
+    const result = await request<T>(endpoint, 'DELETE');
+    return result;
+  };
 
   useEffect(() => {
     const { current } = activeHttpRequests;
@@ -165,10 +157,10 @@ export const useHttp = (): HttpService => {
   return {
     errorText,
     isLoadding,
-    clearError,
-    get,
-    post,
-    patch,
-    _delete,
+    clearError: __(clearError),
+    get: __(get),
+    post: __(post),
+    patch: __(patch),
+    _delete: __(_delete),
   };
 };
