@@ -9,6 +9,7 @@ export interface IAppContext {
   currentUser: Nullable<AppUser>;
   setCurrentUser: (user: AppUser) => void;
   wholeAppIsLoading: boolean;
+  onRouteChange: (pathName?: string) => void;
 }
 
 const AppContext = createContext<IAppContext | Record<string, unknown>>({});
@@ -28,6 +29,10 @@ const AppContextProvider: React.FC = (props) => {
     }
   }, [doLogout]);
 
+  const onRouteChange = (pathName?: string) => {
+    console.log('Changed route: ' + pathName);
+  };
+
   useEffect(() => {
     refreshToken()
       .then((res) => {
@@ -43,7 +48,11 @@ const AppContextProvider: React.FC = (props) => {
   }, [refreshToken]);
 
   return (
-    <AppContext.Provider value={{ token, logout, setAccessToken, currentUser, setCurrentUser, wholeAppIsLoading }}>
+    <AppContext.Provider
+      value={
+        { token, logout, setAccessToken, currentUser, setCurrentUser, wholeAppIsLoading, onRouteChange } as IAppContext
+      }
+    >
       {props.children}
     </AppContext.Provider>
   );
