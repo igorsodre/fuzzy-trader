@@ -73,7 +73,7 @@ namespace FuzzyTrader.Server.Controllers
             var responseUser = _mapper.Map<ResponseUser>(authResponse.User);
 
             return Ok(new SuccessResponse<LoginResponse>(new LoginResponse
-                {Token = authResponse.Token, User = responseUser}));
+                {AccessToken = authResponse.Token, User = responseUser}));
         }
 
         [HttpPost("logout")]
@@ -86,7 +86,7 @@ namespace FuzzyTrader.Server.Controllers
 
 
         [HttpPost("refresh_token")]
-        [ProducesResponseType(typeof(SuccessResponse<RefreshResponse>), 200)]
+        [ProducesResponseType(typeof(SuccessResponse<RefreshTokenResponse>), 200)]
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<IActionResult> RefreshToken()
         {
@@ -98,7 +98,7 @@ namespace FuzzyTrader.Server.Controllers
                 return BadRequest(new ErrorResponse(result.ErrorMessages.ToArray()));
             }
 
-            return Ok(new SuccessResponse<RefreshResponse>(new RefreshResponse {AccessToken = result.Token}));
+            return Ok(new SuccessResponse<RefreshTokenResponse>(new RefreshTokenResponse {AccessToken = result.Token}));
         }
 
         [HttpPost("forgot_password")]

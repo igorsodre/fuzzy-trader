@@ -9,7 +9,7 @@ namespace FuzzyTrader.Server.SwaggerExamples.Responses
         {
             return new LoginResponse
             {
-                Token = "A_VALID_JWT_TOKEN"
+                AccessToken = "A_VALID_JWT_TOKEN"
             };
         }
     }

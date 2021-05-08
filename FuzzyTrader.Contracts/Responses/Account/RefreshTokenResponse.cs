@@ -1,6 +1,6 @@
 namespace FuzzyTrader.Contracts.Responses.Account
 {
-    public class RefreshResponse
+    public class RefreshTokenResponse
     {
         public string AccessToken { get; set; }
     }
