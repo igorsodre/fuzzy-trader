@@ -33,12 +33,10 @@ namespace FuzzyTrader.Server
             }
 
             app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
-
-            app.UseRouting();
-
-            app.UseCors();
 
             app.UseAuthorization();
 

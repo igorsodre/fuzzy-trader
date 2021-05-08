@@ -27,7 +27,8 @@ namespace FuzzyTrader.Server.ConfigurationInstallers
                 options.AddDefaultPolicy(policyBuilder => {
                     policyBuilder.WithOrigins(serverSettings.ClientUrl)
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
             });
 
