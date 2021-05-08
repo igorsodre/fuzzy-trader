@@ -72,7 +72,7 @@ export const useHttp = (): HttpService => {
     let accessToken = '';
     const tokenSource = getCancelTokenSource();
     try {
-      const endpoint = GET_BASE_URL() + '/api/users/refresh_token';
+      const endpoint = GET_BASE_URL() + '/api/account/refresh_token';
       const result = await axios.post<{ data: { accessToken: string } }>(endpoint, null, {
         cancelToken: tokenSource.token,
         withCredentials: true,
@@ -120,8 +120,8 @@ export const useHttp = (): HttpService => {
       setErrorText(err.message);
       throw err;
     } finally {
-      removeCancelTokenSource(tokenSource);
       setIsloading(false);
+      removeCancelTokenSource(tokenSource);
     }
   };
 
@@ -146,13 +146,13 @@ export const useHttp = (): HttpService => {
   };
 
   useEffect(() => {
-    const { current } = activeHttpRequests;
     return () => {
+      const { current } = activeHttpRequests;
       current.forEach((t) => {
-        t.cancel('Unmouting component');
+        t.cancel();
       });
     };
-  });
+  }, []);
 
   return {
     errorText,

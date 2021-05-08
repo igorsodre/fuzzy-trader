@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { IUser } from '../../data/models/user-interface';
+import { AppUser } from '../../data/models/user-interface';
 import { useAuth } from '../../hooks/auth-service';
 import './Home.scss';
 
 const Home: React.FC = (props) => {
-  const [user, setUser] = useState<Nullable<IUser>>(null);
+  const [user, setUser] = useState<Nullable<AppUser>>(null);
   const { getLoggedUser } = useAuth();
   const handleClick = async () => {
     try {

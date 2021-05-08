@@ -1,13 +1,13 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../hooks/auth-service';
-import { IUser } from './models/user-interface';
+import { AppUser } from './models/user-interface';
 
 export interface IAppContext {
   logout: () => void;
   setAccessToken: (token: string) => void;
   token: Nullable<string>;
-  currentUser: Nullable<IUser>;
-  setCurrentUser: (user: IUser) => void;
+  currentUser: Nullable<AppUser>;
+  setCurrentUser: (user: AppUser) => void;
   wholeAppIsLoading: boolean;
 }
 
@@ -15,7 +15,7 @@ const AppContext = createContext<IAppContext | Record<string, unknown>>({});
 
 const AppContextProvider: React.FC = (props) => {
   const [token, setAccessToken] = useState<Nullable<string>>(null);
-  const [currentUser, setCurrentUser] = useState<Nullable<IUser>>();
+  const [currentUser, setCurrentUser] = useState<Nullable<AppUser>>();
   const { refreshToken, logout: doLogout } = useAuth();
   const [wholeAppIsLoading, setWholeAppIsLoading] = useState(true);
 
