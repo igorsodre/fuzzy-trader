@@ -35,6 +35,7 @@ namespace FuzzyTrader.Tests.UnitTests
         public async Task RegisterAsync_ShouldReturAccessToken_WhenValidUserAndPassword()
         {
             // Setup
+            var name = "test name";
             var email = "test@email.com";
             var password = "Test123$";
             var testToken = "testToken";
@@ -53,7 +54,7 @@ namespace FuzzyTrader.Tests.UnitTests
                 .Returns(testToken);
 
             // Action
-            var result = await _sut.RegisterAsync(email, password);
+            var result = await _sut.RegisterAsync(name, email, password);
 
             // Verify
             result.Success.Should()
