@@ -1,1 +1,1 @@
-export const GET_BASE_URL = (): string => 'http://localhost:5000';
+export const GET_BASE_URL = (): string => 'https://localhost:5001';
