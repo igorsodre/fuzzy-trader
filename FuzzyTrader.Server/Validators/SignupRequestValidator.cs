@@ -7,9 +7,21 @@ namespace FuzzyTrader.Server.Validators
     {
         public SignupRequestValidator()
         {
-            RuleFor(x => x.Email).NotEmpty().EmailAddress();
+            RuleFor(x => x.Email)
+                .NotEmpty()
+                .EmailAddress();
 
-            RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
+            RuleFor(x => x.Name)
+                .NotEmpty()
+                .MinimumLength(2);
+
+            RuleFor(x => x.Password)
+                .NotEmpty()
+                .MinimumLength(6);
+
+            RuleFor(x => x.ConfirmedPassword)
+                .NotEmpty()
+                .Equal(x => x.Password);
         }
     }
 }

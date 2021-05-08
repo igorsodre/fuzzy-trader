@@ -1,4 +1,5 @@
 using AutoMapper;
+using FuzzyTrader.Contracts.Objects;
 using FuzzyTrader.Contracts.Responses.Investment;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Entities;
@@ -12,6 +13,7 @@ namespace FuzzyTrader.Server.MappingProfiles
         {
             CreateMap<InvestmentOptions, GetInvestmentOptionsResponse>();
             CreateMap<DomainInvestment, GetUserInvestmentsResponse>();
+            CreateMap<DomainUser, ResponseUser>();
         }
     }
 }

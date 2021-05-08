@@ -31,7 +31,7 @@ namespace FuzzyTrader.Server.Services
         }
 
 
-        public async Task<AuthenticationResult> RegisterAsync(string email, string password)
+        public async Task<AuthenticationResult> RegisterAsync(string name, string email, string password)
         {
             var existingUser = await _userManager.FindByEmailAsync(email);
 
@@ -40,7 +40,7 @@ namespace FuzzyTrader.Server.Services
                 return new AuthenticationResult {ErrorMessages = new[] {"Email aready taken"}};
             }
 
-            var user = new AppUser() {Email = email, UserName = email, TokenVersion = 1};
+            var user = new AppUser() {Name = name, Email = email, UserName = email, TokenVersion = 1};
 
             var createdUser = await _userManager.CreateAsync(user, password);
 

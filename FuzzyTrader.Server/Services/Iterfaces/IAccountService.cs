@@ -7,7 +7,7 @@ namespace FuzzyTrader.Server.Services.Iterfaces
 {
     public interface IAccountService
     {
-        public Task<AuthenticationResult> RegisterAsync(string email, string password);
+        public Task<AuthenticationResult> RegisterAsync(string name, string email, string password);
         public Task<bool> SendVerificationEmailAsync(string token, DomainUser user);
         public Task<bool> VerifyEmailAsync(string token, string email);
         public Task<AuthenticationResult> LoginAsync(string email, string password);

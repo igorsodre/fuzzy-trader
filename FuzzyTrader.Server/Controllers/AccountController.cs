@@ -1,5 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using FuzzyTrader.Contracts.Objects;
 using FuzzyTrader.Contracts.Requests.Account;
 using FuzzyTrader.Contracts.Responses;
 using FuzzyTrader.Contracts.Responses.Account;
@@ -16,13 +18,15 @@ namespace FuzzyTrader.Server.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly IMapper _mapper;
 
         private readonly ServerSettings _serverSettings;
 
-        public AccountController(IAccountService accountService, ServerSettings serverSettings)
+        public AccountController(IAccountService accountService, ServerSettings serverSettings, IMapper mapper)
         {
             _accountService = accountService;
             _serverSettings = serverSettings;
+            _mapper = mapper;
         }
 
         [HttpPost("signup")]
@@ -30,7 +34,7 @@ namespace FuzzyTrader.Server.Controllers
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<ActionResult> Signup(SignupRequest request)
         {
-            var authResponse = await _accountService.RegisterAsync(request.Email, request.Password);
+            var authResponse = await _accountService.RegisterAsync(request.Name, request.Email, request.Password);
             if (!authResponse.Success)
             {
                 return BadRequest(new BusinessErrorResponse {Errors = authResponse.ErrorMessages});
@@ -66,7 +70,10 @@ namespace FuzzyTrader.Server.Controllers
 
             _accountService.AddRefreshTokenForUserOnResponse(authResponse.User, HttpContext.Response);
 
-            return Ok(new SuccessResponse<LoginResponse>(new LoginResponse {Token = authResponse.Token}));
+            var responseUser = _mapper.Map<ResponseUser>(authResponse.User);
+
+            return Ok(new SuccessResponse<LoginResponse>(new LoginResponse
+                {Token = authResponse.Token, User = responseUser}));
         }
 
         [HttpPost("logout")]
