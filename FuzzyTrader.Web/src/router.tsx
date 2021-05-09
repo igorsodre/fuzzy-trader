@@ -21,7 +21,7 @@ const RouteList: React.FC = () => {
   const location = useLocation();
   const ctx = useContext(AppContext) as IAppContext;
   useEffect(() => {
-    ctx.onRouteChange(location.pathname);
+    ctx.actions.onRouteChange();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 

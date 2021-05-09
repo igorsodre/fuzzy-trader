@@ -25,8 +25,8 @@ const LoginPage: React.FC<RouteComponentProps> = (props) => {
     try {
       const result = await login(email, password);
       reset();
-      ctx.setAccessToken(result.accessToken);
-      ctx.setCurrentUser(result.user);
+      ctx.actions.setAccessToken(result.accessToken);
+      ctx.actions.setCurrentUser(result.user);
       props.history.replace('/home');
     } catch (err) {
       console.log(err);

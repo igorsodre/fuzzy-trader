@@ -1,12 +1,14 @@
 import { AppUser } from './../data/models/user-interface';
 import { GET_BASE_URL } from './../data/constants';
 import { useHttp, __ } from './base.http';
+import { LoginResponse, RefreshTokenResponse } from '../data/contracts/responses/account';
+import { SuccessResponse } from '../data/contracts/responses/default-responses';
 
-type AuthService = {
+export type AuthService = {
   errorText: Nullable<string>;
   isLoadding: boolean;
   clearError: () => void;
-  refreshToken: () => Promise<{ accessToken: string; user: AppUser }>;
+  refreshToken: () => Promise<RefreshTokenResponse>;
   register: (name: string, email: string, password: string) => Promise<string>;
   updateUser: (name: string, email: string, password: string, newpassword: string) => Promise<AppUser>;
   login: (
@@ -49,18 +51,18 @@ export const useAuth = (): AuthService => {
       email,
       password,
     };
-    return post<{ data: { accessToken: string; user: AppUser } }>(endpoint, body).then((res) => res.data);
+    return post<SuccessResponse<LoginResponse>>(endpoint, body).then((res) => res.data);
   };
 
   const logout: AuthService['logout'] = async () => {
     const endpoint = GET_BASE_URL() + '/api/account/logout';
 
-    return post<{ data: string }>(endpoint, {}).then((res) => res.data);
+    return post<SuccessResponse<string>>(endpoint, {}).then((res) => res.data);
   };
 
   const refreshToken: AuthService['refreshToken'] = async () => {
     const endpoint = GET_BASE_URL() + '/api/account/refresh_token';
-    return post<{ data: { accessToken: string; user: AppUser } }>(endpoint, {}).then((res) => res.data);
+    return post<SuccessResponse<RefreshTokenResponse>>(endpoint, {}).then((res) => res.data);
   };
 
   const getLoggedUser: AuthService['getLoggedUser'] = async () => {

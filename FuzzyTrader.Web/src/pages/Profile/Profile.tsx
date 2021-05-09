@@ -16,7 +16,12 @@ interface FormInputs {
 const Profile: React.FC<RouteComponentProps> = (props) => {
   const ctx = useContext(AppContext) as IAppContext;
   const { register, handleSubmit, formState, errors, reset } = useForm<FormInputs>({
-    defaultValues: { email: ctx.currentUser?.email, name: ctx.currentUser?.name, password: '', newpassword: '' },
+    defaultValues: {
+      email: ctx.state.currentUser?.email,
+      name: ctx.state.currentUser?.name,
+      password: '',
+      newpassword: '',
+    },
     mode: 'onChange',
   });
   const { isValid } = formState;
@@ -24,12 +29,11 @@ const Profile: React.FC<RouteComponentProps> = (props) => {
   const { updateUser } = useAuth();
 
   const submithandler = async (data: FormInputs) => {
-    console.log('clicked update');
     const { name, email, password, newpassword } = data;
     try {
       const result = await updateUser(name, email, password, newpassword);
       reset();
-      ctx.setCurrentUser(result);
+      ctx.actions.setCurrentUser(result);
       props.history.replace('/home');
     } catch (err) {
       console.log(err);

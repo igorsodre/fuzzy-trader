@@ -7,10 +7,10 @@ const NavBar: React.FC = (props) => {
 
   const logoutHandler = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     event.preventDefault();
-    ctx.logout();
+    ctx.actions.logout();
   };
 
-  const displyedNavLinks = !ctx?.token ? (
+  const displyedNavLinks = !ctx?.state.token ? (
     <React.Fragment>
       <li className="nav-item">
         <Link className="nav-link" to="/login">
@@ -27,7 +27,7 @@ const NavBar: React.FC = (props) => {
     <React.Fragment>
       <li className="nav-item">
         <a className="nav-link disabled" href="/">
-          Logged in as: {ctx.currentUser?.name}
+          Logged in as: {ctx.state.currentUser?.name}
         </a>
       </li>
       <li className="nav-item">

@@ -49,7 +49,10 @@ type HttpService = {
 };
 
 export const useHttp = (): HttpService => {
-  const { token, setAccessToken } = useContext(AppContext) as IAppContext;
+  const {
+    actions: { setAccessToken },
+    state: { token },
+  } = useContext(AppContext) as IAppContext;
   const [errorText, setErrorText] = useState<Nullable<string>>();
   const [isLoadding, setIsloading] = useState(false);
   const activeHttpRequests = useRef<CancelTokenSource[]>([]);

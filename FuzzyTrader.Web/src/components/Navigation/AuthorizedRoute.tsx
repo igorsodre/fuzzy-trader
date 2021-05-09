@@ -1,12 +1,12 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { AppContext } from '../../data/app-context';
+import { AppContext, IAppContext } from '../../data/app-context';
 
 class AuthorizedRoute extends Route {
   static contextType = AppContext;
-  context!: React.ContextType<typeof AppContext>;
+  context!: IAppContext;
   render(): React.ReactNode {
-    if (!this.context?.token) return <Redirect to="/login" />;
+    if (!this.context.state.token) return <Redirect to="/login" />;
     else return super.render();
   }
 }
