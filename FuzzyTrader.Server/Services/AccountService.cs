@@ -191,7 +191,7 @@ namespace FuzzyTrader.Server.Services
             var domainUser = _mapper.Map<DomainUser>(user);
             var newAccessToken = _tokenService.CreateAccessToken(domainUser);
 
-            return new AuthenticationResult {Token = newAccessToken, Success = true};
+            return new AuthenticationResult {Token = newAccessToken, Success = true, User = domainUser};
         }
 
         public void AddRefreshTokenForUserOnResponse(DomainUser appUser, HttpResponse httpResponse)
