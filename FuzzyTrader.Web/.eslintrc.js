@@ -26,6 +26,7 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 1,
     '@typescript-eslint/no-empty-interface': 1,
     'react/prop-types': 0,
+    'react-hooks/exhaustive-deps': 0,
     // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
   },
