@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useReducer } from 'react';
+import { useAuth } from '../hooks/auth-service';
 import {
   actionFactory,
   ApplicationActions,
@@ -6,7 +7,6 @@ import {
   APP_INITIAL_STATE,
   globalReducer,
 } from './application-reducer';
-import { useAuth } from '../hooks/auth-service';
 
 export interface IAppContext {
   state: ApplicationState;

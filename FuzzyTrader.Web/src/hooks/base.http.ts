@@ -24,7 +24,8 @@ axios.interceptors.response.use(undefined, function (error: AxiosError) {
       return JSON.stringify(error.response.data.message);
     },
   });
-  return Promise.reject(error);
+  if (!error.response) return Promise.reject({ errors: [{ message: error.message }] });
+  return Promise.reject(error.response?.data);
 });
 
 const isValidToken = (token: Nullable<string>): boolean => {
