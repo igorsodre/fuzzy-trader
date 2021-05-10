@@ -3,13 +3,14 @@ import { GET_BASE_URL } from './../data/constants';
 import { useHttp, __ } from './base.http';
 import { LoginResponse, RefreshTokenResponse } from '../data/contracts/responses/account';
 import { SuccessResponse } from '../data/contracts/responses/default-responses';
+import { SignupRequest } from '../data/contracts/requests/account';
 
 export type AuthService = {
   errorText: Nullable<string>;
   isLoadding: boolean;
   clearError: () => void;
   refreshToken: () => Promise<RefreshTokenResponse>;
-  register: (name: string, email: string, password: string) => Promise<string>;
+  register: (name: string, email: string, password: string, confirmedPassword: string) => Promise<string>;
   updateUser: (name: string, email: string, password: string, newpassword: string) => Promise<AppUser>;
   login: (
     email: string,
@@ -24,14 +25,15 @@ export type AuthService = {
 export const useAuth = (): AuthService => {
   const { errorText, isLoadding, clearError, post, get } = useHttp();
 
-  const register: AuthService['register'] = async (name, email, password) => {
+  const register: AuthService['register'] = async (name, email, password, confirmedPassword) => {
     const endpoint = GET_BASE_URL() + '/api/account/signup';
-    const body = {
+    const body: SignupRequest = {
       name,
       email,
       password,
+      confirmedPassword,
     };
-    return post<{ data: string }>(endpoint, body).then((res) => res.data);
+    return post<SuccessResponse<string>>(endpoint, body).then((res) => res.data);
   };
 
   const updateUser: AuthService['updateUser'] = async (name, email, password, newpassword) => {
@@ -42,7 +44,7 @@ export const useAuth = (): AuthService => {
       password,
       newpassword,
     };
-    return post<{ data: AppUser }>(endpoint, body).then((res) => res.data);
+    return post<SuccessResponse<AppUser>>(endpoint, body).then((res) => res.data);
   };
 
   const login: AuthService['login'] = async (email, password) => {
@@ -68,7 +70,7 @@ export const useAuth = (): AuthService => {
   const getLoggedUser: AuthService['getLoggedUser'] = async () => {
     const endpoint = GET_BASE_URL() + '/api/account';
 
-    return get<{ data: AppUser }>(endpoint).then((res) => res.data);
+    return get<SuccessResponse<AppUser>>(endpoint).then((res) => res.data);
   };
 
   return {

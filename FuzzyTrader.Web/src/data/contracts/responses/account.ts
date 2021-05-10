@@ -9,7 +9,3 @@ export interface RefreshTokenResponse {
   accessToken: string;
   user: AppUser;
 }
-
-export interface SignupResponse {
-  accessToken: string;
-}

@@ -9,11 +9,12 @@ interface FormInputs {
   name: string;
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
 const Signup: React.FC<RouteComponentProps> = (props) => {
-  const { register, handleSubmit, formState, errors, reset } = useForm<FormInputs>({
-    defaultValues: { email: '', name: '', password: '' },
+  const { register, handleSubmit, formState, errors, reset, getValues } = useForm<FormInputs>({
+    defaultValues: { email: '', name: '', password: '', confirmPassword: '' },
     mode: 'onChange',
   });
   const { isValid } = formState;
@@ -21,11 +22,10 @@ const Signup: React.FC<RouteComponentProps> = (props) => {
   const { register: signup } = useAuth();
 
   const submithandler = async (data: FormInputs) => {
-    const { name, email, password } = data;
+    const { name, email, password, confirmPassword } = data;
     try {
-      const result = await signup(name, email, password);
+      await signup(name, email, password, confirmPassword);
       reset();
-      console.log(result);
       props.history.replace('/login');
     } catch (err) {
       console.log(err);
@@ -40,14 +40,14 @@ const Signup: React.FC<RouteComponentProps> = (props) => {
         <AppInput
           label="Full Name"
           register={register({
-            required: true,
+            minLength: 2,
           })}
           name="name"
           type="text"
           className="form-control"
           placeholder="Full Name"
           haserror={!!errors.name}
-          errortext="Name is required"
+          errortext="Minimum length for name: 2"
         />
 
         <AppInput
@@ -69,13 +69,26 @@ const Signup: React.FC<RouteComponentProps> = (props) => {
 
         <AppInput
           label="Password"
-          register={register({ minLength: 4 })}
+          register={register({ minLength: 6 })}
           name="password"
           type="password"
           className="form-control"
           placeholder="Enter password"
           haserror={!!errors.password}
-          errortext="Minimum length for password: 4"
+          errortext="Minimum length for password: 6"
+        />
+
+        <AppInput
+          label="Confirm password"
+          register={register({
+            validate: (value) => value === getValues('password'),
+          })}
+          name="confirmPassword"
+          type="password"
+          className="form-control"
+          placeholder="repeat password"
+          haserror={!!errors.confirmPassword}
+          errortext="Value does not match with inserted password"
         />
 
         <button disabled={!isValid} type="submit" className="btn btn-dark btn-lg btn-block">
