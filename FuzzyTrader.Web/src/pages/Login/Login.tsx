@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { RouteComponentProps } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import AppInput from '../../components/FormElements/AppInput';
 import MainContainer from '../../components/UiElements/MainContainer';
 import { AppContext, IAppContext } from '../../data/app-context';
@@ -68,9 +68,9 @@ const LoginPage: React.FC<RouteComponentProps> = (props) => {
         <button disabled={!isValid} type="submit" className="btn btn-dark btn-lg btn-block">
           Sign in
         </button>
-        {/* <p className="forgot-password text-right">
-          Forgot <Link to="/">password?</Link>
-        </p> */}
+        <p className="forgot-password text-right">
+          Forgot <Link to="/forgot_password">password?</Link>
+        </p>
       </form>
     </MainContainer>
   );

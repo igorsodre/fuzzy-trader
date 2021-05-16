@@ -4,9 +4,11 @@ import AuthorizedRoute from './components/Navigation/AuthorizedRoute';
 import NavBar from './components/Navigation/Navbar';
 import MessagesContainer from './components/UiElements/MessagesContainer';
 import { AppContext, IAppContext } from './data/app-context';
+import ForgotPassword from './pages/ForgotPassword';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
+import ResetPassword from './pages/ResetPassword';
 import Signup from './pages/Signup';
 import Startup from './pages/Startup';
 
@@ -33,6 +35,8 @@ const RouteList: React.FC = () => {
         <Route path="/" component={Startup} exact />
         <Route path="/signup" component={Signup} exact />
         <Route path="/login" component={Login} exact />
+        <Route path="/forgot_password" component={ForgotPassword} exact />
+        <Route path="/reset_password" component={ResetPassword} exact />
         <AuthorizedRoute path="/home" component={Home} exact />
         <AuthorizedRoute path="/profile" component={Profile} exact />
         <Redirect to="/" />
