@@ -37,8 +37,6 @@ const isValidToken = (token: Nullable<string>): boolean => {
 
 export const __ = <T extends (...args: never[]) => unknown>(callBack: T): T => useCallback(callBack, []);
 
-type TObjectMap = { [key: string]: string };
-
 type HttpService = {
   errorText: Nullable<string>;
   isLoadding: boolean;
@@ -93,7 +91,7 @@ export const useHttp = (): HttpService => {
 
   const getAuthHeader = async () => {
     let accessToken = token;
-    const header: TObjectMap = {};
+    const header: Record<string, string> = {};
     if (token && !isValidToken(accessToken)) {
       accessToken = await getAccessToken();
     }
@@ -105,7 +103,7 @@ export const useHttp = (): HttpService => {
     endpoint: string,
     method: Method,
     body: Nullable<unknown> = null,
-    headers: TObjectMap = {},
+    headers: Record<string, string> = {},
   ): Promise<T> => {
     setIsloading(true);
     const tokenSource = getCancelTokenSource();
