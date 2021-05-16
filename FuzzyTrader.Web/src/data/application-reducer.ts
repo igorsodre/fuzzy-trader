@@ -25,6 +25,7 @@ export interface ApplicationActions {
   addErrorMessage: (message: string) => void;
   addInfoMessage: (message: string) => void;
   addWarningMessage: (message: string) => void;
+  removeMessage: (message: AppMessage) => void;
 }
 
 export enum ApplicationActionType {
@@ -37,6 +38,7 @@ export enum ApplicationActionType {
   ADD_ERROR_MESSAGE,
   ADD_INFO_MESSAGE,
   ADD_WARNING_MESSAGE,
+  REMOVE_MESSAGE,
 }
 
 type TReducer<T = any> = (state: ApplicationState, action: ApplicationAction<T>) => ApplicationState;
@@ -110,6 +112,12 @@ const addWarningMessageReducer: TReducer<string> = (state, action) => {
   return newState;
 };
 
+const removeMessageReducer: TReducer<AppMessage> = (state, action) => {
+  const newState = R.clone(state);
+  newState.appMessages = newState.appMessages.filter((m) => m !== action.payload);
+  return newState;
+};
+
 const logout = (dispatch: React.Dispatch<ApplicationAction>, authService: AuthService) => {
   return async () => {
     await authService.logout();
@@ -172,6 +180,12 @@ const addWarningMessage = (dispatch: React.Dispatch<ApplicationAction<string>>) 
   };
 };
 
+const removeMessage = (dispatch: React.Dispatch<ApplicationAction<AppMessage>>) => {
+  return (message: AppMessage) => {
+    dispatch({ type: ApplicationActionType.REMOVE_MESSAGE, payload: message });
+  };
+};
+
 export const actionFactory = (
   dispatcher: React.Dispatch<ApplicationAction<any>>,
   authService: AuthService,
@@ -187,6 +201,7 @@ export const actionFactory = (
     addErrorMessage: addErrorMessage(dispatcher),
     addInfoMessage: addInfoMessage(dispatcher),
     addWarningMessage: addWarningMessage(dispatcher),
+    removeMessage: removeMessage(dispatcher),
   };
 };
 
@@ -210,6 +225,8 @@ export const globalReducer: TReducer = (state, action) => {
       return addInfoMessageReducer(state, action);
     case ApplicationActionType.ADD_WARNING_MESSAGE:
       return addWarningMessageReducer(state, action);
+    case ApplicationActionType.REMOVE_MESSAGE:
+      return removeMessageReducer(state, action);
     default:
       return state;
   }

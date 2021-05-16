@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import AuthorizedRoute from './components/Navigation/AuthorizedRoute';
 import NavBar from './components/Navigation/Navbar';
+import MessagesContainer from './components/UiElements/MessagesContainer';
 import { AppContext, IAppContext } from './data/app-context';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -22,12 +23,12 @@ const RouteList: React.FC = () => {
   const ctx = useContext(AppContext) as IAppContext;
   useEffect(() => {
     ctx.actions.onRouteChange();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   return (
     <div className="App">
       <NavBar />
+      <MessagesContainer />
       <Switch>
         <Route path="/" component={Startup} exact />
         <Route path="/signup" component={Signup} exact />

@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import AppInput from '../../components/FormElements/AppInput';
-import MainContainer from '../../components/UiContainers/MainContainer';
+import MainContainer from '../../components/UiElements/MainContainer';
 import { useAuth } from '../../hooks/auth-service';
 
 interface FormInputs {
