@@ -32,8 +32,10 @@ namespace FuzzyTrader.Server.Services
             _defaultCookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Path = "/refresh",
-                Expires = DateTime.UtcNow.AddDays(7)
+                Path = "/api/account/refresh_token",
+                Expires = DateTime.UtcNow.AddDays(7),
+                SameSite = SameSiteMode.None,
+                Secure = false
             };
         }
 
