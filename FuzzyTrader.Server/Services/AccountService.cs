@@ -66,7 +66,7 @@ namespace FuzzyTrader.Server.Services
             var endpoint =
                 $"{_serverSettings.BaseUrl}/api/account/verify_email?token={encodedToken}&email={encodedEmail}";
 
-            var messageText = $"<p><a href='{endpoint} target='_blank'>Click here</a> to confirm your email.</p>" +
+            var messageText = $"<p><a href='{endpoint}' target='_blank'>Click here</a> to confirm your email.</p>" +
                               $"<p>Please ignore this if you did not request it.</p>";
 
             var emailMessage = new EmailMessage
