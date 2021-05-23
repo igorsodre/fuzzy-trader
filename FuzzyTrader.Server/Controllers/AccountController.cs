@@ -12,10 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FuzzyTrader.Server.Controllers
 {
-    [ApiController]
     [Route("api/account")]
-    [Produces("application/json")]
-    public class AccountController : ControllerBase
+    public class AccountController : BaseController
     {
         private readonly IAccountService _accountService;
         private readonly IMapper _mapper;
