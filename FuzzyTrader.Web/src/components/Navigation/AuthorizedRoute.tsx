@@ -6,7 +6,7 @@ class AuthorizedRoute extends Route {
   static contextType = AppContext;
   context!: IAppContext;
   render(): React.ReactNode {
-    if (!this.context.state.token) return <Redirect to="/login" />;
+    if (!this.context?.state?.token) return <Redirect to="/login" />;
     else return super.render();
   }
 }

@@ -34,6 +34,7 @@ export enum ApplicationActionType {
   SET_CURRENT_USER,
   ON_ROUTE_CHANGE,
   START_UP,
+  SET_APP_LOADING,
   ADD_SUCCESS_MESSAGE,
   ADD_ERROR_MESSAGE,
   ADD_INFO_MESSAGE,
@@ -71,6 +72,12 @@ const setAccessTokenReducer: TReducer<string> = (state, action) => {
 const setCurrentUserReducer: TReducer<AppUser> = (state, action) => {
   const newState = R.clone(state);
   newState.currentUser = action.payload;
+  return newState;
+};
+
+const setIsApplicationLoadingReducer: TReducer<boolean> = (state, action) => {
+  const newState = R.clone(state);
+  newState.isApplicationLoading = !!action.payload;
   return newState;
 };
 
@@ -128,7 +135,7 @@ const logout = (dispatch: React.Dispatch<ApplicationAction>, authService: AuthSe
 const startUp = (dispatch: React.Dispatch<ApplicationAction<RefreshTokenResponse>>, authService: AuthService) => {
   return async () => {
     const result = await authService.refreshToken();
-    dispatch({ type: ApplicationActionType.LOGOUT, payload: result });
+    dispatch({ type: ApplicationActionType.START_UP, payload: result });
   };
 };
 
@@ -140,19 +147,19 @@ const setAccessToken = (dispatch: React.Dispatch<ApplicationAction<string>>) => 
 
 const setCurrentUser = (dispatch: React.Dispatch<ApplicationAction<AppUser>>) => {
   return (user: AppUser) => {
-    dispatch({ type: ApplicationActionType.SET_ACCESS_TOKEN, payload: user });
+    dispatch({ type: ApplicationActionType.SET_CURRENT_USER, payload: user });
   };
 };
 
 const setIsApplicationLoading = (dispatch: React.Dispatch<ApplicationAction<boolean>>) => {
   return (isApplicationLoading: boolean) => {
-    dispatch({ type: ApplicationActionType.SET_ACCESS_TOKEN, payload: isApplicationLoading });
+    dispatch({ type: ApplicationActionType.SET_APP_LOADING, payload: isApplicationLoading });
   };
 };
 
 const onRouteChange = (dispatch: React.Dispatch<ApplicationAction<null>>) => {
   return () => {
-    dispatch({ type: ApplicationActionType.SET_ACCESS_TOKEN, payload: null });
+    dispatch({ type: ApplicationActionType.ON_ROUTE_CHANGE, payload: null });
   };
 };
 
@@ -211,6 +218,8 @@ export const globalReducer: TReducer = (state, action) => {
       return startUpReducer(state, action);
     case ApplicationActionType.LOGOUT:
       return logoutReducer(state, action);
+    case ApplicationActionType.SET_APP_LOADING:
+      return setIsApplicationLoadingReducer(state, action);
     case ApplicationActionType.SET_ACCESS_TOKEN:
       return setAccessTokenReducer(state, action);
     case ApplicationActionType.SET_CURRENT_USER:
