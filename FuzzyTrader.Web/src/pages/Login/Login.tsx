@@ -4,6 +4,7 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import AppInput from '../../components/FormElements/AppInput';
 import MainContainer from '../../components/UiElements/MainContainer';
 import { AppContext, IAppContext } from '../../data/app-context';
+import { ErrorResponse } from '../../data/contracts/responses/default-responses';
 import { useAuth } from '../../hooks/auth-service';
 
 interface FormInputs {
@@ -11,7 +12,7 @@ interface FormInputs {
   password: string;
 }
 const LoginPage: React.FC<RouteComponentProps> = (props) => {
-  const ctx = useContext(AppContext) as IAppContext;
+  const { actions } = useContext(AppContext) as IAppContext;
   const { register, handleSubmit, formState, errors, reset } = useForm<FormInputs>({
     defaultValues: { email: '', password: '' },
     mode: 'onChange',
@@ -25,11 +26,13 @@ const LoginPage: React.FC<RouteComponentProps> = (props) => {
     try {
       const result = await login(email, password);
       reset();
-      ctx.actions.setAccessToken(result.accessToken);
-      ctx.actions.setCurrentUser(result.user);
+      actions.setAccessToken(result.accessToken);
+      actions.setCurrentUser(result.user);
       props.history.replace('/home');
     } catch (err) {
-      console.log(err);
+      (err as ErrorResponse).errors?.forEach((e) => {
+        actions.addErrorMessage(e.message);
+      });
     }
   };
   return (
