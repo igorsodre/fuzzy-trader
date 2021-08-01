@@ -26,7 +26,7 @@ namespace FuzzyTrader.Server.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("get_investments")]
+        [HttpGet("get-investments")]
         [ProducesResponseType(typeof(SuccessResponse<IEnumerable<GetUserInvestmentsResponse>>), 200)]
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<IActionResult> GetInvestments()
@@ -41,7 +41,7 @@ namespace FuzzyTrader.Server.Controllers
                 _mapper.Map<IEnumerable<GetUserInvestmentsResponse>>(result.Investments)));
         }
 
-        [HttpGet("get_investment_options")]
+        [HttpGet("get-investment-options")]
         [ProducesResponseType(typeof(SuccessResponse<IEnumerable<GetInvestmentOptionsResponse>>), 200)]
         public async Task<IActionResult> GetInvestmentOptions(decimal budget)
         {
@@ -55,7 +55,7 @@ namespace FuzzyTrader.Server.Controllers
                 mappedCryptoInvestments.Concat(mappedTradingInvestments)));
         }
 
-        [HttpPost("place_investment")]
+        [HttpPost("place-investment")]
         [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<IActionResult> PlaceInvestment(PlaceInvestmentRequest request)

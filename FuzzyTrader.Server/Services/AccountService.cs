@@ -149,7 +149,7 @@ namespace FuzzyTrader.Server.Services
             var encodedToken = WebUtility.UrlEncode(token);
             var encodedEmail = WebUtility.UrlEncode(user.Email);
             var endpoint =
-                $"{_serverSettings.BaseUrl}/api/account/reset_password?token={encodedToken}&email={encodedEmail}";
+                $"{_serverSettings.BaseUrl}/api/account/reset-password?token={encodedToken}&email={encodedEmail}";
 
             var messageText = $"<p><a href='{endpoint}' target='_blank'>Click here</a> to reset your password.</p>" +
                               $"<p>Please ignore this if you did not request it.</p>";

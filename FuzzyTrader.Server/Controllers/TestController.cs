@@ -29,7 +29,7 @@ namespace FuzzyTrader.Server.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("remove_all_users")]
+        [HttpPost("remove-all-users")]
         public async Task<ActionResult> RemoveAllUsers()
         {
             await using var trasaction = await _dataContext.Database.BeginTransactionAsync();
@@ -46,7 +46,7 @@ namespace FuzzyTrader.Server.Controllers
             return Ok(new SuccessResponse<string>("test"));
         }
 
-        [HttpPost("list_investment_options")]
+        [HttpPost("list-investment-options")]
         [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
         public async Task<ActionResult> ListInvestmentOption()
         {

@@ -41,7 +41,7 @@ namespace FuzzyTrader.Server.Controllers
             return Ok(SuccessResponse.DefaultOkResponse());
         }
 
-        [HttpGet("verify_email")]
+        [HttpGet("verify-email")]
         [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<ActionResult> VerifyEmail(string token, string email)
@@ -83,7 +83,7 @@ namespace FuzzyTrader.Server.Controllers
         }
 
 
-        [HttpPost("refresh_token")]
+        [HttpPost("refresh-token")]
         [ProducesResponseType(typeof(SuccessResponse<RefreshTokenResponse>), 200)]
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<IActionResult> RefreshToken()
@@ -101,7 +101,7 @@ namespace FuzzyTrader.Server.Controllers
                 {AccessToken = result.Token, User = user}));
         }
 
-        [HttpPost("forgot_password")]
+        [HttpPost("forgot-password")]
         [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
@@ -113,7 +113,7 @@ namespace FuzzyTrader.Server.Controllers
             return Ok(SuccessResponse.DefaultOkResponse());
         }
 
-        [HttpGet("reset_password_page")]
+        [HttpGet("reset-password-page")]
         public IActionResult ReserPasswordPage(string token, string email)
         {
             var endpoint = _serverSettings.ClientUrl +
