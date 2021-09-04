@@ -3,6 +3,7 @@ using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services.Iterfaces;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using MimeKit;
 
 namespace FuzzyTrader.Server.Services
@@ -21,10 +22,17 @@ namespace FuzzyTrader.Server.Services
             var mimeMessage = CreateMimeMessageFromEmailMessage(emailMessage);
 
             using var smtpClient = new SmtpClient();
-            await smtpClient.ConnectAsync(_notificationMetadata.SmtpServer,
-                _notificationMetadata.Port, true);
-            await smtpClient.AuthenticateAsync(_notificationMetadata.UserName,
-                _notificationMetadata.Password);
+            await smtpClient.ConnectAsync(_notificationMetadata.SmtpServer, _notificationMetadata.Port,
+                SecureSocketOptions.None);
+
+            if (_notificationMetadata.UseAuthentication)
+            {
+                await smtpClient.AuthenticateAsync(
+                    _notificationMetadata.UserName,
+                    _notificationMetadata.Password
+                );
+            }
+
             await smtpClient.SendAsync(mimeMessage);
             await smtpClient.DisconnectAsync(true);
 
@@ -37,8 +45,8 @@ namespace FuzzyTrader.Server.Services
             mimeMessage.From.Add(new MailboxAddress(_notificationMetadata.Sender));
             mimeMessage.To.Add(new MailboxAddress(message.Reciever));
             mimeMessage.Subject = message.Subject;
-            mimeMessage.Body = new TextPart(MimeKit.Text.TextFormat.Text)
-                {Text = message.Content};
+            mimeMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+                { Text = message.Content };
             return mimeMessage;
         }
     }

@@ -9,8 +9,10 @@ namespace FuzzyTrader.Server.SwaggerExamples.Requests
         {
             return new SignupRequest
             {
-                Email = "dotnettest1@mailinator.com",
-                Password = "Password!1"
+                Email = "dotnettest1@localhost.com",
+                Password = "Password!1",
+                Name = "Some Name",
+                ConfirmedPassword = "Password!1"
             };
         }
     }

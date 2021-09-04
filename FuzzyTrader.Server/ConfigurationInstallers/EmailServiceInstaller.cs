@@ -11,9 +11,11 @@ namespace FuzzyTrader.Server.ConfigurationInstallers
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             var notificationMetadata =
-                configuration.GetSection("NotificationMetadata").Get<NotificationMetadata>();
+                configuration.GetSection("NotificationMetadata")
+                    .Get<NotificationMetadata>();
             services.AddSingleton(notificationMetadata);
 
+            services.AddScoped<IHtmlService, HtmlService>();
             services.AddScoped<IEmailClientService, EmailClientService>();
         }
     }
