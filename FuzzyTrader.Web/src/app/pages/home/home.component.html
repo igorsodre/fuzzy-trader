@@ -1,25 +1,5 @@
-<mat-toolbar color="primary" class="header">
-  <span class="header--logo-text">
-    <a [routerLink]="['/home']"> FuzzyTrader </a>
-  </span>
-  <span class="header--spacer"></span>
-  <div class="header--nav-links">
-    <a mat-raised-button color="primary">Available Investments</a>
-    <a mat-raised-button color="primary">My Wallet</a>
-  </div>
-  <span class="header--spacer"></span>
-  <div class="header--auth-links">
-    <button routerLink="/login" mat-icon-button aria-label="login" matTooltip="login">
-      <mat-icon>login</mat-icon>
-    </button>
-    <button mat-icon-button aria-label="logout" matTooltip="logout">
-      <mat-icon>logout</mat-icon>
-    </button>
-    <button mat-icon-button aria-label="profile settings" matTooltip="profile settings">
-      <mat-icon>manage_accounts</mat-icon>
-    </button>
-  </div>
-</mat-toolbar>
+<app-header></app-header>
+
 <section class="main">
   <p>Welcome to Fuzzy trader</p>
 </section>

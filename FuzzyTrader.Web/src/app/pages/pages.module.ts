@@ -12,6 +12,6 @@ import { StartUpComponent } from './start-up/start-up.component';
 @NgModule({
   declarations: [HomeComponent, SignupComponent, LoginComponent, StartUpComponent, ResetPasswordComponent],
   imports: [CommonModule, UiComponentsModule, AppRoutingModule, StructuralComponentsModule],
-  exports: [UiComponentsModule],
+  exports: [UiComponentsModule, StructuralComponentsModule],
 })
 export class PagesModule {}

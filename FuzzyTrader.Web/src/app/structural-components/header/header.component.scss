@@ -1,0 +1,16 @@
+.header {
+  &--logo-text {
+    a {
+      color: white;
+    }
+  }
+  &--spacer {
+    flex: 1 1 auto;
+  }
+
+  &--nav-links {
+    a {
+      margin: 0 5px;
+    }
+  }
+}

@@ -1,1 +1,26 @@
-<p>header works!</p>
+<mat-toolbar color="primary" class="header">
+  <span class="header--logo-text">
+    <a [routerLink]="['/home']"> FuzzyTrader </a>
+  </span>
+  <span class="header--spacer"></span>
+  <div class="header--nav-links">
+    <ng-container *ngIf="tokenService.accessToken$ | async">
+      <a mat-raised-button color="primary">Available Investments</a>
+      <a mat-raised-button color="primary">My Wallet</a>
+    </ng-container>
+  </div>
+  <span class="header--spacer"></span>
+  <div class="header--auth-links">
+    <button routerLink="/login" mat-icon-button aria-label="login" matTooltip="login">
+      <mat-icon>login</mat-icon>
+    </button>
+    <ng-container *ngIf="tokenService.accessToken$ | async">
+      <button mat-icon-button aria-label="logout" matTooltip="logout">
+        <mat-icon>logout</mat-icon>
+      </button>
+      <button mat-icon-button aria-label="profile settings" matTooltip="profile settings">
+        <mat-icon>manage_accounts</mat-icon>
+      </button>
+    </ng-container>
+  </div>
+</mat-toolbar>

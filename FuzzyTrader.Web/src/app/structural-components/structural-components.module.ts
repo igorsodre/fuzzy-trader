@@ -5,7 +5,8 @@ import { UiComponentsModule } from './../ui-components/ui-components.module';
 import { HeaderComponent } from './header/header.component';
 
 @NgModule({
-  declarations: [HeaderComponent],
   imports: [CommonModule, UiComponentsModule, AppRoutingModule],
+  exports: [HeaderComponent],
+  declarations: [HeaderComponent],
 })
 export class StructuralComponentsModule {}

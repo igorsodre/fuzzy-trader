@@ -1,46 +1,53 @@
-import { RefreshTokenResponse } from './../../../old/src/data/contracts/responses/account';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { RefreshTokenResponse } from '../contracts/responses/account';
 import { SuccessResponse } from '../contracts/responses/default-responses';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TokenService {
-  private accessToken: string;
+  private readonly _accessTokenSource = new BehaviorSubject<string>('');
+  readonly accessToken$ = this._accessTokenSource.asObservable();
 
-  constructor(private http: HttpClient) {
-    this.accessToken = '';
+  constructor(private http: HttpClient) {}
+
+  setAccessToken(token: string) {
+    this._accessTokenSource.next(token);
   }
 
-  public setAccessToken(token: string) {
-    this.accessToken = token;
-  }
-
-  public async getAccessToken(): Promise<string> {
+  async getAccessToken(): Promise<string> {
     if (!this.isValidToken()) {
       this.setAccessToken(await this.fetchToken());
     }
-    return this.accessToken;
+    return this._accessTokenSource.getValue();
+  }
+
+  isAuthenticated(): boolean {
+    return !!this._accessTokenSource.getValue();
   }
 
   private async fetchToken(): Promise<string> {
     try {
       const endpoint = environment.baseUrl + '/api/account/refresh-token';
-      const result = await this.http
-        .post<SuccessResponse<RefreshTokenResponse>>(endpoint, {}, { withCredentials: true })
-        .toPromise();
-      return result.data.accessToken;
+      const response = await fetch(endpoint, { credentials: 'include', method: 'POST' });
+      if (response.ok) {
+        const result = await response.json();
+        console.log('loggin result');
+        return result.data;
+      }
+      return '';
     } catch (err) {
       return '';
     }
   }
 
   private isValidToken(): boolean {
-    if (!this.accessToken) return false;
-    const { exp } = jwtDecode<JwtPayload>(this.accessToken);
+    if (!this._accessTokenSource.getValue()) return false;
+    const { exp } = jwtDecode<JwtPayload>(this._accessTokenSource.getValue());
     if (!exp || Date.now() >= exp * 1000) return false;
     return true;
   }
