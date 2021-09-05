@@ -17,10 +17,6 @@ export class AuthStoreService {
     this._appUserSrouce.next(appUser);
   }
 
-  public isLoggedIn(): boolean {
-    return this._appUserSrouce.getValue().id === 0;
-  }
-
   public resetUser() {
     this._appUserSrouce.next(new AppUser(0, '', ''));
   }
