@@ -18,6 +18,7 @@ export class ManageHttpInterceptor implements HttpInterceptor {
   }
 
   intercept<T>(req: HttpRequest<T>, next: HttpHandler): Observable<HttpEvent<T>> {
+    console.log('Entering interceptor ManageHttpInterceptor');
     return next.handle(req).pipe(takeUntil(this.httpCancelService.onCancelPendingRequests()));
   }
 }

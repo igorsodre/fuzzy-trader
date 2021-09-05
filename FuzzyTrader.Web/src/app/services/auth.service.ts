@@ -35,12 +35,19 @@ export class AuthService {
     const endpoint = this.urlPrefix + '/update';
   }
 
-  async refreshToken(): Promise<RefreshTokenResponse> {
-    const endpoint = this.urlPrefix + '/refresh-token';
-    const result = await this.http
-      .post<SuccessResponse<RefreshTokenResponse>>(endpoint, {}, { withCredentials: true })
-      .toPromise();
-    return result.data;
+  async refreshToken(): Promise<RefreshTokenResponse | null> {
+    try {
+      const endpoint = environment.baseUrl + '/api/account/refresh-token';
+      const response = await fetch(endpoint, { credentials: 'include', method: 'POST' });
+      if (response.ok) {
+        const result = await response.json();
+        console.log('loggin result');
+        return result.data;
+      }
+      return null;
+    } catch (err) {
+      return null;
+    }
   }
 
   async getLoggedUser() {}
