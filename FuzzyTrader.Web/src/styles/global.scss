@@ -1,0 +1,10 @@
+a {
+  &:visited,
+  &:link,
+  &:active {
+    text-decoration: none;
+  }
+  &:hover {
+    text-decoration: underline;
+  }
+}
