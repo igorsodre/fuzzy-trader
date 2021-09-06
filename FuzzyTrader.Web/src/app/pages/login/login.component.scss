@@ -1,0 +1,21 @@
+.login-form {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  height: calc(100% - 64px);
+  text-align: center;
+
+  form {
+    width: 40%;
+    min-width: 100px;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 4px 4px 10px 4px #ccc;
+
+    mat-form-field {
+      font-size: 1.1rem;
+      min-width: 60%;
+    }
+  }
+}

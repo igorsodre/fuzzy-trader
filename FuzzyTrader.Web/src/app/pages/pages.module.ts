@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from '../app-routing.module';
 import { UiComponentsModule } from '../ui-components/ui-components.module';
 import { StructuralComponentsModule } from './../structural-components/structural-components.module';
@@ -11,7 +12,14 @@ import { StartUpComponent } from './start-up/start-up.component';
 
 @NgModule({
   declarations: [HomeComponent, SignupComponent, LoginComponent, StartUpComponent, ResetPasswordComponent],
-  imports: [CommonModule, UiComponentsModule, AppRoutingModule, StructuralComponentsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    UiComponentsModule,
+    AppRoutingModule,
+    StructuralComponentsModule,
+  ],
   exports: [UiComponentsModule, StructuralComponentsModule],
 })
 export class PagesModule {}
