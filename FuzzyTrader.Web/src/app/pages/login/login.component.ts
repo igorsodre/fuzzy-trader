@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  form: FormGroup = new FormGroup({});
+  form: FormGroup;
 
   get email() {
     return this.form.get('email');
