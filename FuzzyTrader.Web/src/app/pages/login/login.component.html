@@ -1,5 +1,5 @@
 <app-header></app-header>
-<section class="login-form">
+<section class="auth-form">
   <form [formGroup]="form" (ngSubmit)="submit()">
     <h3>Log in</h3>
     <div class="form-group">
@@ -22,12 +22,14 @@
       </ng-container>
     </div>
 
-    <button mat-icon-button aria-label="Sign in" type="submit" matTooltip="Sign in">
-      <mat-icon>login</mat-icon>
-    </button>
+    <div class="auth-form--button-container">
+      <button mat-fab aria-label="Sign in" type="submit" matTooltip="Sign in">
+        <mat-icon>login</mat-icon>
+      </button>
+    </div>
 
-    <p class="forgot-password text-right">Forgot <a routerLink="/forgot-password">password?</a></p>
-    <p class="forgot-password text-right">Don't have an accout? <a routerLink="/signup">signup</a></p>
+    <p>Forgot <a routerLink="/forgot-password">password?</a></p>
+    <p>Don't have an account? <a routerLink="/signup">signup.</a></p>
   </form>
 </section>
 <app-footer></app-footer>

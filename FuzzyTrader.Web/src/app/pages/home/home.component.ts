@@ -1,6 +1,5 @@
-import { AuthStoreService } from './../../stores/auth-store.service';
 import { Component, OnInit } from '@angular/core';
-import { AppUser } from 'src/app/models/app-user';
+import { AuthStoreService } from './../../stores/auth-store.service';
 
 @Component({
   selector: 'app-home',

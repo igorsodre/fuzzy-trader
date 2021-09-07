@@ -35,7 +35,7 @@ namespace FuzzyTrader.Server.Controllers
             var authResponse = await _accountService.RegisterAsync(request.Name, request.Email, request.Password);
             if (!authResponse.Success)
             {
-                return BadRequest(new BusinessErrorResponse { Errors = authResponse.ErrorMessages });
+                return BadRequest(new ErrorResponse(authResponse.ErrorMessages));
             }
 
             return Ok(SuccessResponse.DefaultOkResponse());

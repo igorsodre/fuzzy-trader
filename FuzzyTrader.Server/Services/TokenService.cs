@@ -35,7 +35,7 @@ namespace FuzzyTrader.Server.Services
                 Path = "/api/account/refresh-token",
                 Expires = DateTime.UtcNow.AddDays(7),
                 SameSite = SameSiteMode.None,
-                Secure = false
+                Secure = true
             };
         }
 

@@ -1,11 +1,11 @@
-import { ErrorModel } from './../../contracts/responses/default-responses';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from 'src/app/services/auth.service';
-import { TokenService } from 'src/app/services/token.service';
-import { AuthStoreService } from 'src/app/stores/auth-store.service';
+import { AuthService } from '../../services/auth.service';
+import { TokenService } from '../../services/token.service';
+import { AuthStoreService } from '../../stores/auth-store.service';
+import { ErrorModel } from './../../contracts/responses/default-responses';
 
 @Component({
   selector: 'app-login',
