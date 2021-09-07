@@ -11,10 +11,18 @@ import { ManageHttpInterceptor } from './insterceptors/manage-http.interceptor';
 import { PagesModule } from './pages/pages.module';
 import { HttpCancelService } from './services/http-cancel.service';
 import { InitializerService } from './services/initializer.service';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, HttpClientModule, AppRoutingModule, BrowserAnimationsModule, PagesModule],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    ToastrModule.forRoot(),
+    PagesModule,
+  ],
   providers: [
     HttpCancelService,
     { provide: HTTP_INTERCEPTORS, useClass: ManageHttpInterceptor, multi: true },
