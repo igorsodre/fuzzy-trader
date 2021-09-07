@@ -43,8 +43,8 @@ namespace FuzzyTrader.Server.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(CustomTokenClaims.Id, user.Id),
+                new(JwtRegisteredClaimNames.Email, user.Email),
+                new(CustomTokenClaims.Id, user.Id),
             };
 
             var credentials = new SigningCredentials(_accesskey, SecurityAlgorithms.HmacSha512Signature);
@@ -68,8 +68,8 @@ namespace FuzzyTrader.Server.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(CustomTokenClaims.Id, user.Id),
-                new Claim(CustomTokenClaims.TokenVersion, user.TokenVersion.ToString())
+                new(CustomTokenClaims.Id, user.Id),
+                new(CustomTokenClaims.TokenVersion, user.TokenVersion.ToString())
             };
 
             var credentials = new SigningCredentials(_refreshKey, SecurityAlgorithms.HmacSha512);
@@ -108,7 +108,7 @@ namespace FuzzyTrader.Server.Services
                 ValidateAudience = false,
                 RequireExpirationTime = false,
                 ValidateLifetime = true,
-                ValidAlgorithms = new[] {SecurityAlgorithms.HmacSha512},
+                ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha512 },
                 ClockSkew = TimeSpan.Zero
             };
 
@@ -134,9 +134,11 @@ namespace FuzzyTrader.Server.Services
         private static bool IsJwtTokenExpired(ClaimsPrincipal claimsPrincipal)
         {
             var unixExpDate =
-                long.Parse(claimsPrincipal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
+                long.Parse(claimsPrincipal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp)
+                    .Value);
 
-            var expDate = DateTimeOffset.FromUnixTimeSeconds(unixExpDate).UtcDateTime;
+            var expDate = DateTimeOffset.FromUnixTimeSeconds(unixExpDate)
+                .UtcDateTime;
             return expDate <= DateTime.UtcNow;
         }
     }

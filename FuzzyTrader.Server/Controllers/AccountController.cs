@@ -35,7 +35,7 @@ namespace FuzzyTrader.Server.Controllers
             var authResponse = await _accountService.RegisterAsync(request.Name, request.Email, request.Password);
             if (!authResponse.Success)
             {
-                return BadRequest(new BusinessErrorResponse {Errors = authResponse.ErrorMessages});
+                return BadRequest(new BusinessErrorResponse { Errors = authResponse.ErrorMessages });
             }
 
             return Ok(SuccessResponse.DefaultOkResponse());
@@ -49,7 +49,7 @@ namespace FuzzyTrader.Server.Controllers
             var isVerified = await _accountService.VerifyEmailAsync(token, email);
             if (!isVerified)
             {
-                return BadRequest(new ErrorResponse(new[] {"Failed to verify email"}));
+                return BadRequest(new ErrorResponse(new[] { "Failed to verify email" }));
             }
 
             return Ok(SuccessResponse.DefaultOkResponse());
@@ -63,7 +63,7 @@ namespace FuzzyTrader.Server.Controllers
             var authResponse = await _accountService.LoginAsync(request.Email, request.Password);
             if (!authResponse.Success)
             {
-                return BadRequest(new ErrorResponse(authResponse.ErrorMessages.ToArray()));
+                return BadRequest(new ErrorResponse(authResponse.ErrorMessages));
             }
 
             _accountService.AddRefreshTokenForUserOnResponse(authResponse.User, HttpContext.Response);
@@ -71,7 +71,7 @@ namespace FuzzyTrader.Server.Controllers
             var responseUser = _mapper.Map<ResponseUser>(authResponse.User);
 
             return Ok(new SuccessResponse<LoginResponse>(new LoginResponse
-                {AccessToken = authResponse.Token, User = responseUser}));
+                { AccessToken = authResponse.Token, User = responseUser }));
         }
 
         [HttpPost("logout")]
@@ -93,12 +93,12 @@ namespace FuzzyTrader.Server.Controllers
 
             if (!result.Success)
             {
-                return BadRequest(new ErrorResponse(result.ErrorMessages.ToArray()));
+                return BadRequest(new ErrorResponse(result.ErrorMessages));
             }
 
             var user = _mapper.Map<ResponseUser>(result.User);
             return Ok(new SuccessResponse<RefreshTokenResponse>(new RefreshTokenResponse
-                {AccessToken = result.Token, User = user}));
+                { AccessToken = result.Token, User = user }));
         }
 
         [HttpPost("forgot-password")]
@@ -108,7 +108,7 @@ namespace FuzzyTrader.Server.Controllers
         {
             var sentEmail = await _accountService.ForgotPasswordAysnc(request.Email);
 
-            if (!sentEmail) return BadRequest(new ErrorResponse(new[] {"Invalid Email"}));
+            if (!sentEmail) return BadRequest(new ErrorResponse(new[] { "Invalid Email" }));
 
             return Ok(SuccessResponse.DefaultOkResponse());
         }

@@ -1,6 +1,8 @@
+import { ErrorModel } from './../../contracts/responses/default-responses';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/services/auth.service';
 import { TokenService } from 'src/app/services/token.service';
 import { AuthStoreService } from 'src/app/stores/auth-store.service';
@@ -16,6 +18,7 @@ export class LoginComponent implements OnInit {
     private authStore: AuthStoreService,
     private tokenService: TokenService,
     private router: Router,
+    private toastr: ToastrService,
   ) {
     this.form = new FormGroup({
       email: new FormControl('dotnettest1@localhost.com', [Validators.required, Validators.email]),
@@ -39,15 +42,18 @@ export class LoginComponent implements OnInit {
     if (this.form.invalid) return;
     try {
       const result = await this.authService.login({ email: this.email!.value, password: this.password!.value });
-      console.log('loging result');
-      console.log(result);
       if (!result) return;
       this.authStore.setUser(result.user);
       this.tokenService.setAccessToken(result.accessToken);
+      this.toastr.success('Login Success');
       this.router.navigate(['/home']);
-    } catch (err) {
-      console.log('Error during login');
-      console.log(err);
+    } catch (err: any) {
+      this.toastr.error('Failed to login');
+      if (err?.error?.errors) {
+        err?.error?.errors.forEach((entry: ErrorModel) => {
+          this.toastr.error(entry.message);
+        });
+      }
     }
   }
 }
