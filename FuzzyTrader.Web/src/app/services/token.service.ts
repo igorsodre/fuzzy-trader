@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { RefreshTokenResponse } from '../contracts/responses/account';
-import { SuccessResponse } from '../contracts/responses/default-responses';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +15,10 @@ export class TokenService {
 
   setAccessToken(token: string) {
     this._accessTokenSource.next(token);
+  }
+
+  resetToken() {
+    this._accessTokenSource.next('');
   }
 
   async getAccessToken(): Promise<string> {
@@ -36,7 +38,7 @@ export class TokenService {
       const response = await fetch(endpoint, { credentials: 'include', method: 'POST' });
       if (response.ok) {
         const result = await response.json();
-        console.log('loggin result');
+        console.log('logging result');
         return result.data;
       }
       return '';

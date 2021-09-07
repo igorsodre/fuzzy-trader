@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { matchFields } from './../../custom-validators/match-fields';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import { TokenService } from 'src/app/services/token.service';
+import { AuthStoreService } from 'src/app/stores/auth-store.service';
 
 @Component({
   selector: 'app-login',
@@ -8,18 +11,21 @@ import { matchFields } from './../../custom-validators/match-fields';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  form: FormGroup = new FormGroup({});
-
-  constructor() {
-    this.form = new FormGroup(
-      {
-        email: new FormControl('', Validators.email),
-        password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-        confirmPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      },
-      { validators: matchFields('password', 'confirmPassword') },
-    );
+  constructor(
+    private authService: AuthService,
+    private authStore: AuthStoreService,
+    private tokenService: TokenService,
+    private router: Router,
+  ) {
+    this.form = new FormGroup({
+      email: new FormControl('dotnettest1@localhost.com', [Validators.required, Validators.email]),
+      password: new FormControl('Password!1', [Validators.required, Validators.minLength(6)]),
+    });
   }
+
+  ngOnInit(): void {}
+
+  form: FormGroup = new FormGroup({});
 
   get email() {
     return this.form.get('email');
@@ -29,16 +35,19 @@ export class LoginComponent implements OnInit {
     return this.form.get('password');
   }
 
-  get confirmPassword() {
-    return this.form.get('confirmPassword');
-  }
-
-  ngOnInit(): void {}
-
-  get formErrors() {
-    if (this.form.errors) {
-      return Object.keys(this.form.errors).toString();
+  async submit() {
+    if (this.form.invalid) return;
+    try {
+      const result = await this.authService.login({ email: this.email!.value, password: this.password!.value });
+      console.log('loging result');
+      console.log(result);
+      if (!result) return;
+      this.authStore.setUser(result.user);
+      this.tokenService.setAccessToken(result.accessToken);
+      this.router.navigate(['/home']);
+    } catch (err) {
+      console.log('Error during login');
+      console.log(err);
     }
-    return '';
   }
 }

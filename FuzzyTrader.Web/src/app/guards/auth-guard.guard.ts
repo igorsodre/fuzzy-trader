@@ -1,16 +1,16 @@
-import { TokenService } from './../services/token.service';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { TokenService } from './../services/token.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthGuardGuard implements CanActivate {
-  constructor(public tokenService: TokenService, public router: Router) {}
+  constructor(private tokenService: TokenService, private router: Router) {}
 
-  canActivate(): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+  canActivate(): Observable<boolean> {
     return this.tokenService.accessToken$.pipe(
       map((token) => {
         if (token) return true;

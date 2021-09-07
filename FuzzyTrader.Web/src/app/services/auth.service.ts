@@ -15,13 +15,15 @@ export class AuthService {
 
   async login(requestBody: LoginRequest): Promise<LoginResponse> {
     const endpoint = this.urlPrefix + '/login';
-    const result = await this.http.post<SuccessResponse<LoginResponse>>(endpoint, requestBody).toPromise();
+    const result = await this.http
+      .post<SuccessResponse<LoginResponse>>(endpoint, requestBody, { withCredentials: true })
+      .toPromise();
     return result.data;
   }
 
   async logout() {
     const endpoint = this.urlPrefix + '/logout';
-    const result = await this.http.post<SuccessResponse<string>>(endpoint, {}).toPromise();
+    const result = await this.http.post<SuccessResponse<string>>(endpoint, {}, { withCredentials: true }).toPromise();
     return result.data;
   }
 
@@ -41,7 +43,6 @@ export class AuthService {
       const response = await fetch(endpoint, { credentials: 'include', method: 'POST' });
       if (response.ok) {
         const result = await response.json();
-        console.log('loggin result');
         return result.data;
       }
       return null;

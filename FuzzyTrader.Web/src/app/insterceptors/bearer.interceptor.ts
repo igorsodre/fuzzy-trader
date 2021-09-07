@@ -17,7 +17,9 @@ export class BearerInterceptor implements HttpInterceptor {
     let accessToken = '';
     try {
       accessToken = await this.tokenService.getAccessToken();
-    } catch {}
+    } catch {
+      console.log('Catch bearer after trying to get access token');
+    }
 
     request.headers.append('Authorization', `Bearer ${accessToken}`);
 
@@ -25,8 +27,9 @@ export class BearerInterceptor implements HttpInterceptor {
       .handle(request)
       .pipe(
         catchError((error) => {
+          console.log('catchError on bearer interceptor');
           console.log(error);
-          return throwError(null);
+          return EMPTY;
         }),
       )
       .toPromise();

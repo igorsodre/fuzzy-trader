@@ -18,7 +18,7 @@ const routes: Routes = [
     canActivate: [AuthGuardGuard],
     children: [{ path: 'home', component: HomeComponent }],
   },
-  { path: '**', component: StartUpComponent },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({

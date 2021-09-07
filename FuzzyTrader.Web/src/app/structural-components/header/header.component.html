@@ -11,16 +11,21 @@
   </div>
   <span class="header--spacer"></span>
   <div class="header--auth-links">
-    <button routerLink="/login" mat-icon-button aria-label="login" matTooltip="login">
-      <mat-icon>login</mat-icon>
-    </button>
-    <ng-container *ngIf="tokenService.accessToken$ | async">
-      <button mat-icon-button aria-label="logout" matTooltip="logout">
+    <ng-container *ngIf="tokenService.accessToken$ | async; else login">
+      <button (click)="logout()" mat-icon-button aria-label="logout" matTooltip="logout">
         <mat-icon>logout</mat-icon>
       </button>
       <button mat-icon-button aria-label="profile settings" matTooltip="profile settings">
         <mat-icon>manage_accounts</mat-icon>
       </button>
     </ng-container>
+    <ng-template #login>
+      <button routerLink="/login" mat-icon-button aria-label="login" matTooltip="login">
+        <mat-icon>login</mat-icon>
+      </button>
+      <button routerLink="/signup" mat-icon-button aria-label="signup" matTooltip="signup">
+        <mat-icon>person_add</mat-icon>
+      </button>
+    </ng-template>
   </div>
 </mat-toolbar>

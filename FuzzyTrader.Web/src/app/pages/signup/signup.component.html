@@ -1,1 +1,41 @@
-<p>signup works!</p>
+<app-header></app-header>
+<section class="signup-form">
+  <form [formGroup]="form">
+    <h3>Sign up</h3>
+    <div class="form-group">
+      <mat-form-field hintLabel="Please enter a valid email" appearance="fill" [color]="'primary'">
+        <mat-label>Email</mat-label>
+        <input matInput [type]="'email'" required formControlName="email" placeholder="example@email.com" />
+      </mat-form-field>
+      <ng-container *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="alert">
+        <p style="color: #ee5253">Invalid email</p>
+      </ng-container>
+    </div>
+
+    <div class="form-group">
+      <mat-form-field hintLabel="Please enter your password" appearance="fill" [color]="'primary'">
+        <mat-label>Passord</mat-label>
+        <input matInput [type]="'password'" required formControlName="password" placeholder="********" />
+      </mat-form-field>
+      <ng-container *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="alert">
+        <p style="color: #ee5253">Invalid password</p>
+      </ng-container>
+    </div>
+    <div class="form-group">
+      <mat-form-field hintLabel="Please enter your password" appearance="fill" [color]="'primary'">
+        <mat-label>Confirm password</mat-label>
+        <input matInput [type]="'password'" required formControlName="confirmPassword" placeholder="********" />
+      </mat-form-field>
+      <ng-container *ngIf="form?.errors?.noMatch && (form?.dirty || form?.touched)" class="alert">
+        <p style="color: #ee5253">Passords should match</p>
+      </ng-container>
+    </div>
+
+    <button mat-icon-button aria-label="Sign in" type="submit" matTooltip="Sign in">
+      <mat-icon>login</mat-icon>
+    </button>
+
+    <p class="forgot-password text-right">Already registered? <a routerLink="/login">login</a></p>
+  </form>
+</section>
+<app-footer></app-footer>
