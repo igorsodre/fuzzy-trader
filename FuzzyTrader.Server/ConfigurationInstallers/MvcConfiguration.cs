@@ -16,7 +16,6 @@ namespace FuzzyTrader.Server.ConfigurationInstallers
             var serverSettings = configuration.GetSection("ServerSettings")
                 .Get<ServerSettings>();
 
-
             services.AddSingleton(serverSettings);
             services.AddSingleton<ITokenService, TokenService>();
             services.AddScoped<IAccountService, AccountService>();
@@ -36,7 +35,7 @@ namespace FuzzyTrader.Server.ConfigurationInstallers
 
             services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); })
                 .AddFluentValidation(options => {
-                    options.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                    options.DisableDataAnnotationsValidation = true;
                     options.ImplicitlyValidateChildProperties = true;
                     options.RegisterValidatorsFromAssemblyContaining<Startup>();
                 });
