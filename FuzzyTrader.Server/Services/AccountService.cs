@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using FuzzyTrader.Server.Data.DbEntities;
@@ -9,6 +10,7 @@ using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace FuzzyTrader.Server.Services
 {
@@ -153,22 +155,9 @@ namespace FuzzyTrader.Server.Services
                 return new DefaultResult { Success = false, ErrorMessages = new[] { "Invalid Email" } };
             }
 
-            var isTokenValid = await _userManager.VerifyUserTokenAsync(
-                user,
-                _userManager.Options.Tokens.PasswordResetTokenProvider,
-                UserManager<AppUser>.ResetPasswordTokenPurpose,
-                token
-            );
-
-            if (!isTokenValid)
-            {
-                return new DefaultResult
-                {
-                    Success = false, ErrorMessages = new[] { "Invalid or expired verification token" }
-                };
-            }
-
-            var result = await _userManager.ResetPasswordAsync(user, token, password);
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, password);
             if (!result.Succeeded)
             {
                 return new DefaultResult
@@ -185,7 +174,7 @@ namespace FuzzyTrader.Server.Services
 
         public async Task<bool> SendForgotPasswordEmailAsync(string token, DomainUser user)
         {
-            var encodedToken = WebUtility.UrlEncode(token);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
             var encodedEmail = WebUtility.UrlEncode(user.Email);
             var endpoint =
                 $"{_serverSettings.BaseUrl}/api/account/reset-password?token={encodedToken}&email={encodedEmail}";

@@ -18,8 +18,6 @@ export class ResetPasswordComponent implements OnInit {
   private token = '';
   constructor(
     private authService: AuthService,
-    private authStore: AuthStoreService,
-    private tokenService: TokenService,
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
@@ -51,16 +49,21 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   async submit() {
-    console.log('login route params');
-    console.log(this.email);
-    console.log(this.token);
-    return;
     if (this.form.invalid) return;
+
     try {
-      this.toastr.info('Check you email to confirm the signup process');
+      await this.authService.recoverPassword({
+        email: this.email,
+        token: this.token,
+        password: this.password!.value,
+        confirmedPassword: this.confirmPassword!.value,
+      });
+
+      this.toastr.success('Password update successfully');
       this.router.navigate(['']);
     } catch (err: any) {
       this.toastr.error('Failed to reset password');
+
       if (err?.error?.errors) {
         err?.error?.errors.forEach((entry: ErrorModel) => {
           this.toastr.error(entry.message);

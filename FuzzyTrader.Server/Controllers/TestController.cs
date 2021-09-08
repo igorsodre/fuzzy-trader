@@ -46,11 +46,11 @@ namespace FuzzyTrader.Server.Controllers
             return Ok(new SuccessResponse<string>("test"));
         }
 
-        [HttpPost("list-investment-options")]
-        [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
-        public async Task<ActionResult> ListInvestmentOption()
-        {
-            return Ok(new SuccessResponse<string>("OK"));
-        }
+        // [HttpPost("list-investment-options")]
+        // [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
+        // public async Task<ActionResult> ListInvestmentOption()
+        // {
+        //     return Ok(new SuccessResponse<string>("OK"));
+        // }
     }
 }

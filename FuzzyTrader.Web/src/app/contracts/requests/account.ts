@@ -16,13 +16,13 @@ export interface UpdateUserRequest {
   newPassword: string;
 }
 
-export interface ResetPasswordRequest {
-  email: string;
-  token: string;
-  newPassword: string;
-  confirmedPassword: string;
-}
-
 export interface ForgotPasswordRequest {
   email: string;
+}
+
+export interface RecoverPasswordRequest {
+  email: string;
+  token: string;
+  password: string;
+  confirmedPassword: string;
 }
