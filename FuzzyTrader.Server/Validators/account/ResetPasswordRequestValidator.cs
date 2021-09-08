@@ -1,7 +1,7 @@
 using FluentValidation;
 using FuzzyTrader.Contracts.Requests.Account;
 
-namespace FuzzyTrader.Server.Validators
+namespace FuzzyTrader.Server.Validators.account
 {
     public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequest>
     {

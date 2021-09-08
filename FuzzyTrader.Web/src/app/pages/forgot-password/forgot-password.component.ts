@@ -1,3 +1,4 @@
+import { ErrorModel } from './../../contracts/responses/default-responses';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -32,5 +33,19 @@ export class ForgotPasswordComponent implements OnInit {
     return this.form.get('email');
   }
 
-  async submit() {}
+  async submit() {
+    if (this.form.invalid) return;
+    try {
+      await this.authService.notifyPasswordForgoten({ email: this.email!.value });
+      this.toastr.info('An an email was sent for you to recover your account');
+      this.router.navigate(['']);
+    } catch (err: any) {
+      this.toastr.error('something went wrong');
+      if (err?.error?.errors) {
+        err?.error?.errors.forEach((entry: ErrorModel) => {
+          this.toastr.error(entry.message);
+        });
+      }
+    }
+  }
 }

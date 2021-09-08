@@ -13,6 +13,7 @@ namespace FuzzyTrader.Server.Services.Iterfaces
         public Task<AuthenticationResult> LoginAsync(string email, string password);
         public void Logout(HttpResponse httpResponse);
         public Task<bool> ForgotPasswordAysnc(string email);
+        public Task<DefaultResult> RecoverPassword(string email, string password, string token);
         public Task<bool> SendForgotPasswordEmailAsync(string token, DomainUser user);
         public Task<bool> ResetPasswordAsync(string email, string token, string password);
         public Task<AuthenticationResult> RefreshAccessTokenAsync(string refreshToken);

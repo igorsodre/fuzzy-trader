@@ -20,6 +20,10 @@
       font-size: 1.1rem;
       min-width: 60%;
     }
+
+    mat-error {
+      margin-top: 5px;
+    }
   }
 
   &--button-container {

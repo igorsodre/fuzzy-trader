@@ -37,16 +37,16 @@ namespace FuzzyTrader.Server.Services
 
             if (existingUser is not null)
             {
-                return new AuthenticationResult {ErrorMessages = new[] {"Email aready taken"}};
+                return new AuthenticationResult { ErrorMessages = new[] { "Email aready taken" } };
             }
 
-            var user = new AppUser() {Name = name, Email = email, UserName = email, TokenVersion = 1};
+            var user = new AppUser() { Name = name, Email = email, UserName = email, TokenVersion = 1 };
 
             var createdUser = await _userManager.CreateAsync(user, password);
 
             if (!createdUser.Succeeded)
             {
-                return new AuthenticationResult {ErrorMessages = createdUser.Errors.Select(x => x.Description)};
+                return new AuthenticationResult { ErrorMessages = createdUser.Errors.Select(x => x.Description) };
             }
 
             var domainUser = _mapper.Map<DomainUser>(user);
@@ -55,7 +55,7 @@ namespace FuzzyTrader.Server.Services
 
             await SendVerificationEmailAsync(confirmationToken, domainUser);
 
-            return new AuthenticationResult {Success = true};
+            return new AuthenticationResult { Success = true };
         }
 
 
@@ -98,19 +98,19 @@ namespace FuzzyTrader.Server.Services
 
             if (user is null)
             {
-                return new AuthenticationResult {ErrorMessages = new[] {"Invalid Email/Password"}};
+                return new AuthenticationResult { ErrorMessages = new[] { "Invalid Email/Password" } };
             }
 
             var verifiedPassword = await _userManager.CheckPasswordAsync(user, password);
 
             if (!verifiedPassword)
             {
-                return new AuthenticationResult {ErrorMessages = new[] {"Invalid Email/Password"}};
+                return new AuthenticationResult { ErrorMessages = new[] { "Invalid Email/Password" } };
             }
 
             if (!user.EmailConfirmed)
             {
-                return new AuthenticationResult {ErrorMessages = new[] {"Email not verified"}};
+                return new AuthenticationResult { ErrorMessages = new[] { "Email not verified" } };
             }
 
             var domainUser = _mapper.Map<DomainUser>(user);
@@ -144,6 +144,45 @@ namespace FuzzyTrader.Server.Services
             return true;
         }
 
+        public async Task<DefaultResult> RecoverPassword(string email, string password, string token)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null || !user.EmailConfirmed)
+            {
+                return new DefaultResult { Success = false, ErrorMessages = new[] { "Invalid Email" } };
+            }
+
+            var isTokenValid = await _userManager.VerifyUserTokenAsync(
+                user,
+                _userManager.Options.Tokens.PasswordResetTokenProvider,
+                UserManager<AppUser>.ResetPasswordTokenPurpose,
+                token
+            );
+
+            if (!isTokenValid)
+            {
+                return new DefaultResult
+                {
+                    Success = false, ErrorMessages = new[] { "Invalid or expired verification token" }
+                };
+            }
+
+            var result = await _userManager.ResetPasswordAsync(user, token, password);
+            if (!result.Succeeded)
+            {
+                return new DefaultResult
+                {
+                    Success = false, ErrorMessages = result.Errors.Select(error => error.Description)
+                };
+            }
+
+            await _userManager.UpdateSecurityStampAsync(user);
+            await RevokeAllRefreshTokensForUser(user.Id);
+
+            return new DefaultResult { Success = true };
+        }
+
         public async Task<bool> SendForgotPasswordEmailAsync(string token, DomainUser user)
         {
             var encodedToken = WebUtility.UrlEncode(token);
@@ -174,7 +213,7 @@ namespace FuzzyTrader.Server.Services
             {
                 return new AuthenticationResult
                 {
-                    ErrorMessages = new[] {"Invalid refresh token"},
+                    ErrorMessages = new[] { "Invalid refresh token" },
                 };
             }
 
@@ -185,13 +224,13 @@ namespace FuzzyTrader.Server.Services
 
             if (user is null || user.TokenVersion != tokenVersion)
             {
-                return new AuthenticationResult {ErrorMessages = new[] {"Invalid refresh token"}};
+                return new AuthenticationResult { ErrorMessages = new[] { "Invalid refresh token" } };
             }
 
             var domainUser = _mapper.Map<DomainUser>(user);
             var newAccessToken = _tokenService.CreateAccessToken(domainUser);
 
-            return new AuthenticationResult {Token = newAccessToken, Success = true, User = domainUser};
+            return new AuthenticationResult { Token = newAccessToken, Success = true, User = domainUser };
         }
 
         public void AddRefreshTokenForUserOnResponse(DomainUser appUser, HttpResponse httpResponse)

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { LoginRequest, SignupRequest } from '../contracts/requests/account';
+import { ForgotPasswordRequest, LoginRequest, SignupRequest } from '../contracts/requests/account';
 import { LoginResponse, RefreshTokenResponse } from '../contracts/responses/account';
 import { SuccessResponse } from '../contracts/responses/default-responses';
 
@@ -37,9 +37,15 @@ export class AuthService {
     const endpoint = this.urlPrefix + '/update';
   }
 
+  async notifyPasswordForgoten(requestBody: ForgotPasswordRequest) {
+    const endpoint = this.urlPrefix + '/forgot-password';
+    const result = await this.http.post<SuccessResponse<string>>(endpoint, requestBody).toPromise();
+    return result.data;
+  }
+
   async refreshToken(): Promise<RefreshTokenResponse | null> {
     try {
-      const endpoint = environment.baseUrl + '/api/account/refresh-token';
+      const endpoint = this.urlPrefix + '/refresh-token';
       const response = await fetch(endpoint, { credentials: 'include', method: 'POST' });
       if (response.ok) {
         const result = await response.json();
@@ -50,6 +56,4 @@ export class AuthService {
       return null;
     }
   }
-
-  async getLoggedUser() {}
 }

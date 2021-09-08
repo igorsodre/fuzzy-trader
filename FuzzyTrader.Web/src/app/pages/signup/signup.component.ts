@@ -66,6 +66,7 @@ export class SignupComponent implements OnInit {
         name: this.name!.value,
       });
       this.toastr.info('Check you email to confirm the signup process');
+      this.router.navigate(['']);
     } catch (err: any) {
       this.toastr.error('Failed to create new account');
       if (err?.error?.errors) {

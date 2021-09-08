@@ -113,7 +113,7 @@ namespace FuzzyTrader.Server.Controllers
             return Ok(SuccessResponse.DefaultOkResponse());
         }
 
-        [HttpGet("reset-password-page")]
+        [HttpGet("reset-password")]
         public IActionResult ReserPasswordPage(string token, string email)
         {
             var endpoint = _serverSettings.ClientUrl +
@@ -121,6 +121,18 @@ namespace FuzzyTrader.Server.Controllers
                            $"?token={token}&email={email}";
 
             return Redirect(endpoint);
+        }
+
+        [HttpPost("recover-password")]
+        public async Task<IActionResult> RecoverPassword(RecoverPasswordRequest request)
+        {
+            var result = await _accountService.RecoverPassword(request.Email, request.Password, request.Token);
+            if (!result.Success)
+            {
+                return BadRequest(new ErrorResponse(result.ErrorMessages));
+            }
+
+            return Ok(SuccessResponse.DefaultOkResponse());
         }
     }
 }

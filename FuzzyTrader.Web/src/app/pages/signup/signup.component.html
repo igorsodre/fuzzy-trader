@@ -1,6 +1,6 @@
 <app-header></app-header>
 <section class="auth-form">
-  <form [formGroup]="form">
+  <form [formGroup]="form" (ngSubmit)="submit()">
     <h3>Sign up</h3>
 
     <div class="form-group">
@@ -35,7 +35,7 @@
     </div>
 
     <div class="auth-form--button-container">
-      <button (click)="submit()" color="accent" mat-fab aria-label="signup" type="submit" matTooltip="Signup">
+      <button color="accent" mat-fab aria-label="signup" type="submit" matTooltip="Signup">
         <mat-icon>person_add</mat-icon>
       </button>
     </div>
