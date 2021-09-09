@@ -46,10 +46,10 @@ namespace FuzzyTrader.Server.Controllers
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<ActionResult> VerifyEmail(string token, string email)
         {
-            var isVerified = await _accountService.VerifyEmailAsync(token, email);
-            if (!isVerified)
+            var result = await _accountService.VerifyEmailAsync(token, email);
+            if (!result.Success)
             {
-                return BadRequest(new ErrorResponse(new[] { "Failed to verify email" }));
+                return BadRequest(new ErrorResponse(result.ErrorMessages));
             }
 
             return Ok(SuccessResponse.DefaultOkResponse());
@@ -106,9 +106,9 @@ namespace FuzzyTrader.Server.Controllers
         [ProducesResponseType(typeof(ErrorResponse), 400)]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
         {
-            var sentEmail = await _accountService.ForgotPasswordAysnc(request.Email);
+            var result = await _accountService.ForgotPasswordAysnc(request.Email);
 
-            if (!sentEmail) return BadRequest(new ErrorResponse(new[] { "Invalid Email" }));
+            if (!result.Success) return BadRequest(new ErrorResponse(result.ErrorMessages));
 
             return Ok(SuccessResponse.DefaultOkResponse());
         }

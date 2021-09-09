@@ -5,6 +5,6 @@ namespace FuzzyTrader.Server.Services.Iterfaces
 {
     public interface IEmailClientService
     {
-        public Task<bool> SendEmailAsync(EmailMessage emailMessage);
+        public Task<DefaultResult> SendEmailAsync(EmailMessage emailMessage);
     }
 }

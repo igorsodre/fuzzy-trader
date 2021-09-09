@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Options;
@@ -17,26 +18,35 @@ namespace FuzzyTrader.Server.Services
             _notificationMetadata = notificationMetadata;
         }
 
-        public async Task<bool> SendEmailAsync(EmailMessage emailMessage)
+        public async Task<DefaultResult> SendEmailAsync(EmailMessage emailMessage)
         {
             var mimeMessage = CreateMimeMessageFromEmailMessage(emailMessage);
 
             using var smtpClient = new SmtpClient();
-            await smtpClient.ConnectAsync(_notificationMetadata.SmtpServer, _notificationMetadata.Port,
-                SecureSocketOptions.None);
-
-            if (_notificationMetadata.UseAuthentication)
+            try
             {
-                await smtpClient.AuthenticateAsync(
-                    _notificationMetadata.UserName,
-                    _notificationMetadata.Password
+                await smtpClient.ConnectAsync(
+                    _notificationMetadata.SmtpServer,
+                    _notificationMetadata.Port,
+                    SecureSocketOptions.None
                 );
+
+                if (_notificationMetadata.UseAuthentication)
+                {
+                    await smtpClient.AuthenticateAsync(
+                        _notificationMetadata.UserName,
+                        _notificationMetadata.Password
+                    );
+                }
+
+                await smtpClient.SendAsync(mimeMessage);
+                await smtpClient.DisconnectAsync(true);
+                return new DefaultResult { Success = true };
             }
-
-            await smtpClient.SendAsync(mimeMessage);
-            await smtpClient.DisconnectAsync(true);
-
-            return true;
+            catch
+            {
+                return new DefaultResult { Success = false, ErrorMessages = new[] { "Failed to send email" } };
+            }
         }
 
         private MimeMessage CreateMimeMessageFromEmailMessage(EmailMessage message)
