@@ -21,7 +21,7 @@
 
     <div class="form-group">
       <mat-form-field hintLabel="Please enter your password" appearance="fill" [color]="'primary'">
-        <mat-label>Passord</mat-label>
+        <mat-label>Password</mat-label>
         <input matInput [type]="'password'" required formControlName="password" />
       </mat-form-field>
       <mat-error *ngIf="password?.invalid && (password?.dirty || password?.touched)">Invalid password</mat-error>
@@ -31,7 +31,7 @@
         <mat-label>Confirm password</mat-label>
         <input matInput [type]="'password'" required formControlName="confirmPassword" />
       </mat-form-field>
-      <mat-error *ngIf="form?.errors?.noMatch && (form?.dirty || form?.touched)">Passords should match</mat-error>
+      <mat-error *ngIf="form?.errors?.noMatch && (form?.dirty || form?.touched)">Passwords should match</mat-error>
     </div>
 
     <div class="auth-form--button-container">

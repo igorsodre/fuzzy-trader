@@ -12,7 +12,7 @@
 
     <div class="form-group">
       <mat-form-field hintLabel="Please enter your password" appearance="fill" [color]="'primary'">
-        <mat-label>Passord</mat-label>
+        <mat-label>Password</mat-label>
         <input matInput [type]="'password'" required formControlName="password" />
       </mat-form-field>
       <mat-error *ngIf="password?.invalid && (password?.dirty || password?.touched)">Invalid password</mat-error>

@@ -97,8 +97,10 @@ namespace FuzzyTrader.Server.Controllers
             }
 
             var user = _mapper.Map<ResponseUser>(result.User);
-            return Ok(new SuccessResponse<RefreshTokenResponse>(new RefreshTokenResponse
-                { AccessToken = result.Token, User = user }));
+            return Ok(new SuccessResponse<RefreshTokenResponse>(
+                    new RefreshTokenResponse { AccessToken = result.Token, User = user }
+                )
+            );
         }
 
         [HttpPost("forgot-password")]
