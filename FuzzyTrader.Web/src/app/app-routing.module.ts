@@ -7,6 +7,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardGuard } from './guards/auth-guard.guard';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { UserProfileComponent } from './pages/user-profile/user-profile.component';
 
 const routes: Routes = [
   { path: '', component: StartUpComponent },
@@ -18,7 +19,10 @@ const routes: Routes = [
     path: '',
     runGuardsAndResolvers: 'always',
     canActivate: [AuthGuardGuard],
-    children: [{ path: 'home', component: HomeComponent }],
+    children: [
+      { path: 'home', component: HomeComponent },
+      { path: 'user-profile', component: UserProfileComponent },
+    ],
   },
   { path: '**', redirectTo: '' },
 ];

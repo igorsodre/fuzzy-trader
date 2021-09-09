@@ -10,9 +10,10 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { SignupComponent } from './signup/signup.component';
 import { StartUpComponent } from './start-up/start-up.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 @NgModule({
-  declarations: [HomeComponent, SignupComponent, LoginComponent, StartUpComponent, ResetPasswordComponent, ForgotPasswordComponent],
+  declarations: [HomeComponent, SignupComponent, LoginComponent, StartUpComponent, ResetPasswordComponent, ForgotPasswordComponent, UserProfileComponent],
   imports: [
     CommonModule,
     FormsModule,
