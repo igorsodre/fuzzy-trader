@@ -11,9 +11,10 @@ export interface LoginRequest {
 }
 
 export interface UpdateUserRequest {
-  newEmail: string;
-  password: string;
+  oldPassword: string;
   newPassword: string;
+  confirmedPassword: string;
+  name: string;
 }
 
 export interface ForgotPasswordRequest {

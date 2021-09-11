@@ -1,7 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { ForgotPasswordRequest, LoginRequest, RecoverPasswordRequest, SignupRequest } from '../contracts/requests/account';
+import {
+  ForgotPasswordRequest,
+  LoginRequest,
+  RecoverPasswordRequest,
+  SignupRequest,
+  UpdateUserRequest,
+} from '../contracts/requests/account';
 import { LoginResponse, RefreshTokenResponse } from '../contracts/responses/account';
 import { SuccessResponse } from '../contracts/responses/default-responses';
 
@@ -33,8 +39,12 @@ export class AuthService {
     return result.data;
   }
 
-  async updateUser() {
+  async updateUser(requestBody: UpdateUserRequest) {
     const endpoint = this.urlPrefix + '/update';
+    const result = await this.http
+      .post<SuccessResponse<string>>(endpoint, requestBody)
+      .toPromise();
+    return result.data;
   }
 
   async notifyPasswordForgoten(requestBody: ForgotPasswordRequest) {
@@ -43,7 +53,7 @@ export class AuthService {
     return result.data;
   }
 
-  async recoverPassword(requestBody: RecoverPasswordRequest){
+  async recoverPassword(requestBody: RecoverPasswordRequest) {
     const endpoint = this.urlPrefix + '/recover-password';
     const result = await this.http.post<SuccessResponse<string>>(endpoint, requestBody).toPromise();
     return result.data;

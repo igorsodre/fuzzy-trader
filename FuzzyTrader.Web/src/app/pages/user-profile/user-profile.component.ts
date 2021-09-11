@@ -59,16 +59,17 @@ export class UserProfileComponent implements OnInit {
   async submit() {
     if (this.form.invalid) return;
     try {
-      // const result = await this.authService.register({
-      //   email: this.email!.value,
-      //   password: this.password!.value,
-      //   confirmedPassword: this.confirmPassword!.value,
-      //   name: this.name!.value,
-      // });
-      this.toastr.info('Check you email to confirm the signup process');
-      // this.router.navigate(['']);
+      await this.authService.updateUser({
+        name: this.name!.value,
+        oldPassword: this.oldPassword!.value,
+        newPassword: this.password!.value,
+        confirmedPassword: this.confirmPassword!.value,
+      });
+      this.toastr.success('Account updated successfully');
+      this.form.reset();
+      this.form.markAsUntouched()
     } catch (err: any) {
-      this.toastr.error('Failed to create new account');
+      this.toastr.error('Failed to update account');
       if (err?.error?.errors) {
         err?.error?.errors.forEach((entry: ErrorModel) => {
           this.toastr.error(entry.message);
