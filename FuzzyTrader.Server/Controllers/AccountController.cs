@@ -6,8 +6,10 @@ using FuzzyTrader.Contracts.Requests.Account;
 using FuzzyTrader.Contracts.Responses;
 using FuzzyTrader.Contracts.Responses.Account;
 using FuzzyTrader.Server.Domain;
+using FuzzyTrader.Server.Extensions;
 using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services.Iterfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FuzzyTrader.Server.Controllers
@@ -36,6 +38,26 @@ namespace FuzzyTrader.Server.Controllers
             if (!authResponse.Success)
             {
                 return BadRequest(new ErrorResponse(authResponse.ErrorMessages));
+            }
+
+            return Ok(SuccessResponse.DefaultOkResponse());
+        }
+
+        [Authorize]
+        [HttpPost("update")]
+        [ProducesResponseType(typeof(SuccessResponse<string>), 200)]
+        [ProducesResponseType(typeof(ErrorResponse), 400)]
+        public async Task<ActionResult> Update(UpdateUserRequest request)
+        {
+            var result = await _accountService.UpdateUserAsync(
+                HttpContext.GetUserId(),
+                request.OldPassword,
+                request.Name,
+                request.NewPassword
+            );
+            if (!result.Success)
+            {
+                return BadRequest(new ErrorResponse(result.ErrorMessages));
             }
 
             return Ok(SuccessResponse.DefaultOkResponse());

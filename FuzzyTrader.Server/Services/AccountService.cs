@@ -140,13 +140,38 @@ namespace FuzzyTrader.Server.Services
             _tokenService.ClearHttpCookieForRefreshToken(httpResponse);
         }
 
+        public async Task<DefaultResult> UpdateUserAsync(string userId, string password, string name, string newPassword)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            var verifiedPassword = await _userManager.CheckPasswordAsync(user, password);
+            if (!verifiedPassword)
+            {
+                return new DefaultResult() { ErrorMessages = new[] { "Invalid Email/Password" } };
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                return new DefaultResult { ErrorMessages = new[] { "Email not verified" } };
+            }
+
+            user.Name = name;
+            var result = await _userManager.ChangePasswordAsync(user, password, newPassword);
+            if (!result.Succeeded)
+            {
+                return new DefaultResult { ErrorMessages = result.Errors.Select(x => x.Description) };
+            }
+
+            return new DefaultResult { Success = true };
+        }
+
         public async Task<DefaultResult> ForgotPasswordAysnc(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
             if (user is null || !user.EmailConfirmed)
             {
-                return new DefaultResult { Success = false, ErrorMessages = new[] { "Invalid Email" } };
+                return new DefaultResult { ErrorMessages = new[] { "Invalid Email" } };
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -161,7 +186,7 @@ namespace FuzzyTrader.Server.Services
 
             if (user is null || !user.EmailConfirmed)
             {
-                return new DefaultResult { Success = false, ErrorMessages = new[] { "Invalid Email" } };
+                return new DefaultResult { ErrorMessages = new[] { "Invalid Email" } };
             }
 
             var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
@@ -232,7 +257,7 @@ namespace FuzzyTrader.Server.Services
             return await _emailClientService.SendEmailAsync(emailMessage);
         }
 
-        public async Task RevokeAllRefreshTokensForUser(string userId)
+        private async Task RevokeAllRefreshTokensForUser(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user is null)
