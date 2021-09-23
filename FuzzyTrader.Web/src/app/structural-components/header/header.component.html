@@ -5,8 +5,8 @@
   <span class="header--spacer"></span>
   <div class="header--nav-links">
     <ng-container *ngIf="tokenService.accessToken$ | async">
-      <a mat-raised-button color="primary">Available Investments</a>
-      <a mat-raised-button color="primary">My Wallet</a>
+      <button routerLink="/available-investments" mat-raised-button color="primary">Available Investments</button>
+      <button routerLink="/my-wallet" mat-raised-button color="primary">My Wallet</button>
     </ng-container>
   </div>
   <span class="header--spacer"></span>

@@ -11,9 +11,11 @@ import { SignupComponent } from './signup/signup.component';
 import { StartUpComponent } from './start-up/start-up.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { AvailableInvestmentsComponent } from './available-investments/available-investments.component';
+import { UserWalletComponent } from './user-wallet/user-wallet.component';
 
 @NgModule({
-  declarations: [HomeComponent, SignupComponent, LoginComponent, StartUpComponent, ResetPasswordComponent, ForgotPasswordComponent, UserProfileComponent],
+  declarations: [HomeComponent, SignupComponent, LoginComponent, StartUpComponent, ResetPasswordComponent, ForgotPasswordComponent, UserProfileComponent, AvailableInvestmentsComponent, UserWalletComponent],
   imports: [
     CommonModule,
     FormsModule,

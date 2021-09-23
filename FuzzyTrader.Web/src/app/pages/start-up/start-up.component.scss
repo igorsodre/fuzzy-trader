@@ -1,0 +1,21 @@
+.main {
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  justify-content: end;
+  height: calc(100% - 128px);
+
+  &--item-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    // align-items: flex-end;
+    flex-direction: row;
+  }
+
+  &--item {
+    width: 25%;
+    min-width: 300px;
+    margin: 0 2rem 3rem;
+  }
+}
