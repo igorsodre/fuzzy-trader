@@ -1,6 +1,6 @@
 import { HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { from, Observable, firstValueFrom } from 'rxjs';
 import { TokenService } from '../services/token.service';
 
 @Injectable()
@@ -23,6 +23,6 @@ export class BearerInterceptor implements HttpInterceptor {
       }),
     });
 
-    return next.handle(request).toPromise();
+    return firstValueFrom(next.handle(request));
   }
 }

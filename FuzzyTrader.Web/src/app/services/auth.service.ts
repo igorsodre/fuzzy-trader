@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   ForgotPasswordRequest,
@@ -21,41 +22,42 @@ export class AuthService {
 
   async login(requestBody: LoginRequest): Promise<LoginResponse> {
     const endpoint = this.urlPrefix + '/login';
-    const result = await this.http
-      .post<SuccessResponse<LoginResponse>>(endpoint, requestBody, { withCredentials: true })
-      .toPromise();
+    const result = await firstValueFrom(
+      this.http.post<SuccessResponse<LoginResponse>>(endpoint, requestBody, { withCredentials: true }),
+    );
+
     return result.data;
   }
 
   async logout() {
     const endpoint = this.urlPrefix + '/logout';
-    const result = await this.http.post<SuccessResponse<string>>(endpoint, {}, { withCredentials: true }).toPromise();
+    const result = await firstValueFrom(
+      this.http.post<SuccessResponse<string>>(endpoint, {}, { withCredentials: true }),
+    );
     return result.data;
   }
 
   async register(requestBody: SignupRequest) {
     const endpoint = this.urlPrefix + '/signup';
-    const result = await this.http.post<SuccessResponse<string>>(endpoint, requestBody).toPromise();
+    const result = await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
     return result.data;
   }
 
   async updateUser(requestBody: UpdateUserRequest) {
     const endpoint = this.urlPrefix + '/update';
-    const result = await this.http
-      .post<SuccessResponse<string>>(endpoint, requestBody)
-      .toPromise();
+    const result = await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
     return result.data;
   }
 
   async notifyPasswordForgoten(requestBody: ForgotPasswordRequest) {
     const endpoint = this.urlPrefix + '/forgot-password';
-    const result = await this.http.post<SuccessResponse<string>>(endpoint, requestBody).toPromise();
+    const result = await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
     return result.data;
   }
 
   async recoverPassword(requestBody: RecoverPasswordRequest) {
     const endpoint = this.urlPrefix + '/recover-password';
-    const result = await this.http.post<SuccessResponse<string>>(endpoint, requestBody).toPromise();
+    const result = await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
     return result.data;
   }
 

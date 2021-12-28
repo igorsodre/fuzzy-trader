@@ -5,8 +5,6 @@ import { ToastrService } from 'ngx-toastr';
 import { ErrorModel } from '../../contracts/responses/default-responses';
 import { matchFields } from '../../custom-validators/match-fields';
 import { AuthService } from '../../services/auth.service';
-import { TokenService } from '../../services/token.service';
-import { AuthStoreService } from '../../stores/auth-store.service';
 
 @Component({
   selector: 'app-reset-password',
