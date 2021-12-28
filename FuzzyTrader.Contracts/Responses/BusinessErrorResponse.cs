@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace FuzzyTrader.Contracts.Responses
+namespace FuzzyTrader.Contracts.Responses;
+
+public class BusinessErrorResponse
 {
-    public class BusinessErrorResponse
-    {
-        public IEnumerable<string> Errors { get; set; }
-    }
+    public IEnumerable<string> Errors { get; set; }
 }

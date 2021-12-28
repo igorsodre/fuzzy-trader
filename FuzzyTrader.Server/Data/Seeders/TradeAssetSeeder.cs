@@ -5,20 +5,19 @@ using System.Text.Json;
 using FuzzyTrader.Server.Data.DbEntities;
 using Microsoft.EntityFrameworkCore;
 
-namespace FuzzyTrader.Server.Data.Seeders
+namespace FuzzyTrader.Server.Data.Seeders;
+
+public class TradeAssetSeeder : IDatabaseSeeder
 {
-    public class TradeAssetSeeder : IDatabaseSeeder
+    public void SeedData(ModelBuilder modelBuilder)
     {
-        public void SeedData(ModelBuilder modelBuilder)
-        {
-            var path = Path.Join("Data", "Static", "Trades.json");
-            var jsonString = File.ReadAllText(path);
-            var assets = JsonSerializer.Deserialize<List<TradeAsset>>(jsonString);
+        var path = Path.Join("Data", "Static", "Trades.json");
+        var jsonString = File.ReadAllText(path);
+        var assets = JsonSerializer.Deserialize<List<TradeAsset>>(jsonString);
 
-            if (assets is null) return;
+        if (assets is null) return;
 
-            modelBuilder.Entity<TradeAsset>()
-                .HasData(assets);
-        }
+        modelBuilder.Entity<TradeAsset>()
+            .HasData(assets);
     }
 }

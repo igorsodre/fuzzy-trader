@@ -5,15 +5,14 @@ using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Domain.Investment;
 
-namespace FuzzyTrader.Server.MappingProfiles
+namespace FuzzyTrader.Server.MappingProfiles;
+
+public class DomainToResponseProfile : Profile
 {
-    public class DomainToResponseProfile : Profile
+    public DomainToResponseProfile()
     {
-        public DomainToResponseProfile()
-        {
-            CreateMap<InvestmentOptions, GetInvestmentOptionsResponse>();
-            CreateMap<DomainInvestment, GetUserInvestmentsResponse>();
-            CreateMap<DomainUser, ResponseUser>();
-        }
+        CreateMap<InvestmentOptions, GetInvestmentOptionsResponse>();
+        CreateMap<DomainInvestment, GetUserInvestmentsResponse>();
+        CreateMap<DomainUser, ResponseUser>();
     }
 }

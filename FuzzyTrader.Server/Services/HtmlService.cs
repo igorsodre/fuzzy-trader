@@ -1,12 +1,12 @@
 using FuzzyTrader.Server.Services.Iterfaces;
 
-namespace FuzzyTrader.Server.Services
+namespace FuzzyTrader.Server.Services;
+
+public class HtmlService : IHtmlService
 {
-    public class HtmlService : IHtmlService
-    {
-        public string GetDocumentBodyOpeneningTags()
-        {
-            return @"
+	public string GetDocumentBodyOpeneningTags()
+	{
+		return @"
                 <!DOCTYPE html>
                 <html lang=""en"">
 	                <head>
@@ -18,13 +18,12 @@ namespace FuzzyTrader.Server.Services
 	                </head>
 	                <body>
                 ";
-        }
+	}
 
-        public string GetDocumentBodyClosingTags()
-        {
-	        return @"
+	public string GetDocumentBodyClosingTags()
+	{
+		return @"
 					</body>
 				</html>";
-        }
-    }
+	}
 }

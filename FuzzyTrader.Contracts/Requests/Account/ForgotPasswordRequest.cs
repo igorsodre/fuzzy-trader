@@ -1,7 +1,6 @@
-namespace FuzzyTrader.Contracts.Requests.Account
+namespace FuzzyTrader.Contracts.Requests.Account;
+
+public sealed class ForgotPasswordRequest
 {
-    public sealed class ForgotPasswordRequest
-    {
-        public string Email { get; set; }
-    }
+    public string Email { get; set; }
 }

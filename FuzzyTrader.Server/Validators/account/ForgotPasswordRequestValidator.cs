@@ -1,15 +1,14 @@
 using FluentValidation;
 using FuzzyTrader.Contracts.Requests.Account;
 
-namespace FuzzyTrader.Server.Validators.account
+namespace FuzzyTrader.Server.Validators.account;
+
+public class ForgotPasswordRequestValidator : AbstractValidator<ForgotPasswordRequest>
 {
-    public class ForgotPasswordRequestValidator : AbstractValidator<ForgotPasswordRequest>
+    public ForgotPasswordRequestValidator()
     {
-        public ForgotPasswordRequestValidator()
-        {
-            RuleFor(x => x.Email)
-                .NotEmpty()
-                .EmailAddress();
-        }
+        RuleFor(x => x.Email)
+            .NotEmpty()
+            .EmailAddress();
     }
 }

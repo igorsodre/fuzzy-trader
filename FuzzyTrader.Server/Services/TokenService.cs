@@ -12,134 +12,133 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace FuzzyTrader.Server.Services
+namespace FuzzyTrader.Server.Services;
+
+public class TokenService : ITokenService
 {
-    public class TokenService : ITokenService
+    private readonly SymmetricSecurityKey _accesskey;
+    private readonly SymmetricSecurityKey _refreshKey;
+    private readonly CookieOptions _defaultCookieOptions;
+
+
+    public TokenService(IConfiguration configuration)
     {
-        private readonly SymmetricSecurityKey _accesskey;
-        private readonly SymmetricSecurityKey _refreshKey;
-        private readonly CookieOptions _defaultCookieOptions;
-
-
-        public TokenService(IConfiguration configuration)
+        _accesskey =
+            new SymmetricSecurityKey(
+                Encoding.ASCII.GetBytes(configuration.GetValue<string>("JwtAccessTokenSecret")));
+        _refreshKey =
+            new SymmetricSecurityKey(
+                Encoding.ASCII.GetBytes(configuration.GetValue<string>("JwtRefreshTokenSecret")));
+        _defaultCookieOptions = new CookieOptions
         {
-            _accesskey =
-                new SymmetricSecurityKey(
-                    Encoding.ASCII.GetBytes(configuration.GetValue<string>("JwtAccessTokenSecret")));
-            _refreshKey =
-                new SymmetricSecurityKey(
-                    Encoding.ASCII.GetBytes(configuration.GetValue<string>("JwtRefreshTokenSecret")));
-            _defaultCookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Path = "/api/account/refresh-token",
-                Expires = DateTime.UtcNow.AddDays(7),
-                SameSite = SameSiteMode.None,
-                Secure = true
-            };
-        }
+            HttpOnly = true,
+            Path = "/api/account/refresh-token",
+            Expires = DateTime.UtcNow.AddDays(7),
+            SameSite = SameSiteMode.None,
+            Secure = true
+        };
+    }
 
-        public string CreateAccessToken(DomainUser user)
+    public string CreateAccessToken(DomainUser user)
+    {
+        var claims = new List<Claim>
         {
-            var claims = new List<Claim>
-            {
-                new(JwtRegisteredClaimNames.Email, user.Email),
-                new(CustomTokenClaims.Id, user.Id),
-            };
+            new(JwtRegisteredClaimNames.Email, user.Email),
+            new(CustomTokenClaims.Id, user.Id),
+        };
 
-            var credentials = new SigningCredentials(_accesskey, SecurityAlgorithms.HmacSha512Signature);
+        var credentials = new SigningCredentials(_accesskey, SecurityAlgorithms.HmacSha512Signature);
 
-            var tokenDescriptior = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(7),
-                SigningCredentials = credentials
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-
-
-            var token = tokenHandler.CreateToken(tokenDescriptior);
-
-            return tokenHandler.WriteToken(token);
-        }
-
-        public string CreateRefreshToken(DomainUser user)
+        var tokenDescriptior = new SecurityTokenDescriptor
         {
-            var claims = new List<Claim>
-            {
-                new(CustomTokenClaims.Id, user.Id),
-                new(CustomTokenClaims.TokenVersion, user.TokenVersion.ToString())
-            };
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddMinutes(7),
+            SigningCredentials = credentials
+        };
 
-            var credentials = new SigningCredentials(_refreshKey, SecurityAlgorithms.HmacSha512);
+        var tokenHandler = new JwtSecurityTokenHandler();
 
-            var tokenDescriptior = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = credentials
-            };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptior);
 
-            var token = tokenHandler.CreateToken(tokenDescriptior);
+        return tokenHandler.WriteToken(token);
+    }
 
-            return tokenHandler.WriteToken(token);
-        }
-
-        public void SetHttpCookieForRefreshToken(string token, HttpResponse httpResponse)
+    public string CreateRefreshToken(DomainUser user)
+    {
+        var claims = new List<Claim>
         {
-            httpResponse.Cookies.Append(CustomCookieKeys.RefreshToken, token, _defaultCookieOptions);
-        }
+            new(CustomTokenClaims.Id, user.Id),
+            new(CustomTokenClaims.TokenVersion, user.TokenVersion.ToString())
+        };
 
-        public void ClearHttpCookieForRefreshToken(HttpResponse httpResponse)
+        var credentials = new SigningCredentials(_refreshKey, SecurityAlgorithms.HmacSha512);
+
+        var tokenDescriptior = new SecurityTokenDescriptor
         {
-            httpResponse.Cookies.Append(CustomCookieKeys.RefreshToken, "", _defaultCookieOptions);
-        }
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddDays(7),
+            SigningCredentials = credentials
+        };
 
-        public Dictionary<string, string> VerifyRefreshToken(string token)
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        var token = tokenHandler.CreateToken(tokenDescriptior);
+
+        return tokenHandler.WriteToken(token);
+    }
+
+    public void SetHttpCookieForRefreshToken(string token, HttpResponse httpResponse)
+    {
+        httpResponse.Cookies.Append(CustomCookieKeys.RefreshToken, token, _defaultCookieOptions);
+    }
+
+    public void ClearHttpCookieForRefreshToken(HttpResponse httpResponse)
+    {
+        httpResponse.Cookies.Append(CustomCookieKeys.RefreshToken, "", _defaultCookieOptions);
+    }
+
+    public Dictionary<string, string> VerifyRefreshToken(string token)
+    {
+        var validationParameters = new TokenValidationParameters
         {
-            var validationParameters = new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = _refreshKey,
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                RequireExpirationTime = false,
-                ValidateLifetime = true,
-                ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha512 },
-                ClockSkew = TimeSpan.Zero
-            };
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = _refreshKey,
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            RequireExpirationTime = false,
+            ValidateLifetime = true,
+            ValidAlgorithms = new[] { SecurityAlgorithms.HmacSha512 },
+            ClockSkew = TimeSpan.Zero
+        };
 
-            var handler = new JwtSecurityTokenHandler();
+        var handler = new JwtSecurityTokenHandler();
 
-            try
-            {
-                var principal = handler.ValidateToken(token, validationParameters, out var validToken);
-                if (IsJwtTokenExpired(principal))
-                {
-                    return null;
-                }
-
-                return principal.Claims
-                    .ToDictionary(k => k.Type, v => v.Value);
-            }
-            catch
+        try
+        {
+            var principal = handler.ValidateToken(token, validationParameters, out var validToken);
+            if (IsJwtTokenExpired(principal))
             {
                 return null;
             }
-        }
 
-        private static bool IsJwtTokenExpired(ClaimsPrincipal claimsPrincipal)
+            return principal.Claims
+                .ToDictionary(k => k.Type, v => v.Value);
+        }
+        catch
         {
-            var unixExpDate =
-                long.Parse(claimsPrincipal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp)
-                    .Value);
-
-            var expDate = DateTimeOffset.FromUnixTimeSeconds(unixExpDate)
-                .UtcDateTime;
-            return expDate <= DateTime.UtcNow;
+            return null;
         }
+    }
+
+    private static bool IsJwtTokenExpired(ClaimsPrincipal claimsPrincipal)
+    {
+        var unixExpDate =
+            long.Parse(claimsPrincipal.Claims.Single(x => x.Type == JwtRegisteredClaimNames.Exp)
+                .Value);
+
+        var expDate = DateTimeOffset.FromUnixTimeSeconds(unixExpDate)
+            .UtcDateTime;
+        return expDate <= DateTime.UtcNow;
     }
 }

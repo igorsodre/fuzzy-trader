@@ -1,7 +1,6 @@
-namespace FuzzyTrader.Server.Domain
+namespace FuzzyTrader.Server.Domain;
+
+public static class CustomCookieKeys
 {
-    public static class CustomCookieKeys
-    {
-        public const string RefreshToken = "RefreshToken";
-    }
+    public const string RefreshToken = "RefreshToken";
 }

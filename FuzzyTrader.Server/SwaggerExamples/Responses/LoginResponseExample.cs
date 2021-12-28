@@ -1,16 +1,15 @@
 using FuzzyTrader.Contracts.Responses.Account;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace FuzzyTrader.Server.SwaggerExamples.Responses
+namespace FuzzyTrader.Server.SwaggerExamples.Responses;
+
+public class LoginResponseExample : IExamplesProvider<LoginResponse>
 {
-    public class LoginResponseExample : IExamplesProvider<LoginResponse>
+    public LoginResponse GetExamples()
     {
-        public LoginResponse GetExamples()
+        return new LoginResponse
         {
-            return new LoginResponse
-            {
-                AccessToken = "A_VALID_JWT_TOKEN"
-            };
-        }
+            AccessToken = "A_VALID_JWT_TOKEN"
+        };
     }
 }

@@ -2,13 +2,12 @@ using AutoMapper;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain.Entities;
 
-namespace FuzzyTrader.Server.MappingProfiles
+namespace FuzzyTrader.Server.MappingProfiles;
+
+public class DatabaseToDomainProfile : Profile
 {
-    public class DatabaseToDomainProfile : Profile
+    public DatabaseToDomainProfile()
     {
-        public DatabaseToDomainProfile()
-        {
-            CreateMap<AppUser, DomainUser>();
-        }
+        CreateMap<AppUser, DomainUser>();
     }
 }

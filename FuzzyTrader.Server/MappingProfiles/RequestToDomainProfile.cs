@@ -3,13 +3,12 @@ using FuzzyTrader.Contracts.Requests.Investment;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Investment;
 
-namespace FuzzyTrader.Server.MappingProfiles
+namespace FuzzyTrader.Server.MappingProfiles;
+
+public class RequestToDomainProfile : Profile
 {
-    public class RequestToDomainProfile : Profile
+    public RequestToDomainProfile()
     {
-        public RequestToDomainProfile()
-        {
-            CreateMap<PlaceInvestmentRequest, InvestmentOrder>();
-        }
+        CreateMap<PlaceInvestmentRequest, InvestmentOrder>();
     }
 }

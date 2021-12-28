@@ -7,38 +7,37 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FuzzyTrader.Server.ConfigurationInstallers
+namespace FuzzyTrader.Server.ConfigurationInstallers;
+
+public class MvcConfiguration : IConfigurationInstaller
 {
-    public class MvcConfiguration : IConfigurationInstaller
+    public void InstallServices(IServiceCollection services, IConfiguration configuration)
     {
-        public void InstallServices(IServiceCollection services, IConfiguration configuration)
-        {
-            var serverSettings = configuration.GetSection("ServerSettings")
-                .Get<ServerSettings>();
+        var serverSettings = configuration.GetSection("ServerSettings")
+            .Get<ServerSettings>();
 
-            services.AddSingleton(serverSettings);
-            services.AddSingleton<ITokenService, TokenService>();
-            services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<ITradingService, TradingService>();
-            services.AddAutoMapper(typeof(Startup));
+        services.AddSingleton(serverSettings);
+        services.AddSingleton<ITokenService, TokenService>();
+        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<ITradingService, TradingService>();
+        services.AddAutoMapper(typeof(Startup));
 
-            services.AddCors(options => {
-                options.AddDefaultPolicy(policyBuilder => {
-                    policyBuilder.WithOrigins(serverSettings.ClientUrl)
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
-                });
+        services.AddCors(options => {
+            options.AddDefaultPolicy(policyBuilder => {
+                policyBuilder.WithOrigins(serverSettings.ClientUrl)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
             });
+        });
 
-            services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+        services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
-            services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); })
-                .AddFluentValidation(options => {
-                    options.DisableDataAnnotationsValidation = true;
-                    options.ImplicitlyValidateChildProperties = true;
-                    options.RegisterValidatorsFromAssemblyContaining<Startup>();
-                });
-        }
+        services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); })
+            .AddFluentValidation(options => {
+                options.DisableDataAnnotationsValidation = true;
+                options.ImplicitlyValidateChildProperties = true;
+                options.RegisterValidatorsFromAssemblyContaining<Startup>();
+            });
     }
 }

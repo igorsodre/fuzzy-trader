@@ -1,9 +1,8 @@
-namespace FuzzyTrader.Contracts.Objects
+namespace FuzzyTrader.Contracts.Objects;
+
+public class ResponseUser
 {
-    public class ResponseUser
-    {
-        public string Id { get; set; }
-        public string Email { get; set; }
-        public string Name { get; set; }
-    }
+    public string Id { get; set; }
+    public string Email { get; set; }
+    public string Name { get; set; }
 }

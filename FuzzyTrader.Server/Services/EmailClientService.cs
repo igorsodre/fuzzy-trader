@@ -7,57 +7,56 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
 
-namespace FuzzyTrader.Server.Services
+namespace FuzzyTrader.Server.Services;
+
+public class EmailClientService : IEmailClientService
 {
-    public class EmailClientService : IEmailClientService
+    private readonly NotificationMetadata _notificationMetadata;
+
+    public EmailClientService(NotificationMetadata notificationMetadata)
     {
-        private readonly NotificationMetadata _notificationMetadata;
+        _notificationMetadata = notificationMetadata;
+    }
 
-        public EmailClientService(NotificationMetadata notificationMetadata)
+    public async Task<DefaultResult> SendEmailAsync(EmailMessage emailMessage)
+    {
+        var mimeMessage = CreateMimeMessageFromEmailMessage(emailMessage);
+
+        using var smtpClient = new SmtpClient();
+        try
         {
-            _notificationMetadata = notificationMetadata;
-        }
+            await smtpClient.ConnectAsync(
+                _notificationMetadata.SmtpServer,
+                _notificationMetadata.Port,
+                SecureSocketOptions.None
+            );
 
-        public async Task<DefaultResult> SendEmailAsync(EmailMessage emailMessage)
-        {
-            var mimeMessage = CreateMimeMessageFromEmailMessage(emailMessage);
-
-            using var smtpClient = new SmtpClient();
-            try
+            if (_notificationMetadata.UseAuthentication)
             {
-                await smtpClient.ConnectAsync(
-                    _notificationMetadata.SmtpServer,
-                    _notificationMetadata.Port,
-                    SecureSocketOptions.None
+                await smtpClient.AuthenticateAsync(
+                    _notificationMetadata.UserName,
+                    _notificationMetadata.Password
                 );
-
-                if (_notificationMetadata.UseAuthentication)
-                {
-                    await smtpClient.AuthenticateAsync(
-                        _notificationMetadata.UserName,
-                        _notificationMetadata.Password
-                    );
-                }
-
-                await smtpClient.SendAsync(mimeMessage);
-                await smtpClient.DisconnectAsync(true);
-                return new DefaultResult { Success = true };
             }
-            catch
-            {
-                return new DefaultResult { Success = false, ErrorMessages = new[] { "Failed to send email" } };
-            }
+
+            await smtpClient.SendAsync(mimeMessage);
+            await smtpClient.DisconnectAsync(true);
+            return new DefaultResult { Success = true };
         }
-
-        private MimeMessage CreateMimeMessageFromEmailMessage(EmailMessage message)
+        catch
         {
-            var mimeMessage = new MimeMessage();
-            mimeMessage.From.Add(new MailboxAddress(_notificationMetadata.Sender));
-            mimeMessage.To.Add(new MailboxAddress(message.Reciever));
-            mimeMessage.Subject = message.Subject;
-            mimeMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
-                { Text = message.Content };
-            return mimeMessage;
+            return new DefaultResult { Success = false, ErrorMessages = new[] { "Failed to send email" } };
         }
+    }
+
+    private MimeMessage CreateMimeMessageFromEmailMessage(EmailMessage message)
+    {
+        var mimeMessage = new MimeMessage();
+        mimeMessage.From.Add(new MailboxAddress(_notificationMetadata.Sender));
+        mimeMessage.To.Add(new MailboxAddress(message.Reciever));
+        mimeMessage.Subject = message.Subject;
+        mimeMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            { Text = message.Content };
+        return mimeMessage;
     }
 }

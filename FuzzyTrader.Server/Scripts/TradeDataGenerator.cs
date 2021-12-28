@@ -13,137 +13,136 @@ using FuzzyTrader.Contracts.External;
 using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.MappingProfiles;
 
-namespace FuzzyTrader.Server.Scripts
+namespace FuzzyTrader.Server.Scripts;
+
+public class TradeDataGenerator
 {
-    public class TradeDataGenerator
+    private readonly IMapper _mapper;
+    private const string MarketStackApiUrl = "http://api.marketstack.com/v1";
+    private readonly string _currentDir = Directory.GetCurrentDirectory();
+    private readonly HttpClient _httpClient;
+
+    private const string Symbols1 =
+        "MSFT,AAPL,AMZN,GOOG,GOOGL,BABA,FB,BRK.B,BRK.A,VOD,V,JPM,JNJ,WMT,MA,PGTSM,CHT,RHHBF,RHHVF";
+
+    private const string Symbols2 =
+        "T,UNH,BAC,HD,INTC,KO,VZ,RHHBY,XOM,DIS,MRK,NVS,CMCSA,PFE,PEP,TM,CVX,ADBE,CSCO,WFC,NVDA";
+
+    private const string Symbols3 =
+        "NFLX,ORCL,BA,CHL,CRM,SAP,MCD,NKE,ABT,C,MDT,HSBC,TSLA,COST,BMY,HSBC/PA,PYPL,PM,NEE,ABBV,LLY,AMGN,SNY,TMO";
+
+    private const string Symbols4 =
+        "ASML,AZN,ACN,IBM,HON,UTX,TOT,AVGO,TXN,NVO,UNP,RY,BP,LMT,AMT,LIN,GSK,DHR,CHTR,HDB,GE,SBUX,BUD,GILD,TD,SHI,QCOM,AXP,RDS.A,FIS,BTI,MMM,LOW,DEO";
+
+    public TradeDataGenerator()
     {
-        private readonly IMapper _mapper;
-        private const string MarketStackApiUrl = "http://api.marketstack.com/v1";
-        private readonly string _currentDir = Directory.GetCurrentDirectory();
-        private readonly HttpClient _httpClient;
+        var mapConfig = new MapperConfiguration(cfg => { cfg.AddProfile<ExternalToDatabaseProfile>(); });
+        _mapper = new Mapper(mapConfig);
+        _httpClient = new HttpClient();
+    }
 
-        private const string Symbols1 =
-            "MSFT,AAPL,AMZN,GOOG,GOOGL,BABA,FB,BRK.B,BRK.A,VOD,V,JPM,JNJ,WMT,MA,PGTSM,CHT,RHHBF,RHHVF";
+    public async Task GetCryptoData(string apiKey)
+    {
+        var coinApiClient = new CoinApiRestClient(apiKey);
+        var result = await coinApiClient.Metadata_list_assetsAsync();
+        var mappedResult = _mapper.Map<List<CryptoCoin>>(result);
 
-        private const string Symbols2 =
-            "T,UNH,BAC,HD,INTC,KO,VZ,RHHBY,XOM,DIS,MRK,NVS,CMCSA,PFE,PEP,TM,CVX,ADBE,CSCO,WFC,NVDA";
+        if (mappedResult is null) return;
 
-        private const string Symbols3 =
-            "NFLX,ORCL,BA,CHL,CRM,SAP,MCD,NKE,ABT,C,MDT,HSBC,TSLA,COST,BMY,HSBC/PA,PYPL,PM,NEE,ABBV,LLY,AMGN,SNY,TMO";
-
-        private const string Symbols4 =
-            "ASML,AZN,ACN,IBM,HON,UTX,TOT,AVGO,TXN,NVO,UNP,RY,BP,LMT,AMT,LIN,GSK,DHR,CHTR,HDB,GE,SBUX,BUD,GILD,TD,SHI,QCOM,AXP,RDS.A,FIS,BTI,MMM,LOW,DEO";
-
-        public TradeDataGenerator()
+        foreach (var crypto in mappedResult)
         {
-            var mapConfig = new MapperConfiguration(cfg => { cfg.AddProfile<ExternalToDatabaseProfile>(); });
-            _mapper = new Mapper(mapConfig);
-            _httpClient = new HttpClient();
+            crypto.Id = Guid.NewGuid()
+                .ToString();
         }
 
-        public async Task GetCryptoData(string apiKey)
+        var filePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins.json");
+        await using var stream = File.Create(filePath);
+        await JsonSerializer.SerializeAsync(stream, mappedResult);
+    }
+
+    public async Task GetTradingData(string apiKey)
+    {
+        var enpoint = MarketStackApiUrl + $"/eod/latest?access_key={apiKey}&symbols=";
+
+        var resutlstring1 = await GetResultFromSymbols(enpoint + Symbols1);
+        var resutlstring2 = await GetResultFromSymbols(enpoint + Symbols2);
+        var resutlstring3 = await GetResultFromSymbols(enpoint + Symbols3);
+        var resutlstring4 = await GetResultFromSymbols(enpoint + Symbols4);
+
+        var marketData = CombineMarketResponses(new[] {resutlstring1, resutlstring2, resutlstring3, resutlstring4});
+        var filePath = Path.Join(_currentDir, "Data", "Static", "Trades.json");
+        await using var stream = File.Create(filePath);
+        await JsonSerializer.SerializeAsync(stream, marketData);
+    }
+
+    private async Task<string> GetResultFromSymbols(string endpoint)
+    {
+        var response = await _httpClient.GetAsync(endpoint);
+        if (!response.IsSuccessStatusCode) return string.Empty;
+        return await response.Content.ReadAsStringAsync();
+    }
+
+    private IEnumerable<TradeAsset> CombineMarketResponses(IEnumerable<string> responses)
+    {
+        var marketData = new List<MarketStackData>();
+        foreach (var response in responses)
         {
-            var coinApiClient = new CoinApiRestClient(apiKey);
-            var result = await coinApiClient.Metadata_list_assetsAsync();
-            var mappedResult = _mapper.Map<List<CryptoCoin>>(result);
-
-            if (mappedResult is null) return;
-
-            foreach (var crypto in mappedResult)
+            if (string.IsNullOrEmpty(response)) continue;
+            try
             {
-                crypto.Id = Guid.NewGuid()
-                    .ToString();
-            }
-
-            var filePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins.json");
-            await using var stream = File.Create(filePath);
-            await JsonSerializer.SerializeAsync(stream, mappedResult);
-        }
-
-        public async Task GetTradingData(string apiKey)
-        {
-            var enpoint = MarketStackApiUrl + $"/eod/latest?access_key={apiKey}&symbols=";
-
-            var resutlstring1 = await GetResultFromSymbols(enpoint + Symbols1);
-            var resutlstring2 = await GetResultFromSymbols(enpoint + Symbols2);
-            var resutlstring3 = await GetResultFromSymbols(enpoint + Symbols3);
-            var resutlstring4 = await GetResultFromSymbols(enpoint + Symbols4);
-
-            var marketData = CombineMarketResponses(new[] {resutlstring1, resutlstring2, resutlstring3, resutlstring4});
-            var filePath = Path.Join(_currentDir, "Data", "Static", "Trades.json");
-            await using var stream = File.Create(filePath);
-            await JsonSerializer.SerializeAsync(stream, marketData);
-        }
-
-        private async Task<string> GetResultFromSymbols(string endpoint)
-        {
-            var response = await _httpClient.GetAsync(endpoint);
-            if (!response.IsSuccessStatusCode) return string.Empty;
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        private IEnumerable<TradeAsset> CombineMarketResponses(IEnumerable<string> responses)
-        {
-            var marketData = new List<MarketStackData>();
-            foreach (var response in responses)
-            {
-                if (string.IsNullOrEmpty(response)) continue;
-                try
+                var curatedResponse = response.Replace("[],", "");
+                var marketResponse = JsonSerializer.Deserialize<MartketStackEndOfDayResponse>(curatedResponse);
+                if (marketResponse?.data is {Count: > 0})
                 {
-                    var curatedResponse = response.Replace("[],", "");
-                    var marketResponse = JsonSerializer.Deserialize<MartketStackEndOfDayResponse>(curatedResponse);
-                    if (marketResponse?.data is {Count: > 0})
-                    {
-                        marketData.AddRange(marketResponse.data);
-                    }
+                    marketData.AddRange(marketResponse.data);
                 }
-                catch { }
             }
-
-            var mappedData = _mapper.Map<List<TradeAsset>>(marketData);
-            foreach (var asset in mappedData)
-            {
-                asset.Id = Guid.NewGuid()
-                    .ToString();
-            }
-
-            return mappedData;
+            catch { }
         }
 
-        public async Task ConvertTradeData()
+        var mappedData = _mapper.Map<List<TradeAsset>>(marketData);
+        foreach (var asset in mappedData)
         {
-            var filePath = Path.Join(_currentDir, "Data", "Static", "Trades.json");
-            var jsonText = await File.ReadAllTextAsync(filePath);
-            var assetList = JsonSerializer.Deserialize<List<TradeAsset>>(jsonText);
-            if (assetList is null) return;
-            foreach (var asset in assetList)
-            {
-                asset.Id = Guid.NewGuid()
-                    .ToString();
-            }
-
-            var writePath = Path.Join(_currentDir, "Data", "Static", "Trades2.json");
-            await using var stream = File.Create(writePath);
-            await JsonSerializer.SerializeAsync(stream, assetList);
+            asset.Id = Guid.NewGuid()
+                .ToString();
         }
 
-        public async Task ConvertCrypto()
+        return mappedData;
+    }
+
+    public async Task ConvertTradeData()
+    {
+        var filePath = Path.Join(_currentDir, "Data", "Static", "Trades.json");
+        var jsonText = await File.ReadAllTextAsync(filePath);
+        var assetList = JsonSerializer.Deserialize<List<TradeAsset>>(jsonText);
+        if (assetList is null) return;
+        foreach (var asset in assetList)
         {
-            var filePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins.json");
-            var jsonText = await File.ReadAllTextAsync(filePath);
-            var cryptoList = JsonSerializer.Deserialize<List<CryptoCoin>>(jsonText);
-
-            if (cryptoList is null) return;
-
-            foreach (var crypto in cryptoList)
-            {
-                crypto.Id = Guid.NewGuid()
-                    .ToString();
-            }
-
-            var writePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins2.json");
-            await using var stream = File.Create(writePath);
-            await JsonSerializer.SerializeAsync(stream, cryptoList);
+            asset.Id = Guid.NewGuid()
+                .ToString();
         }
+
+        var writePath = Path.Join(_currentDir, "Data", "Static", "Trades2.json");
+        await using var stream = File.Create(writePath);
+        await JsonSerializer.SerializeAsync(stream, assetList);
+    }
+
+    public async Task ConvertCrypto()
+    {
+        var filePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins.json");
+        var jsonText = await File.ReadAllTextAsync(filePath);
+        var cryptoList = JsonSerializer.Deserialize<List<CryptoCoin>>(jsonText);
+
+        if (cryptoList is null) return;
+
+        foreach (var crypto in cryptoList)
+        {
+            crypto.Id = Guid.NewGuid()
+                .ToString();
+        }
+
+        var writePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins2.json");
+        await using var stream = File.Create(writePath);
+        await JsonSerializer.SerializeAsync(stream, cryptoList);
     }
 }

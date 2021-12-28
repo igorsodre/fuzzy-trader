@@ -1,8 +1,7 @@
-namespace FuzzyTrader.Server.Services.Iterfaces
+namespace FuzzyTrader.Server.Services.Iterfaces;
+
+public interface IHtmlService
 {
-    public interface IHtmlService
-    {
-        public string GetDocumentBodyOpeneningTags();
-        public string GetDocumentBodyClosingTags();
-    }
+    public string GetDocumentBodyOpeneningTags();
+    public string GetDocumentBodyClosingTags();
 }

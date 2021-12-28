@@ -6,21 +6,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FuzzyTrader.Server.ConfigurationInstallers
+namespace FuzzyTrader.Server.ConfigurationInstallers;
+
+public class DatabaseConfiguration : IConfigurationInstaller
 {
-    public class DatabaseConfiguration : IConfigurationInstaller
+    public void InstallServices(IServiceCollection services, IConfiguration configuration)
     {
-        public void InstallServices(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddDbContext<DataContext>(options => {
-                options.UseNpgsql(configuration.GetConnectionString("DatabaseUrl"));
-            });
-            services.AddDefaultIdentity<AppUser>()
-                .AddEntityFrameworkStores<DataContext>();
+        services.AddDbContext<DataContext>(options => {
+            options.UseNpgsql(configuration.GetConnectionString("DatabaseUrl"));
+        });
+        services.AddDefaultIdentity<AppUser>()
+            .AddEntityFrameworkStores<DataContext>();
             
-            services.Configure<DataProtectionTokenProviderOptions>(options => {
-                options.TokenLifespan = TimeSpan.FromMinutes(15);
-            });
-        }
+        services.Configure<DataProtectionTokenProviderOptions>(options => {
+            options.TokenLifespan = TimeSpan.FromMinutes(15);
+        });
     }
 }

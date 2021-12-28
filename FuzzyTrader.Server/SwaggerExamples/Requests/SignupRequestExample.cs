@@ -1,19 +1,18 @@
 using FuzzyTrader.Contracts.Requests.Account;
 using Swashbuckle.AspNetCore.Filters;
 
-namespace FuzzyTrader.Server.SwaggerExamples.Requests
+namespace FuzzyTrader.Server.SwaggerExamples.Requests;
+
+public class SignupRequestExample : IExamplesProvider<SignupRequest>
 {
-    public class SignupRequestExample : IExamplesProvider<SignupRequest>
+    public SignupRequest GetExamples()
     {
-        public SignupRequest GetExamples()
+        return new SignupRequest
         {
-            return new SignupRequest
-            {
-                Email = "dotnettest1@localhost.com",
-                Password = "Password!1",
-                Name = "Some Name",
-                ConfirmedPassword = "Password!1"
-            };
-        }
+            Email = "dotnettest1@localhost.com",
+            Password = "Password!1",
+            Name = "Some Name",
+            ConfirmedPassword = "Password!1"
+        };
     }
 }
