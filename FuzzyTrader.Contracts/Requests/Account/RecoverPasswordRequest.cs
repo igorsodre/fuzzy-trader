@@ -1,6 +1,6 @@
 namespace FuzzyTrader.Contracts.Requests.Account
 {
-    public class RecoverPasswordRequest
+    public sealed class RecoverPasswordRequest
     {
         public string Email { get; set; }
         public string Password { get; set; }

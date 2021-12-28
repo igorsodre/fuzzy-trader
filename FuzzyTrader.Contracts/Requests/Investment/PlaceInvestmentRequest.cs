@@ -1,6 +1,6 @@
 namespace FuzzyTrader.Contracts.Requests.Investment
 {
-    public class PlaceInvestmentRequest
+    public sealed class PlaceInvestmentRequest
     {
         public string ProductId { get; set; }
         public int Quantity { get; set; }

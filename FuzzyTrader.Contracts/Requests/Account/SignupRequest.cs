@@ -1,6 +1,6 @@
 namespace FuzzyTrader.Contracts.Requests.Account
 {
-    public class SignupRequest
+    public sealed class SignupRequest
     {
         public string Name { get; set; }
         public string Email { get; set; }
