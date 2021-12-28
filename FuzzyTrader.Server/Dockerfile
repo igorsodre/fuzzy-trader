@@ -6,6 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["FuzzyTrader.Server/FuzzyTrader.Server.csproj", "FuzzyTrader.Server/"]
+COPY ["FuzzyTrader.Contracts/FuzzyTrader.Contracts.csproj", "FuzzyTrader.Contracts/"]
 RUN dotnet restore "FuzzyTrader.Server/FuzzyTrader.Server.csproj"
 COPY . .
 WORKDIR "/src/FuzzyTrader.Server"
