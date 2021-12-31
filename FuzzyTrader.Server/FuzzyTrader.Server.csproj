@@ -35,10 +35,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\FuzzyTrader.Contracts\FuzzyTrader.Contracts.csproj" />
+        <ProjectReference Include="..\FuzzyTrader.DataAccess\FuzzyTrader.DataAccess.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Data\Static" />
+      <Folder Include="Data" />
     </ItemGroup>
 
 </Project>

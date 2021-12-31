@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyTrader.Contracts", "Fu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyTrader.Tests", "FuzzyTrader.Tests\FuzzyTrader.Tests.csproj", "{6A7867E9-8025-498A-AFBC-46333507622F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FuzzyTrader.DataAccess", "FuzzyTrader.DataAccess\FuzzyTrader.DataAccess.csproj", "{8041B005-CB7F-4BBC-86E7-BD32D01FD413}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{6A7867E9-8025-498A-AFBC-46333507622F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A7867E9-8025-498A-AFBC-46333507622F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A7867E9-8025-498A-AFBC-46333507622F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8041B005-CB7F-4BBC-86E7-BD32D01FD413}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8041B005-CB7F-4BBC-86E7-BD32D01FD413}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8041B005-CB7F-4BBC-86E7-BD32D01FD413}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8041B005-CB7F-4BBC-86E7-BD32D01FD413}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
