@@ -3,7 +3,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
-using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.DataAccess.Entities;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Options;
@@ -22,8 +22,13 @@ public class AccountService : IAccountService
     private readonly IEmailClientService _emailClientService;
     private readonly ServerSettings _serverSettings;
 
-    public AccountService(UserManager<AppUser> userManager, ITokenService tokenService, IMapper mapper,
-        IEmailClientService emailClientService, ServerSettings serverSettings)
+    public AccountService(
+        UserManager<AppUser> userManager,
+        ITokenService tokenService,
+        IMapper mapper,
+        IEmailClientService emailClientService,
+        ServerSettings serverSettings
+    )
     {
         _userManager = userManager;
         _tokenService = tokenService;
@@ -31,7 +36,6 @@ public class AccountService : IAccountService
         _emailClientService = emailClientService;
         _serverSettings = serverSettings;
     }
-
 
     public async Task<AuthenticationResult> RegisterAsync(string name, string email, string password)
     {
@@ -42,7 +46,13 @@ public class AccountService : IAccountService
             return new AuthenticationResult { ErrorMessages = new[] { "Email aready taken" } };
         }
 
-        var user = new AppUser() { Name = name, Email = email, UserName = email, TokenVersion = 1 };
+        var user = new AppUser()
+        {
+            Name = name,
+            Email = email,
+            UserName = email,
+            TokenVersion = 1
+        };
 
         var createdUser = await _userManager.CreateAsync(user, password);
 
@@ -60,20 +70,20 @@ public class AccountService : IAccountService
         return new AuthenticationResult { Success = true };
     }
 
-
     public async Task<DefaultResult> SendVerificationEmailAsync(string token, DomainUser user)
     {
         var encodedToken = WebUtility.UrlEncode(token);
         var encodedEmail = WebUtility.UrlEncode(user.Email);
-        var endpoint =
-            $"{_serverSettings.BaseUrl}/api/account/verify-email?token={encodedToken}&email={encodedEmail}";
+        var endpoint = $"{_serverSettings.BaseUrl}/api/account/verify-email?token={encodedToken}&email={encodedEmail}";
 
         var messageText = $"<p><a href='{endpoint}' target='_blank'>Click here</a> to confirm your email.</p>" +
                           $"<p>Please ignore this if you did not request it.</p>";
 
         var emailMessage = new EmailMessage
         {
-            Subject = "Email Confirmation", Content = messageText, Reciever = user.Email
+            Subject = "Email Confirmation",
+            Content = messageText,
+            Reciever = user.Email
         };
 
         return await _emailClientService.SendEmailAsync(emailMessage);
@@ -93,7 +103,8 @@ public class AccountService : IAccountService
         {
             return new DefaultResult
             {
-                Success = false, ErrorMessages = new[] { "Failed to verify email" }
+                Success = false,
+                ErrorMessages = new[] { "Failed to verify email" }
             };
         }
 
@@ -196,7 +207,8 @@ public class AccountService : IAccountService
         {
             return new DefaultResult
             {
-                Success = false, ErrorMessages = result.Errors.Select(error => error.Description)
+                Success = false,
+                ErrorMessages = result.Errors.Select(error => error.Description)
             };
         }
 
@@ -230,7 +242,12 @@ public class AccountService : IAccountService
         var domainUser = _mapper.Map<DomainUser>(user);
         var newAccessToken = _tokenService.CreateAccessToken(domainUser);
 
-        return new AuthenticationResult { Token = newAccessToken, Success = true, User = domainUser };
+        return new AuthenticationResult
+        {
+            Token = newAccessToken,
+            Success = true,
+            User = domainUser
+        };
     }
 
     public void AddRefreshTokenForUserOnResponse(DomainUser appUser, HttpResponse httpResponse)
@@ -251,7 +268,9 @@ public class AccountService : IAccountService
 
         var emailMessage = new EmailMessage
         {
-            Subject = "Password Reset", Content = messageText, Reciever = user.Email
+            Subject = "Password Reset",
+            Content = messageText,
+            Reciever = user.Email
         };
 
         return await _emailClientService.SendEmailAsync(emailMessage);

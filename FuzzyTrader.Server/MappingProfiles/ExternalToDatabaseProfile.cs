@@ -1,7 +1,7 @@
 using AutoMapper;
 using CoinAPI.REST.V1;
 using FuzzyTrader.Contracts.External;
-using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.DataAccess.Entities;
 
 namespace FuzzyTrader.Server.MappingProfiles;
 

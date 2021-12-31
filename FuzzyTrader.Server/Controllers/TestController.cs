@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using FuzzyTrader.Contracts.Responses;
-using FuzzyTrader.Server.Data;
-using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.DataAccess.Entities;
+using FuzzyTrader.DataAccess.Interfaces;
 using FuzzyTrader.Server.Services.Iterfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +16,16 @@ namespace FuzzyTrader.Server.Controllers;
 public class TestController : ControllerBase
 {
     private readonly UserManager<AppUser> _userManager;
-    private readonly DataContext _dataContext;
+    private readonly IDataContext _dataContext;
     private readonly ITradingService _tradingService;
     private readonly IMapper _mapper;
 
-    public TestController(UserManager<AppUser> userManager, DataContext dataContext, ITradingService tradingService,
-        IMapper mapper)
+    public TestController(
+        UserManager<AppUser> userManager,
+        IDataContext dataContext,
+        ITradingService tradingService,
+        IMapper mapper
+    )
     {
         _userManager = userManager;
         _dataContext = dataContext;

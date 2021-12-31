@@ -1,7 +1,6 @@
 using AutoMapper;
 using FuzzyTrader.Contracts.Objects;
 using FuzzyTrader.Contracts.Responses.Investment;
-using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Domain.Investment;
 

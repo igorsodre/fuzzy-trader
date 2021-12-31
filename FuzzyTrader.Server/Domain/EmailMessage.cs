@@ -1,5 +1,3 @@
-using MimeKit;
-
 namespace FuzzyTrader.Server.Domain;
 
 public class EmailMessage

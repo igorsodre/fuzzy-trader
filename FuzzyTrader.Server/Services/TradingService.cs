@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using FuzzyTrader.Server.Data;
-using FuzzyTrader.Server.Data.DbEntities;
-using FuzzyTrader.Server.Domain;
+using FuzzyTrader.DataAccess.Entities;
+using FuzzyTrader.DataAccess.Interfaces;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Domain.Investment;
 using FuzzyTrader.Server.Services.Iterfaces;
@@ -16,11 +15,11 @@ namespace FuzzyTrader.Server.Services;
 
 public class TradingService : ITradingService
 {
-    private readonly DataContext _context;
+    private readonly IDataContext _context;
     private readonly UserManager<AppUser> _userManager;
     private readonly IMapper _mapper;
 
-    public TradingService(DataContext context, UserManager<AppUser> userManager, IMapper mapper)
+    public TradingService(IDataContext context, UserManager<AppUser> userManager, IMapper mapper)
     {
         _context = context;
         _userManager = userManager;
@@ -32,10 +31,7 @@ public class TradingService : ITradingService
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
         {
-            return new UserInvestmentsResult
-            {
-                Errors = new[] {"Invalid user."}
-            };
+            return new UserInvestmentsResult { Errors = new[] { "Invalid user." } };
         }
 
         var investments = await _context.Investments.Include(i => i.Wallet)
@@ -60,9 +56,10 @@ public class TradingService : ITradingService
 
         foreach (var asset in assets)
         {
-            if (asset.Open is null or 0) continue;
+            if (asset.Open is null or 0)
+                continue;
 
-            var quantity = (int) (limit / asset.Open);
+            var quantity = (int)(limit / asset.Open);
             var investment = new InvestmentOptions
             {
                 Description = asset.Symbol,
@@ -84,10 +81,11 @@ public class TradingService : ITradingService
     public async Task<IEnumerable<InvestmentOptions>> GetBestTradingOptionsForCrypto(decimal limit)
     {
         var coins = await _context.CryptoCoins
-            .Where((c) =>
-                c.PriceUsd != null &&
-                Convert.ToDecimal(c.PriceUsd) > (decimal) 0.5 &&
-                Convert.ToDecimal(c.PriceUsd) <= limit)
+            .Where(
+                (c) => c.PriceUsd != null &&
+                       Convert.ToDecimal(c.PriceUsd) > (decimal)0.5 &&
+                       Convert.ToDecimal(c.PriceUsd) <= limit
+            )
             .Take(50)
             .ToListAsync();
 
@@ -97,9 +95,10 @@ public class TradingService : ITradingService
         {
             var parseSuccess = decimal.TryParse(coin.PriceUsd, out var price);
 
-            if (!parseSuccess) continue;
+            if (!parseSuccess)
+                continue;
 
-            var quantity = (int) (limit / price);
+            var quantity = (int)(limit / price);
             var investment = new InvestmentOptions
             {
                 Description = coin.Name,
@@ -123,19 +122,13 @@ public class TradingService : ITradingService
         var user = await _userManager.FindByIdAsync(order.UserId);
         if (user is null)
         {
-            return new InvestmentOrderResult
-            {
-                Errors = new[] {"Invalid user."}
-            };
+            return new InvestmentOrderResult { Errors = new[] { "Invalid user." } };
         }
 
         var wallet = await _context.Wallets.SingleOrDefaultAsync(w => w.UserId == user.Id);
         if (wallet is null)
         {
-            wallet = new Wallet
-            {
-                User = user
-            };
+            wallet = new Wallet { User = user };
             _context.Add(wallet);
             await _context.SaveChangesAsync();
         }
@@ -153,10 +146,7 @@ public class TradingService : ITradingService
         var resource = await _context.TradeAssets.FindAsync(order.ProductId);
         if (resource?.Open is null)
         {
-            return new InvestmentOrderResult
-            {
-                Errors = new[] {"Unavailable investment option."}
-            };
+            return new InvestmentOrderResult { Errors = new[] { "Unavailable investment option." } };
         }
 
         var investment = new Investment
@@ -170,10 +160,7 @@ public class TradingService : ITradingService
         _context.Add(investment);
         await _context.SaveChangesAsync();
 
-        return new InvestmentOrderResult
-        {
-            Success = true
-        };
+        return new InvestmentOrderResult { Success = true };
     }
 
     private async Task<InvestmentOrderResult> PlaceCryptoInvestment(InvestmentOrder order, Wallet wallet)
@@ -181,10 +168,7 @@ public class TradingService : ITradingService
         var resource = await _context.CryptoCoins.FindAsync(order.ProductId);
         if (resource is null || !decimal.TryParse(resource.PriceUsd, out var price))
         {
-            return new InvestmentOrderResult
-            {
-                Errors = new[] {"Unavailable investment option."}
-            };
+            return new InvestmentOrderResult { Errors = new[] { "Unavailable investment option." } };
         }
 
         var investment = new Investment
@@ -198,9 +182,6 @@ public class TradingService : ITradingService
         _context.Add(investment);
         await _context.SaveChangesAsync();
 
-        return new InvestmentOrderResult
-        {
-            Success = true
-        };
+        return new InvestmentOrderResult { Success = true };
     }
 }

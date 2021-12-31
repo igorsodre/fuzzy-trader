@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FuzzyTrader.Server.Domain;
-using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Domain.Investment;
 
 namespace FuzzyTrader.Server.Services.Iterfaces;

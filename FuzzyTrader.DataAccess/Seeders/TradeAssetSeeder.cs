@@ -1,11 +1,9 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.Json;
-using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.DataAccess.Entities;
+using FuzzyTrader.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace FuzzyTrader.Server.Data.Seeders;
+namespace FuzzyTrader.DataAccess.Seeders;
 
 public class TradeAssetSeeder : IDatabaseSeeder
 {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
-using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.DataAccess.Entities;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services;

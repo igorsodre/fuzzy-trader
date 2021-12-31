@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using FuzzyTrader.Server.Domain;
 using Microsoft.AspNetCore.Http;

@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "SqlServer": "Server=localhost,1433;Database=FuzzyTrader;User Id=sa;Password=yourStrong(@@Password12;"
+  }
+}

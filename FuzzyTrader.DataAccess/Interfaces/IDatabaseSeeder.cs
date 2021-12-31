@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace FuzzyTrader.Server.Data;
+namespace FuzzyTrader.DataAccess.Interfaces;
 
 public interface IDatabaseSeeder
 {

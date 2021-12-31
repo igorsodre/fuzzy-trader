@@ -1,5 +1,5 @@
 using AutoMapper;
-using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.DataAccess.Entities;
 using FuzzyTrader.Server.Domain.Entities;
 
 namespace FuzzyTrader.Server.MappingProfiles;

@@ -4,7 +4,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using FuzzyTrader.Server.Data.DbEntities;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Services.Iterfaces;

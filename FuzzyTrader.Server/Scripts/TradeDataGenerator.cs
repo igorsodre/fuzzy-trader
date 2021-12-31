@@ -1,16 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using CoinAPI.REST.V1;
 using FuzzyTrader.Contracts.External;
-using FuzzyTrader.Server.Data.DbEntities;
+using FuzzyTrader.DataAccess.Entities;
 using FuzzyTrader.Server.MappingProfiles;
 
 namespace FuzzyTrader.Server.Scripts;
@@ -47,12 +44,12 @@ public class TradeDataGenerator
         var result = await coinApiClient.Metadata_list_assetsAsync();
         var mappedResult = _mapper.Map<List<CryptoCoin>>(result);
 
-        if (mappedResult is null) return;
+        if (mappedResult is null)
+            return;
 
         foreach (var crypto in mappedResult)
         {
-            crypto.Id = Guid.NewGuid()
-                .ToString();
+            crypto.Id = Guid.NewGuid().ToString();
         }
 
         var filePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins.json");
@@ -69,7 +66,7 @@ public class TradeDataGenerator
         var resutlstring3 = await GetResultFromSymbols(enpoint + Symbols3);
         var resutlstring4 = await GetResultFromSymbols(enpoint + Symbols4);
 
-        var marketData = CombineMarketResponses(new[] {resutlstring1, resutlstring2, resutlstring3, resutlstring4});
+        var marketData = CombineMarketResponses(new[] { resutlstring1, resutlstring2, resutlstring3, resutlstring4 });
         var filePath = Path.Join(_currentDir, "Data", "Static", "Trades.json");
         await using var stream = File.Create(filePath);
         await JsonSerializer.SerializeAsync(stream, marketData);
@@ -78,7 +75,9 @@ public class TradeDataGenerator
     private async Task<string> GetResultFromSymbols(string endpoint)
     {
         var response = await _httpClient.GetAsync(endpoint);
-        if (!response.IsSuccessStatusCode) return string.Empty;
+        if (!response.IsSuccessStatusCode)
+            return string.Empty;
+
         return await response.Content.ReadAsStringAsync();
     }
 
@@ -87,12 +86,14 @@ public class TradeDataGenerator
         var marketData = new List<MarketStackData>();
         foreach (var response in responses)
         {
-            if (string.IsNullOrEmpty(response)) continue;
+            if (string.IsNullOrEmpty(response))
+                continue;
+
             try
             {
                 var curatedResponse = response.Replace("[],", "");
                 var marketResponse = JsonSerializer.Deserialize<MartketStackEndOfDayResponse>(curatedResponse);
-                if (marketResponse?.data is {Count: > 0})
+                if (marketResponse?.data is { Count: > 0 })
                 {
                     marketData.AddRange(marketResponse.data);
                 }
@@ -103,8 +104,7 @@ public class TradeDataGenerator
         var mappedData = _mapper.Map<List<TradeAsset>>(marketData);
         foreach (var asset in mappedData)
         {
-            asset.Id = Guid.NewGuid()
-                .ToString();
+            asset.Id = Guid.NewGuid().ToString();
         }
 
         return mappedData;
@@ -115,11 +115,12 @@ public class TradeDataGenerator
         var filePath = Path.Join(_currentDir, "Data", "Static", "Trades.json");
         var jsonText = await File.ReadAllTextAsync(filePath);
         var assetList = JsonSerializer.Deserialize<List<TradeAsset>>(jsonText);
-        if (assetList is null) return;
+        if (assetList is null)
+            return;
+
         foreach (var asset in assetList)
         {
-            asset.Id = Guid.NewGuid()
-                .ToString();
+            asset.Id = Guid.NewGuid().ToString();
         }
 
         var writePath = Path.Join(_currentDir, "Data", "Static", "Trades2.json");
@@ -133,12 +134,12 @@ public class TradeDataGenerator
         var jsonText = await File.ReadAllTextAsync(filePath);
         var cryptoList = JsonSerializer.Deserialize<List<CryptoCoin>>(jsonText);
 
-        if (cryptoList is null) return;
+        if (cryptoList is null)
+            return;
 
         foreach (var crypto in cryptoList)
         {
-            crypto.Id = Guid.NewGuid()
-                .ToString();
+            crypto.Id = Guid.NewGuid().ToString();
         }
 
         var writePath = Path.Join(_currentDir, "Data", "Static", "CryptoCoins2.json");
