@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace FuzzyTrader.DataAccess.Interfaces;
 
-public interface IDataContext
+public interface IDataContext : IDisposable
 {
     DbSet<Wallet> Wallets { get; set; }
 
@@ -43,10 +43,6 @@ public interface IDataContext
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken());
 
     Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken);
-
-    void Dispose();
-
-    ValueTask DisposeAsync();
 
     EntityEntry Add(object entity);
 

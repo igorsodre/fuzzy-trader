@@ -19,7 +19,7 @@ public class Investment
 
     public int Quantity { get; set; }
 
-    [MaxLength(100)]
+    [MaxLength(450)]
     public string WalletId { get; set; }
 
     [ForeignKey(nameof(WalletId))]

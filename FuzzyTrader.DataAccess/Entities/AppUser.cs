@@ -6,6 +6,7 @@ namespace FuzzyTrader.DataAccess.Entities;
 public class AppUser : IdentityUser
 {
     [MaxLength(100)]
+    [Required]
     public string Name { get; set; }
 
     public int TokenVersion { get; set; }

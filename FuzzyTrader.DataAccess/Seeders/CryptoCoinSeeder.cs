@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json;
 using FuzzyTrader.DataAccess.Entities;
 using FuzzyTrader.DataAccess.Interfaces;
@@ -7,9 +8,15 @@ namespace FuzzyTrader.DataAccess.Seeders;
 
 public class CryptoCoinSeeder : IDatabaseSeeder
 {
-    public void SeedData(ModelBuilder modelBuilder)
+    public void SeedData(IDataContext context)
     {
-        var path = Path.Join("Data", "Static", "CryptoCoins.json");
+        if (context.CryptoCoins.Any())
+        {
+            return;
+        }
+
+        var currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var path = Path.Join(currentDir, "Static", "CryptoCoins.json");
         var jsonString = File.ReadAllText(path);
         var assets = JsonSerializer.Deserialize<List<CryptoCoin>>(jsonString);
         assets = assets?.Where(c => c.TypeIsCrypto).ToList();
@@ -17,6 +24,7 @@ public class CryptoCoinSeeder : IDatabaseSeeder
         if (assets is null)
             return;
 
-        modelBuilder.Entity<CryptoCoin>().HasData(assets);
+        context.CryptoCoins.AddRange(assets);
+        context.SaveChanges();
     }
 }

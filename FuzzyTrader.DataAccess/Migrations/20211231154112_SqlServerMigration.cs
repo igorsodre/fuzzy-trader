@@ -55,22 +55,22 @@ namespace FuzzyTrader.DataAccess.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AssetId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    AssetId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     TypeIsCrypto = table.Column<bool>(type: "bit", nullable: false),
-                    DataQuoteStart = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataQuoteEnd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataOrderbookStart = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataOrderbookEnd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataTradeStart = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataTradeEnd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataQuoteCount = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataTradeCount = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    DataSymbolsCount = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Volume1HrsUsd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Volume1DayUsd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Volume1MthUsd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PriceUsd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    DataQuoteStart = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DataQuoteEnd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DataOrderbookStart = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DataOrderbookEnd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DataTradeStart = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DataTradeEnd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DataQuoteCount = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DataTradeCount = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    DataSymbolsCount = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Volume1HrsUsd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Volume1DayUsd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Volume1MthUsd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    PriceUsd = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -93,9 +93,9 @@ namespace FuzzyTrader.DataAccess.Migrations
                     AdjOpen = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     AdjVolume = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     SplitFactor = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Symbol = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Exchange = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Date = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Symbol = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Exchange = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Date = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -213,7 +213,7 @@ namespace FuzzyTrader.DataAccess.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    UserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -222,8 +222,7 @@ namespace FuzzyTrader.DataAccess.Migrations
                         name: "FK_Wallets_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -231,11 +230,11 @@ namespace FuzzyTrader.DataAccess.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    AssetId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    AssetId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    WalletId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    WalletId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -244,8 +243,7 @@ namespace FuzzyTrader.DataAccess.Migrations
                         name: "FK_Investments_Wallets_WalletId",
                         column: x => x.WalletId,
                         principalTable: "Wallets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -296,7 +294,8 @@ namespace FuzzyTrader.DataAccess.Migrations
                 name: "IX_Wallets_UserId",
                 table: "Wallets",
                 column: "UserId",
-                unique: true);
+                unique: true,
+                filter: "[UserId] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

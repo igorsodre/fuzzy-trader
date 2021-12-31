@@ -8,7 +8,7 @@ public class Wallet
     [Key]
     public string Id { get; set; }
 
-    [MaxLength(100)]
+    [MaxLength(450)]
     public string UserId { get; set; }
 
     [ForeignKey(nameof(UserId))]

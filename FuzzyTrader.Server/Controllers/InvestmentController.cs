@@ -37,8 +37,11 @@ public class InvestmentController : BaseController
             return BadRequest(new ErrorResponse(result.Errors));
         }
 
-        return Ok(new SuccessResponse<IEnumerable<GetUserInvestmentsResponse>>(
-            _mapper.Map<IEnumerable<GetUserInvestmentsResponse>>(result.Investments)));
+        return Ok(
+            new SuccessResponse<IEnumerable<GetUserInvestmentsResponse>>(
+                _mapper.Map<IEnumerable<GetUserInvestmentsResponse>>(result.Investments)
+            )
+        );
     }
 
     [HttpGet("get-investment-options")]
@@ -51,8 +54,11 @@ public class InvestmentController : BaseController
         var mappedCryptoInvestments = _mapper.Map<List<GetInvestmentOptionsResponse>>(cryptoInvestments);
         var mappedTradingInvestments = _mapper.Map<List<GetInvestmentOptionsResponse>>(tradingInvesments);
 
-        return Ok(new SuccessResponse<IEnumerable<GetInvestmentOptionsResponse>>(
-            mappedCryptoInvestments.Concat(mappedTradingInvestments)));
+        return Ok(
+            new SuccessResponse<IEnumerable<GetInvestmentOptionsResponse>>(
+                mappedCryptoInvestments.Concat(mappedTradingInvestments)
+            )
+        );
     }
 
     [HttpPost("place-investment")]

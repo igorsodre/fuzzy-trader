@@ -101,62 +101,50 @@ namespace FuzzyTrader.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AssetId")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DataOrderbookEnd")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DataOrderbookStart")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DataQuoteCount")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DataQuoteEnd")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DataQuoteStart")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DataSymbolsCount")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DataTradeCount")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DataTradeEnd")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("DataTradeStart")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PriceUsd")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -164,17 +152,14 @@ namespace FuzzyTrader.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Volume1DayUsd")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Volume1HrsUsd")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Volume1MthUsd")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -189,12 +174,10 @@ namespace FuzzyTrader.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AssetId")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -205,9 +188,8 @@ namespace FuzzyTrader.DataAccess.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("WalletId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -240,12 +222,10 @@ namespace FuzzyTrader.DataAccess.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Date")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Exchange")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -262,7 +242,6 @@ namespace FuzzyTrader.DataAccess.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Symbol")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -280,14 +259,14 @@ namespace FuzzyTrader.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserId] IS NOT NULL");
 
                     b.ToTable("Wallets");
                 });
@@ -429,9 +408,7 @@ namespace FuzzyTrader.DataAccess.Migrations
                 {
                     b.HasOne("FuzzyTrader.DataAccess.Entities.Wallet", "Wallet")
                         .WithMany("Investments")
-                        .HasForeignKey("WalletId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("WalletId");
 
                     b.Navigation("Wallet");
                 });
@@ -440,9 +417,7 @@ namespace FuzzyTrader.DataAccess.Migrations
                 {
                     b.HasOne("FuzzyTrader.DataAccess.Entities.AppUser", "User")
                         .WithOne("Wallet")
-                        .HasForeignKey("FuzzyTrader.DataAccess.Entities.Wallet", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("FuzzyTrader.DataAccess.Entities.Wallet", "UserId");
 
                     b.Navigation("User");
                 });
@@ -500,8 +475,7 @@ namespace FuzzyTrader.DataAccess.Migrations
 
             modelBuilder.Entity("FuzzyTrader.DataAccess.Entities.AppUser", b =>
                 {
-                    b.Navigation("Wallet")
-                        .IsRequired();
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("FuzzyTrader.DataAccess.Entities.Wallet", b =>

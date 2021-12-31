@@ -1,21 +1,30 @@
+using System.Reflection;
 using System.Text.Json;
 using FuzzyTrader.DataAccess.Entities;
 using FuzzyTrader.DataAccess.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace FuzzyTrader.DataAccess.Seeders;
 
 public class TradeAssetSeeder : IDatabaseSeeder
 {
-    public void SeedData(ModelBuilder modelBuilder)
+    public void SeedData(IDataContext context)
     {
-        var path = Path.Join("Data", "Static", "Trades.json");
+        if (context.TradeAssets.Any())
+        {
+            return;
+        }
+
+        var currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        var path = Path.Join(currentDir, "Static", "Trades.json");
         var jsonString = File.ReadAllText(path);
         var assets = JsonSerializer.Deserialize<List<TradeAsset>>(jsonString);
 
-        if (assets is null) return;
+        if (assets is null)
+        {
+            return;
+        }
 
-        modelBuilder.Entity<TradeAsset>()
-            .HasData(assets);
+        context.TradeAssets.AddRange(assets);
+        context.SaveChanges();
     }
 }

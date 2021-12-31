@@ -1,3 +1,5 @@
+using FuzzyTrader.DataAccess.Extensions;
+using FuzzyTrader.DataAccess.Interfaces;
 using FuzzyTrader.Server.Extensions.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +27,7 @@ public class Startup
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+        app.MigrateAndSeed(typeof(IDataContext));
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
