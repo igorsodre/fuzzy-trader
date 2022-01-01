@@ -15,11 +15,17 @@ public class ValidationFilter : IAsyncActionFilter
             var errors = context.ModelState.Where(x => x.Value.Errors.Count > 0)
                 .ToDictionary(k => k.Key, v => v.Value.Errors.Select(e => e.ErrorMessage));
 
+            var errorsList = errors.SelectMany(
+                x => x.Value.Select(
+                    xx => new ErrorModel
+                    {
+                        FieldName = x.Key,
+                        Message = xx
+                    }
+                )
+            );
 
-            var errorsList = errors.SelectMany((x) =>
-                x.Value.Select(xx => new ErrorModel {FieldName = x.Key, Message = xx}));
-
-            var errorResponse = new ErrorResponse {Errors = errorsList};
+            var errorResponse = new ErrorResponse { Errors = errorsList };
 
             context.Result = new BadRequestObjectResult(errorResponse);
             return;

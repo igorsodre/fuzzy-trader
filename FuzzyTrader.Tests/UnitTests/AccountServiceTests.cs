@@ -21,15 +21,13 @@ public class AccountServiceTests
     private readonly ITokenService _tokenService = Substitute.For<ITokenService>();
     private readonly IMapper _mapper = Substitute.For<IMapper>();
     private readonly IEmailClientService _emailClientService = Substitute.For<IEmailClientService>();
-    private readonly ServerSettings _serverSettings = new ServerSettings {BaseUrl = ""};
+    private readonly ServerSettings _serverSettings = new ServerSettings { BaseUrl = "" };
 
     public AccountServiceTests()
     {
         _userManager = TestHelpers.MockUserManager(new List<AppUser>());
-        _sut = new AccountService(_userManager.Object, _tokenService, _mapper, _emailClientService,
-            _serverSettings);
+        _sut = new AccountService(_userManager.Object, _tokenService, _mapper, _emailClientService, _serverSettings);
     }
-
 
     [Fact]
     public async Task RegisterAsync_ShouldReturAccessToken_WhenValidUserAndPassword()
@@ -41,27 +39,20 @@ public class AccountServiceTests
         var testToken = "testToken";
         var testDomainUser = new DomainUser();
 
-        _userManager.Setup(x => x.FindByEmailAsync(email))
-            .ReturnsAsync(() => null);
+        _userManager.Setup(x => x.FindByEmailAsync(email)).ReturnsAsync(() => null);
 
-        _userManager.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), password))
-            .ReturnsAsync(IdentityResult.Success);
+        _userManager.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), password)).ReturnsAsync(IdentityResult.Success);
 
-        _mapper.Map<DomainUser>(Arg.Any<AppUser>())
-            .Returns(testDomainUser);
+        _mapper.Map<DomainUser>(Arg.Any<AppUser>()).Returns(testDomainUser);
 
-        _tokenService.CreateAccessToken(Arg.Any<DomainUser>())
-            .Returns(testToken);
+        _tokenService.CreateAccessToken(Arg.Any<DomainUser>()).Returns(testToken);
 
         // Action
         var result = await _sut.RegisterAsync(name, email, password);
 
         // Verify
-        result.Success.Should()
-            .BeTrue();
-        result.Token.Should()
-            .Be(testToken);
-        result.User.Should()
-            .Be(testDomainUser);
+        result.Success.Should().BeTrue();
+        result.Token.Should().Be(testToken);
+        result.User.Should().Be(testDomainUser);
     }
 }

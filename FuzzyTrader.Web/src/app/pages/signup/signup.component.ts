@@ -5,8 +5,6 @@ import { ToastrService } from 'ngx-toastr';
 import { ErrorModel } from '../../contracts/responses/default-responses';
 import { matchFields } from '../../custom-validators/match-fields';
 import { AuthService } from '../../services/auth.service';
-import { TokenService } from '../../services/token.service';
-import { AuthStoreService } from '../../stores/auth-store.service';
 
 @Component({
   selector: 'app-signup',
@@ -14,13 +12,7 @@ import { AuthStoreService } from '../../stores/auth-store.service';
   styleUrls: ['./signup.component.scss'],
 })
 export class SignupComponent implements OnInit {
-  constructor(
-    private authService: AuthService,
-    private authStore: AuthStoreService,
-    private tokenService: TokenService,
-    private router: Router,
-    private toastr: ToastrService,
-  ) {
+  constructor(private authService: AuthService, private router: Router, private toastr: ToastrService) {
     this.form = new FormGroup(
       {
         email: new FormControl('dotnettest1@localhost.com', Validators.email),
@@ -58,8 +50,9 @@ export class SignupComponent implements OnInit {
 
   async submit() {
     if (this.form.invalid) return;
+
     try {
-      const result = await this.authService.register({
+      await this.authService.register({
         email: this.email!.value,
         password: this.password!.value,
         confirmedPassword: this.confirmPassword!.value,

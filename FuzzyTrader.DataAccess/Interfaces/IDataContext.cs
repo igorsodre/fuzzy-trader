@@ -74,15 +74,15 @@ public interface IDataContext : IDisposable
 
     void RemoveRange(IEnumerable<object> entities);
 
-    object? Find(Type entityType, params object?[]? keyValues);
+    object Find(Type entityType, params object[] keyValues);
 
-    ValueTask<object?> FindAsync(Type entityType, params object?[]? keyValues);
+    ValueTask<object> FindAsync(Type entityType, params object[] keyValues);
 
-    ValueTask<object?> FindAsync(Type entityType, object?[]? keyValues, CancellationToken cancellationToken);
+    ValueTask<object> FindAsync(Type entityType, object[] keyValues, CancellationToken cancellationToken);
 
-    event EventHandler<SavingChangesEventArgs>? SavingChanges;
+    event EventHandler<SavingChangesEventArgs> SavingChanges;
 
-    event EventHandler<SavedChangesEventArgs>? SavedChanges;
+    event EventHandler<SavedChangesEventArgs> SavedChanges;
 
-    event EventHandler<SaveChangesFailedEventArgs>? SaveChangesFailed;
+    event EventHandler<SaveChangesFailedEventArgs> SaveChangesFailed;
 }

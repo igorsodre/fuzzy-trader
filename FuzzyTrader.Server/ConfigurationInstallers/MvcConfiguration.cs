@@ -24,7 +24,7 @@ public class MvcConfiguration : IConfigurationInstaller
 
         services.AddCors(options => {
             options.AddDefaultPolicy(policyBuilder => {
-                policyBuilder.WithOrigins(serverSettings.ClientUrl)
+                policyBuilder.WithOrigins(serverSettings.ClientUrls)
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();

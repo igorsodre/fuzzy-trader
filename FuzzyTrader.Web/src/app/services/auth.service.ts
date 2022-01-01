@@ -20,7 +20,7 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  async login(requestBody: LoginRequest): Promise<LoginResponse> {
+  async login(requestBody: LoginRequest) {
     const endpoint = this.urlPrefix + '/login';
     const result = await firstValueFrom(
       this.http.post<SuccessResponse<LoginResponse>>(endpoint, requestBody, { withCredentials: true }),
@@ -39,8 +39,7 @@ export class AuthService {
 
   async register(requestBody: SignupRequest) {
     const endpoint = this.urlPrefix + '/signup';
-    const result = await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
-    return result.data;
+    return await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
   }
 
   async updateUser(requestBody: UpdateUserRequest) {

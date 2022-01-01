@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FuzzyTrader.Contracts.Objects;
@@ -91,8 +92,15 @@ public class AccountController : BaseController
 
         var responseUser = _mapper.Map<ResponseUser>(authResponse.User);
 
-        return Ok(new SuccessResponse<LoginResponse>(new LoginResponse
-            { AccessToken = authResponse.Token, User = responseUser }));
+        return Ok(
+            new SuccessResponse<LoginResponse>(
+                new LoginResponse
+                {
+                    AccessToken = authResponse.Token,
+                    User = responseUser
+                }
+            )
+        );
     }
 
     [HttpPost("logout")]
@@ -102,7 +110,6 @@ public class AccountController : BaseController
         _accountService.Logout(HttpContext.Response);
         return Ok(SuccessResponse.DefaultOkResponse());
     }
-
 
     [HttpPost("refresh-token")]
     [ProducesResponseType(typeof(SuccessResponse<RefreshTokenResponse>), 200)]
@@ -118,8 +125,13 @@ public class AccountController : BaseController
         }
 
         var user = _mapper.Map<ResponseUser>(result.User);
-        return Ok(new SuccessResponse<RefreshTokenResponse>(
-                new RefreshTokenResponse { AccessToken = result.Token, User = user }
+        return Ok(
+            new SuccessResponse<RefreshTokenResponse>(
+                new RefreshTokenResponse
+                {
+                    AccessToken = result.Token,
+                    User = user
+                }
             )
         );
     }
@@ -131,15 +143,16 @@ public class AccountController : BaseController
     {
         var result = await _accountService.ForgotPasswordAysnc(request.Email);
 
-        if (!result.Success) return BadRequest(new ErrorResponse(result.ErrorMessages));
+        if (!result.Success)
+            return BadRequest(new ErrorResponse(result.ErrorMessages));
 
         return Ok(SuccessResponse.DefaultOkResponse());
     }
 
     [HttpGet("reset-password")]
-    public IActionResult ReserPasswordPage(string token, string email)
+    public IActionResult ResetPasswordPage(string token, string email)
     {
-        var endpoint = _serverSettings.ClientUrl +
+        var endpoint = _serverSettings.ClientUrls.First() +
                        _serverSettings.ResetPasswordRoute +
                        $"?token={token}&email={email}";
 

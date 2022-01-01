@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
 import { BehaviorSubject } from 'rxjs';
@@ -11,7 +10,7 @@ export class TokenService {
   private readonly _accessTokenSource = new BehaviorSubject<string>('');
   readonly accessToken$ = this._accessTokenSource.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   setAccessToken(token: string) {
     this._accessTokenSource.next(token);
@@ -38,7 +37,6 @@ export class TokenService {
       const response = await fetch(endpoint, { credentials: 'include', method: 'POST' });
       if (response.ok) {
         const result = await response.json();
-        console.log('logging result');
         return result.data;
       }
       return '';

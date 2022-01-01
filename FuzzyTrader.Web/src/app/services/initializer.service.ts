@@ -14,7 +14,7 @@ export class InitializerService {
   ) {}
 
   async startup() {
-    console.log('===================================\nStarting up application\n=============================');
+    console.log('===========================\nStarting up application\n=============================\n\n');
     try {
       const result = await this.authService.refreshToken();
       if (result && result.accessToken) {
@@ -22,7 +22,7 @@ export class InitializerService {
         this.tokenService.setAccessToken(result.accessToken);
       }
     } catch {
-      console.log('Deu erro');
+      console.log('Error starting application');
     }
   }
 }
