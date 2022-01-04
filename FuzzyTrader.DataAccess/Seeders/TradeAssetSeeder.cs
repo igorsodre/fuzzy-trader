@@ -7,7 +7,7 @@ namespace FuzzyTrader.DataAccess.Seeders;
 
 public class TradeAssetSeeder : IDatabaseSeeder
 {
-    public void SeedData(IDataContext context)
+    public void SeedData(IDataContext context, IAccountManager accountManager)
     {
         if (context.TradeAssets.Any())
         {

@@ -8,7 +8,7 @@ namespace FuzzyTrader.DataAccess.Seeders;
 
 public class CryptoCoinSeeder : IDatabaseSeeder
 {
-    public void SeedData(IDataContext context)
+    public void SeedData(IDataContext context, IAccountManager accountManager)
     {
         if (context.CryptoCoins.Any())
         {

@@ -4,5 +4,5 @@ namespace FuzzyTrader.DataAccess.Interfaces;
 
 public interface IDatabaseSeeder
 {
-    public void SeedData(IDataContext context);
+    public void SeedData(IDataContext context, IAccountManager accountManager);
 }
