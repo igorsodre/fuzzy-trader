@@ -13,8 +13,7 @@ public class MvcConfiguration : IConfigurationInstaller
 {
     public void InstallServices(IServiceCollection services, IConfiguration configuration)
     {
-        var serverSettings = configuration.GetSection("ServerSettings")
-            .Get<ServerSettings>();
+        var serverSettings = configuration.GetSection("ServerSettings").Get<ServerSettings>();
 
         services.AddSingleton(serverSettings);
         services.AddSingleton<ITokenService, TokenService>();
@@ -22,22 +21,28 @@ public class MvcConfiguration : IConfigurationInstaller
         services.AddScoped<ITradingService, TradingService>();
         services.AddAutoMapper(typeof(Startup));
 
-        services.AddCors(options => {
-            options.AddDefaultPolicy(policyBuilder => {
-                policyBuilder.WithOrigins(serverSettings.ClientUrls)
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
-            });
-        });
+        services.AddCors(
+            options => {
+                options.AddDefaultPolicy(
+                    policyBuilder => {
+                        policyBuilder.WithOrigins(serverSettings.ClientUrls)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    }
+                );
+            }
+        );
 
         services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
         services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); })
-            .AddFluentValidation(options => {
-                options.DisableDataAnnotationsValidation = true;
-                options.ImplicitlyValidateChildProperties = true;
-                options.RegisterValidatorsFromAssemblyContaining<Startup>();
-            });
+            .AddFluentValidation(
+                options => {
+                    options.DisableDataAnnotationsValidation = true;
+                    options.ImplicitlyValidateChildProperties = true;
+                    options.RegisterValidatorsFromAssemblyContaining<Startup>();
+                }
+            );
     }
 }

@@ -1,7 +1,10 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { SuccessResponse } from '../contracts/responses/default-responses';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +13,7 @@ export class TokenService {
   private readonly _accessTokenSource = new BehaviorSubject<string>('');
   readonly accessToken$ = this._accessTokenSource.asObservable();
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   setAccessToken(token: string) {
     this._accessTokenSource.next(token);
@@ -20,7 +23,7 @@ export class TokenService {
     this._accessTokenSource.next('');
   }
 
-  async getAccessToken(): Promise<string> {
+  async getAccessToken() {
     if (!this.isValidToken()) {
       this.setAccessToken(await this.fetchToken());
     }
@@ -31,18 +34,14 @@ export class TokenService {
     return !!this._accessTokenSource.getValue();
   }
 
-  private async fetchToken(): Promise<string> {
-    try {
-      const endpoint = environment.baseUrl + '/api/account/refresh-token';
-      const response = await fetch(endpoint, { credentials: 'include', method: 'POST' });
-      if (response.ok) {
-        const result = await response.json();
-        return result.data;
-      }
-      return '';
-    } catch (err) {
-      return '';
-    }
+  private fetchToken() {
+    const endpoint = environment.baseUrl + '/api/account/refresh-token';
+    return firstValueFrom(
+      this.http.post<SuccessResponse<string>>(endpoint, {}, { withCredentials: true }).pipe(
+        map((response) => response.data),
+        catchError((_) => ''),
+      ),
+    );
   }
 
   private isValidToken(): boolean {

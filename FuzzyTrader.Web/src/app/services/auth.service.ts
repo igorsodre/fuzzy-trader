@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import {
   ForgotPasswordRequest,
@@ -20,57 +21,53 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  async login(requestBody: LoginRequest) {
+  login(requestBody: LoginRequest) {
     const endpoint = this.urlPrefix + '/login';
-    const result = await firstValueFrom(
-      this.http.post<SuccessResponse<LoginResponse>>(endpoint, requestBody, { withCredentials: true }),
-    );
 
-    return result.data;
+    return firstValueFrom(
+      this.http
+        .post<SuccessResponse<LoginResponse>>(endpoint, requestBody, { withCredentials: true })
+        .pipe(map((res) => res.data)),
+    );
   }
 
-  async logout() {
+  logout() {
     const endpoint = this.urlPrefix + '/logout';
-    const result = await firstValueFrom(
-      this.http.post<SuccessResponse<string>>(endpoint, {}, { withCredentials: true }),
+    return firstValueFrom(
+      this.http.post<SuccessResponse<string>>(endpoint, {}, { withCredentials: true }).pipe(map((res) => res.data)),
     );
-    return result.data;
   }
 
-  async register(requestBody: SignupRequest) {
+  register(requestBody: SignupRequest) {
     const endpoint = this.urlPrefix + '/signup';
-    return await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
+    return firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody).pipe(map((res) => res.data)));
   }
 
-  async updateUser(requestBody: UpdateUserRequest) {
+  updateUser(requestBody: UpdateUserRequest) {
     const endpoint = this.urlPrefix + '/update';
-    const result = await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
-    return result.data;
+    return firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody).pipe(map((res) => res.data)));
   }
 
-  async notifyPasswordForgoten(requestBody: ForgotPasswordRequest) {
+  notifyPasswordForgoten(requestBody: ForgotPasswordRequest) {
     const endpoint = this.urlPrefix + '/forgot-password';
-    const result = await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
-    return result.data;
+    return firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody).pipe(map((res) => res.data)));
   }
 
   async recoverPassword(requestBody: RecoverPasswordRequest) {
     const endpoint = this.urlPrefix + '/recover-password';
-    const result = await firstValueFrom(this.http.post<SuccessResponse<string>>(endpoint, requestBody));
-    return result.data;
+    return await firstValueFrom(
+      this.http.post<SuccessResponse<string>>(endpoint, requestBody).pipe(map((res) => res.data)),
+    );
   }
 
-  async refreshToken(): Promise<RefreshTokenResponse | null> {
-    try {
-      const endpoint = this.urlPrefix + '/refresh-token';
-      const response = await fetch(endpoint, { credentials: 'include', method: 'POST' });
-      if (response.ok) {
-        const result = await response.json();
-        return result.data;
-      }
-      return null;
-    } catch (err) {
-      return null;
-    }
+  refreshToken() {
+    const endpoint = this.urlPrefix + '/refresh-token';
+
+    return firstValueFrom(
+      this.http.post<SuccessResponse<RefreshTokenResponse>>(endpoint, {}, { withCredentials: true }).pipe(
+        map((res) => res.data),
+        catchError(() => of(null)),
+      ),
+    );
   }
 }
