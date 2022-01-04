@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using FuzzyTrader.DataAccess.Entities;
+using FuzzyTrader.DataAccess.Interfaces;
 using FuzzyTrader.Server.Domain;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Options;
@@ -16,21 +17,21 @@ namespace FuzzyTrader.Server.Services;
 
 public class AccountService : IAccountService
 {
-    private readonly UserManager<AppUser> _userManager;
+    private readonly IAccountManager _accountManager;
     private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
     private readonly IEmailClientService _emailClientService;
     private readonly ServerSettings _serverSettings;
 
     public AccountService(
-        UserManager<AppUser> userManager,
+        IAccountManager accountManager,
         ITokenService tokenService,
         IMapper mapper,
         IEmailClientService emailClientService,
         ServerSettings serverSettings
     )
     {
-        _userManager = userManager;
+        _accountManager = accountManager;
         _tokenService = tokenService;
         _mapper = mapper;
         _emailClientService = emailClientService;
@@ -39,7 +40,7 @@ public class AccountService : IAccountService
 
     public async Task<AuthenticationResult> RegisterAsync(string name, string email, string password)
     {
-        var existingUser = await _userManager.FindByEmailAsync(email);
+        var existingUser = await _accountManager.FindByEmailAsync(email);
 
         if (existingUser is not null)
         {
@@ -54,7 +55,7 @@ public class AccountService : IAccountService
             TokenVersion = 1
         };
 
-        var createdUser = await _userManager.CreateAsync(user, password);
+        var createdUser = await _accountManager.CreateAsync(user, password);
 
         if (!createdUser.Succeeded)
         {
@@ -63,7 +64,7 @@ public class AccountService : IAccountService
 
         var domainUser = _mapper.Map<DomainUser>(user);
 
-        var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        var confirmationToken = await _accountManager.GenerateEmailConfirmationTokenAsync(user);
 
         await SendVerificationEmailAsync(confirmationToken, domainUser);
 
@@ -91,8 +92,8 @@ public class AccountService : IAccountService
 
     public async Task<DefaultResult> VerifyEmailAsync(string token, string email)
     {
-        var user = await _userManager.FindByEmailAsync(email);
-        var isConfirmed = await _userManager.VerifyUserTokenAsync(
+        var user = await _accountManager.FindByEmailAsync(email);
+        var isConfirmed = await _accountManager.VerifyUserTokenAsync(
             user,
             TokenOptions.DefaultProvider,
             UserManager<AppUser>.ConfirmEmailTokenPurpose,
@@ -109,21 +110,21 @@ public class AccountService : IAccountService
         }
 
         user.EmailConfirmed = true;
-        await _userManager.UpdateAsync(user);
-        await _userManager.UpdateSecurityStampAsync(user);
+        await _accountManager.UpdateAsync(user);
+        await _accountManager.UpdateSecurityStampAsync(user);
         return new DefaultResult { Success = true };
     }
 
     public async Task<AuthenticationResult> LoginAsync(string email, string password)
     {
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await _accountManager.FindByEmailAsync(email);
 
         if (user is null)
         {
             return new AuthenticationResult { ErrorMessages = new[] { "Invalid Email/Password" } };
         }
 
-        var verifiedPassword = await _userManager.CheckPasswordAsync(user, password);
+        var verifiedPassword = await _accountManager.CheckPasswordAsync(user, password);
 
         if (!verifiedPassword)
         {
@@ -153,9 +154,9 @@ public class AccountService : IAccountService
 
     public async Task<DefaultResult> UpdateUserAsync(string userId, string password, string name, string newPassword)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _accountManager.FindByIdAsync(userId);
 
-        var verifiedPassword = await _userManager.CheckPasswordAsync(user, password);
+        var verifiedPassword = await _accountManager.CheckPasswordAsync(user, password);
         if (!verifiedPassword)
         {
             return new DefaultResult() { ErrorMessages = new[] { "Invalid Email/Password" } };
@@ -167,7 +168,7 @@ public class AccountService : IAccountService
         }
 
         user.Name = name;
-        var result = await _userManager.ChangePasswordAsync(user, password, newPassword);
+        var result = await _accountManager.ChangePasswordAsync(user, password, newPassword);
         if (!result.Succeeded)
         {
             return new DefaultResult { ErrorMessages = result.Errors.Select(x => x.Description) };
@@ -178,14 +179,14 @@ public class AccountService : IAccountService
 
     public async Task<DefaultResult> ForgotPasswordAysnc(string email)
     {
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await _accountManager.FindByEmailAsync(email);
 
         if (user is null || !user.EmailConfirmed)
         {
             return new DefaultResult { ErrorMessages = new[] { "Invalid Email" } };
         }
 
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var token = await _accountManager.GeneratePasswordResetTokenAsync(user);
         var domainUser = _mapper.Map<DomainUser>(user);
 
         return await SendForgotPasswordEmailAsync(token, domainUser);
@@ -193,7 +194,7 @@ public class AccountService : IAccountService
 
     public async Task<DefaultResult> RecoverPassword(string email, string password, string token)
     {
-        var user = await _userManager.FindByEmailAsync(email);
+        var user = await _accountManager.FindByEmailAsync(email);
 
         if (user is null || !user.EmailConfirmed)
         {
@@ -202,7 +203,7 @@ public class AccountService : IAccountService
 
         var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
 
-        var result = await _userManager.ResetPasswordAsync(user, decodedToken, password);
+        var result = await _accountManager.ResetPasswordAsync(user, decodedToken, password);
         if (!result.Succeeded)
         {
             return new DefaultResult
@@ -212,7 +213,7 @@ public class AccountService : IAccountService
             };
         }
 
-        await _userManager.UpdateSecurityStampAsync(user);
+        await _accountManager.UpdateSecurityStampAsync(user);
         await RevokeAllRefreshTokensForUser(user.Id);
 
         return new DefaultResult { Success = true };
@@ -232,7 +233,7 @@ public class AccountService : IAccountService
         var userId = tokenAttributes[CustomTokenClaims.Id];
         var tokenVersion = int.Parse(tokenAttributes[CustomTokenClaims.TokenVersion]);
 
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _accountManager.FindByIdAsync(userId);
 
         if (user is null || user.TokenVersion != tokenVersion)
         {
@@ -278,13 +279,13 @@ public class AccountService : IAccountService
 
     private async Task RevokeAllRefreshTokensForUser(string userId)
     {
-        var user = await _userManager.FindByIdAsync(userId);
+        var user = await _accountManager.FindByIdAsync(userId);
         if (user is null)
         {
             return;
         }
 
         user.TokenVersion += 1;
-        await _userManager.UpdateAsync(user);
+        await _accountManager.UpdateAsync(user);
     }
 }

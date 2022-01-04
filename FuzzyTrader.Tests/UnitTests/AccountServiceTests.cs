@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using FluentAssertions;
 using FuzzyTrader.DataAccess.Entities;
+using FuzzyTrader.DataAccess.Interfaces;
 using FuzzyTrader.Server.Domain.Entities;
 using FuzzyTrader.Server.Options;
 using FuzzyTrader.Server.Services;
@@ -17,16 +18,15 @@ namespace FuzzyTrader.Tests.UnitTests;
 public class AccountServiceTests
 {
     private readonly AccountService _sut;
-    private readonly Mock<UserManager<AppUser>> _userManager;
+    private readonly IAccountManager _accountManager = Substitute.For<IAccountManager>();
     private readonly ITokenService _tokenService = Substitute.For<ITokenService>();
     private readonly IMapper _mapper = Substitute.For<IMapper>();
     private readonly IEmailClientService _emailClientService = Substitute.For<IEmailClientService>();
-    private readonly ServerSettings _serverSettings = new ServerSettings { BaseUrl = "" };
+    private readonly ServerSettings _serverSettings = new() { BaseUrl = "" };
 
     public AccountServiceTests()
     {
-        _userManager = TestHelpers.MockUserManager(new List<AppUser>());
-        _sut = new AccountService(_userManager.Object, _tokenService, _mapper, _emailClientService, _serverSettings);
+        _sut = new AccountService(_accountManager, _tokenService, _mapper, _emailClientService, _serverSettings);
     }
 
     [Fact]
@@ -39,9 +39,9 @@ public class AccountServiceTests
         var testToken = "testToken";
         var testDomainUser = new DomainUser();
 
-        _userManager.Setup(x => x.FindByEmailAsync(email)).ReturnsAsync(() => null);
+        _accountManager.FindByEmailAsync(email).Returns(Task.FromResult(default(AppUser)));
 
-        _userManager.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), password)).ReturnsAsync(IdentityResult.Success);
+        _accountManager.CreateAsync(Arg.Any<AppUser>(), password).Returns(Task.FromResult(IdentityResult.Success));
 
         _mapper.Map<DomainUser>(Arg.Any<AppUser>()).Returns(testDomainUser);
 

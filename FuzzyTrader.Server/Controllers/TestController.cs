@@ -1,10 +1,8 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using FuzzyTrader.Contracts.Responses;
-using FuzzyTrader.DataAccess.Entities;
 using FuzzyTrader.DataAccess.Interfaces;
 using FuzzyTrader.Server.Services.Iterfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,19 +13,19 @@ namespace FuzzyTrader.Server.Controllers;
 [Produces("application/json")]
 public class TestController : ControllerBase
 {
-    private readonly UserManager<AppUser> _userManager;
+    private readonly IAccountManager _accountManager;
     private readonly IDataContext _dataContext;
     private readonly ITradingService _tradingService;
     private readonly IMapper _mapper;
 
     public TestController(
-        UserManager<AppUser> userManager,
+        IAccountManager accountManager,
         IDataContext dataContext,
         ITradingService tradingService,
         IMapper mapper
     )
     {
-        _userManager = userManager;
+        _accountManager = accountManager;
         _dataContext = dataContext;
         _tradingService = tradingService;
         _mapper = mapper;
@@ -42,7 +40,7 @@ public class TestController : ControllerBase
 
         foreach (var user in users)
         {
-            await _userManager.DeleteAsync(user);
+            await _accountManager.DeleteAsync(user);
         }
 
         await trasaction.CommitAsync();

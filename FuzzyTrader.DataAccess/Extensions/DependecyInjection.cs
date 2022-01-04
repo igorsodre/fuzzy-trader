@@ -19,5 +19,6 @@ public static class DependecyInjection
         );
         services.AddDefaultIdentity<AppUser>().AddEntityFrameworkStores<DataContext>();
         services.AddScoped<IDataContext>(provider => provider.GetRequiredService<DataContext>());
+        services.AddScoped<IAccountManager, AccountManager>();
     }
 }

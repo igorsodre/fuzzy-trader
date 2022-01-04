@@ -11,6 +11,7 @@ public static class ApplicationBuilderExtensions
     {
         using var scope = application.ApplicationServices.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<IDataContext>();
+        var accountManager = scope.ServiceProvider.GetRequiredService<IAccountManager>();
 
         context.Database.Migrate();
 
@@ -28,7 +29,7 @@ public static class ApplicationBuilderExtensions
 
         foreach (var seeder in seeders)
         {
-            seeder.SeedData(context);
+            seeder.SeedData(context, accountManager);
         }
     }
 }
