@@ -36,7 +36,7 @@ public class MvcConfiguration : IConfigurationInstaller
 
         services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
-        services.AddControllers(options => { options.Filters.Add<ValidationFilter>(); })
+        services.AddControllers(options => { options.Filters.Add<IncomingRequestDataValidationMiddleware>(); })
             .AddFluentValidation(
                 options => {
                     options.DisableDataAnnotationsValidation = true;

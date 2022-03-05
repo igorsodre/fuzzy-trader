@@ -30,7 +30,7 @@ export class TokenService {
     return this._accessTokenSource.getValue();
   }
 
-  isAuthenticated(): boolean {
+  isAuthenticated() {
     return !!this._accessTokenSource.getValue();
   }
 
@@ -44,7 +44,7 @@ export class TokenService {
     );
   }
 
-  private isValidToken(): boolean {
+  private isValidToken() {
     if (!this._accessTokenSource.getValue()) return false;
     const { exp } = jwtDecode<JwtPayload>(this._accessTokenSource.getValue());
     if (!exp || Date.now() >= exp * 1000) return false;

@@ -27,7 +27,7 @@ public class InvestmentController : BaseController
     }
 
     [HttpGet("get-investments")]
-    [ProducesResponseType(typeof(SuccessResponse<IEnumerable<GetUserInvestmentsResponse>>), 200)]
+    [ProducesResponseType(typeof(SuccessResponse<IList<GetUserInvestmentsResponse>>), 200)]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     public async Task<IActionResult> GetInvestments()
     {
@@ -38,8 +38,8 @@ public class InvestmentController : BaseController
         }
 
         return Ok(
-            new SuccessResponse<IEnumerable<GetUserInvestmentsResponse>>(
-                _mapper.Map<IEnumerable<GetUserInvestmentsResponse>>(result.Investments)
+            new SuccessResponse<IList<GetUserInvestmentsResponse>>(
+                _mapper.Map<IList<GetUserInvestmentsResponse>>(result.Data)
             )
         );
     }

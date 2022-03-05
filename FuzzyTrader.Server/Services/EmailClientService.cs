@@ -44,7 +44,7 @@ public class EmailClientService : IEmailClientService
         }
         catch
         {
-            return new DefaultResult { Success = false, ErrorMessages = new[] { "Failed to send email" } };
+            return new DefaultResult { Success = false, Errors = new[] { "Failed to send email" } };
         }
     }
 

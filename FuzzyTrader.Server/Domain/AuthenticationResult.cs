@@ -11,5 +11,5 @@ public class AuthenticationResult
 
     public bool Success { get; set; }
 
-    public IEnumerable<string> ErrorMessages { get; set; }
+    public IList<string> ErrorMessages { get; set; }
 }

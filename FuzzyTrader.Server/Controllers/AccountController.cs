@@ -57,7 +57,7 @@ public class AccountController : BaseController
         );
         if (!result.Success)
         {
-            return BadRequest(new ErrorResponse(result.ErrorMessages));
+            return BadRequest(new ErrorResponse(result.Errors));
         }
 
         return Ok(SuccessResponse.DefaultOkResponse());
@@ -71,7 +71,7 @@ public class AccountController : BaseController
         var result = await _accountService.VerifyEmailAsync(token, email);
         if (!result.Success)
         {
-            return BadRequest(new ErrorResponse(result.ErrorMessages));
+            return BadRequest(new ErrorResponse(result.Errors));
         }
 
         return Ok(SuccessResponse.DefaultOkResponse());
@@ -144,7 +144,7 @@ public class AccountController : BaseController
         var result = await _accountService.ForgotPasswordAysnc(request.Email);
 
         if (!result.Success)
-            return BadRequest(new ErrorResponse(result.ErrorMessages));
+            return BadRequest(new ErrorResponse(result.Errors));
 
         return Ok(SuccessResponse.DefaultOkResponse());
     }
@@ -165,7 +165,7 @@ public class AccountController : BaseController
         var result = await _accountService.RecoverPassword(request.Email, request.Password, request.Token);
         if (!result.Success)
         {
-            return BadRequest(new ErrorResponse(result.ErrorMessages));
+            return BadRequest(new ErrorResponse(result.Errors));
         }
 
         return Ok(SuccessResponse.DefaultOkResponse());

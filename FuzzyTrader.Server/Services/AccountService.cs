@@ -59,7 +59,7 @@ public class AccountService : IAccountService
 
         if (!createdUser.Succeeded)
         {
-            return new AuthenticationResult { ErrorMessages = createdUser.Errors.Select(x => x.Description) };
+            return new AuthenticationResult { ErrorMessages = createdUser.Errors.Select(x => x.Description).ToList() };
         }
 
         var domainUser = _mapper.Map<DomainUser>(user);
@@ -105,7 +105,7 @@ public class AccountService : IAccountService
             return new DefaultResult
             {
                 Success = false,
-                ErrorMessages = new[] { "Failed to verify email" }
+                Errors = new[] { "Failed to verify email" }
             };
         }
 
@@ -159,19 +159,19 @@ public class AccountService : IAccountService
         var verifiedPassword = await _accountManager.CheckPasswordAsync(user, password);
         if (!verifiedPassword)
         {
-            return new DefaultResult() { ErrorMessages = new[] { "Invalid Email/Password" } };
+            return new DefaultResult() { Errors = new[] { "Invalid Email/Password" } };
         }
 
         if (!user.EmailConfirmed)
         {
-            return new DefaultResult { ErrorMessages = new[] { "Email not verified" } };
+            return new DefaultResult { Errors = new[] { "Email not verified" } };
         }
 
         user.Name = name;
         var result = await _accountManager.ChangePasswordAsync(user, password, newPassword);
         if (!result.Succeeded)
         {
-            return new DefaultResult { ErrorMessages = result.Errors.Select(x => x.Description) };
+            return new DefaultResult { Errors = result.Errors.Select(x => x.Description).ToList() };
         }
 
         return new DefaultResult { Success = true };
@@ -183,7 +183,7 @@ public class AccountService : IAccountService
 
         if (user is null || !user.EmailConfirmed)
         {
-            return new DefaultResult { ErrorMessages = new[] { "Invalid Email" } };
+            return new DefaultResult { Errors = new[] { "Invalid Email" } };
         }
 
         var token = await _accountManager.GeneratePasswordResetTokenAsync(user);
@@ -198,7 +198,7 @@ public class AccountService : IAccountService
 
         if (user is null || !user.EmailConfirmed)
         {
-            return new DefaultResult { ErrorMessages = new[] { "Invalid Email" } };
+            return new DefaultResult { Errors = new[] { "Invalid Email" } };
         }
 
         var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
@@ -209,7 +209,7 @@ public class AccountService : IAccountService
             return new DefaultResult
             {
                 Success = false,
-                ErrorMessages = result.Errors.Select(error => error.Description)
+                Errors = result.Errors.Select(error => error.Description).ToList()
             };
         }
 
